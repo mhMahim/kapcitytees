@@ -4,7 +4,7 @@ import Footer from "@/components/shared/layout/Footer";
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      <Navbar activePath="/shop" />
+      <Navbar />
       {children}
       <Footer />
     </div>

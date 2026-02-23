@@ -43,7 +43,7 @@ const barbersBullets = [
 const HomePage = () => {
   return (
     <>
-      <Navbar activePath="/" />
+      <Navbar />
 
       <main className="space-y-40 mb-40">
         <div className="flex flex-col gap-10">

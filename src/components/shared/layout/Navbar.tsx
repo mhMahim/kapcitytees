@@ -6,6 +6,7 @@ import { SearchIcon2, ShoppingCartIcon } from "@/assets/icons";
 import Container from "../Container";
 import Logo from "../Logo";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -19,7 +20,9 @@ const navLinks = [
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const activePath = useEffect(() => {
+  const activePath = usePathname();
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
