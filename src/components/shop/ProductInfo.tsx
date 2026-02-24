@@ -104,7 +104,7 @@ const ProductInfo = ({
 
             {/* Action Buttons */}
             <div className="flex gap-4 items-center">
-              <button className="h-13 px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors">
+              <button className="h-13 px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors cursor-pointer">
                 Add to Cart
               </button>
               <Link

@@ -73,12 +73,12 @@ const Navbar = () => {
           >
             <SearchIcon2 />
           </button>
-          <button
-            aria-label="Cart"
+          <Link
+            href="/cart"
             className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
           >
             <ShoppingCartIcon className="" />
-          </button>
+          </Link>
           <button
             aria-label="Profile"
             className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center"
