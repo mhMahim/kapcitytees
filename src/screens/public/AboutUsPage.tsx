@@ -1,4 +1,3 @@
-import Container from "@/components/shared/Container";
 import ShopHeroBanner from "@/components/shop/ShopHeroBanner";
 import OurStorySection from "@/components/about-us/OurStorySection";
 import PhotoGallerySection from "@/components/about-us/PhotoGallerySection";
@@ -10,17 +9,15 @@ import AboutFeaturesBar from "@/components/about-us/AboutFeaturesBar";
 
 const AboutUsPage = () => {
   return (
-    <main className="flex flex-col gap-45 pb-45">
+    <main className="flex flex-col gap-30 pb-50">
       {/* Hero Banner */}
-      <Container>
-        <ShopHeroBanner
-          title="About Us"
-          breadcrumb={[
-            { label: "Home", href: "/" },
-            { label: "About us", href: "/about-us" },
-          ]}
-        />
-      </Container>
+      <ShopHeroBanner
+        title="About Us"
+        breadcrumb={[
+          { label: "Home", href: "/" },
+          { label: "About us", href: "/about-us" },
+        ]}
+      />
 
       {/* Our Story */}
       <OurStorySection />
@@ -38,7 +35,7 @@ const AboutUsPage = () => {
       <PhilosophySection />
 
       {/* Barber Certified */}
-      <BarberCertifiedSection />
+      {/* <BarberCertifiedSection /> */}
 
       {/* Features Bar */}
       <AboutFeaturesBar />

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "../shared/Container";
 import { Play } from "lucide-react";
+import { PlayIcon } from "@/assets/icons";
 
 /* Placeholder images — replace with actual assets */
 const GALLERY_LEFT =
@@ -53,7 +54,7 @@ const PhotoGallerySection = () => {
         </div>
 
         {/* Video Section */}
-        <div className="relative w-full h-152 rounded-[32px] overflow-hidden">
+        <div className="relative w-full h-152 rounded-4xl overflow-hidden">
           <Image
             src={VIDEO_BG}
             alt="Video preview"
@@ -68,9 +69,7 @@ const PhotoGallerySection = () => {
             className="absolute inset-0 flex items-center justify-center"
             aria-label="Play video"
           >
-            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors">
-              <Play className="w-7 h-7 text-[#0F2A3C] fill-[#0F2A3C] ml-1" />
-            </div>
+            <PlayIcon className="size-32" />
           </button>
         </div>
       </Container>
