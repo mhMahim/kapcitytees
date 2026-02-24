@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Licorice } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const licorice = Licorice({
+  variable: "--font-licorice",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -20,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased bg-[#F9FAFB] font-inter`}>
+      <body className={`${inter.variable} ${licorice.variable} antialiased bg-[#F9FAFB] font-inter`}>
         {children}
       </body>
     </html>
