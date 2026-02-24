@@ -7,6 +7,7 @@ export interface BlogVideoCardProps {
   description: string;
   thumbnail: string | StaticImageData;
   slug?: string;
+  link?: string;
 }
 
 const BlogVideoCard = ({
@@ -14,12 +15,13 @@ const BlogVideoCard = ({
   description,
   thumbnail,
   slug,
+  link = "/dashboard/training/",
 }: BlogVideoCardProps) => {
   const cardClassName =
     "bg-white flex flex-col gap-3 items-center p-3 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] cursor-pointer hover:shadow-md transition-shadow";
 
   return (
-    <Link href={`/dashboard/training/${slug}`} className={cardClassName}>
+    <Link href={`${link}${slug}`} className={cardClassName}>
       {/* Thumbnail with play button */}
       <div className="relative w-full h-50 rounded-lg overflow-hidden">
         <Image src={thumbnail} alt={title} fill className="object-cover" />
