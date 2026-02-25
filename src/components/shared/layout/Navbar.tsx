@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { User } from "lucide-react";
 import { ShoppingCartIcon } from "@/assets/icons";
 import Container from "../Container";
 import Logo from "../Logo";
@@ -10,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useStateContext } from "@/hooks/useStateContext";
+import NavbarProfilePopover from "../NavbarProfilePopover";
 
 const navLinks: any[] = [
   // { label: "Home", href: "/" },
@@ -78,13 +78,7 @@ const Navbar = () => {
               >
                 <ShoppingCartIcon className="" />
               </Link>
-              <Link
-                href="/account"
-                aria-label="Profile"
-                className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center"
-              >
-                <User className="w-5 h-5 text-[#637381]" />
-              </Link>
+              <NavbarProfilePopover />
             </div>
           ) : (
             <div className="flex items-center gap-4">
