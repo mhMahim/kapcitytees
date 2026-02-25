@@ -10,13 +10,13 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Shop", href: "/shop" },
-  { label: "About us", href: "/about-us" },
-  { label: "Blog", href: "/blog" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact Us", href: "/contact-us" },
+const navLinks: any[] = [
+  // { label: "Home", href: "/" },
+  // { label: "Shop", href: "/shop" },
+  // { label: "About us", href: "/about-us" },
+  // { label: "Blog", href: "/blog" },
+  // { label: "FAQ", href: "/faq" },
+  // { label: "Contact Us", href: "/contact-us" },
 ];
 
 const Navbar = () => {
@@ -91,7 +91,7 @@ const Navbar = () => {
                 <Link href="/login">Sign In</Link>
               </Button>
               <Button asChild>
-                <Link href="/register">Get Started</Link>
+                <Link href="/register?type=barber">Get Started</Link>
               </Button>
             </div>
           )}

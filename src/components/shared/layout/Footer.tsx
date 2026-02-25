@@ -4,14 +4,15 @@ import Container from "../Container";
 
 const companyLinks = [
   { label: "About Us", href: "/about-us" },
-  { label: "Become a Partner", href: "/partners" },
+  { label: "Become a Partner", href: "/register?type=barber" },
+  { label: "products", href: "/shop" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
 const customerLinks = [
-  { label: "Track Your Order", href: "/track-order" },
+  { label: "Track Your Order", href: "#" },
   { label: "FAQs", href: "/faq" },
-  { label: "Shipping & Returns", href: "/shipping" },
+  { label: "Shipping & Returns", href: "#" },
 ];
 
 const socialLinks = [
