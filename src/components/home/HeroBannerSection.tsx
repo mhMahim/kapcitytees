@@ -6,8 +6,8 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <section className="w-full">
-      <div className="relative h-177 rounded-3xl overflow-hidden w-[calc(100vw-4rem)] mx-auto">
+    <section className="w-full px-8">
+      <div className="relative h-177 rounded-3xl overflow-hidden">
         <Container className="absolute inset-0 flex items-center justify-center z-10">
           <div className="flex flex-col gap-12 items-center justify-center text-center max-w-186.25 px-4">
             <div className="flex flex-col gap-4 items-center">

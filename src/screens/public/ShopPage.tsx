@@ -102,9 +102,7 @@ const ShopPage = () => {
   return (
     <main className="min-h-screen bg-[#F9FAFB] flex flex-col">
       {/* Hero banner */}
-      <div className="px-8">
-        <ShopHeroBanner />
-      </div>
+      <ShopHeroBanner />
 
       {/* Main content */}
       <Container className="w-full px-6 lg:px-8 py-14 flex flex-col lg:flex-row gap-8 flex-1">

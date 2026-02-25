@@ -79,12 +79,13 @@ const Navbar = () => {
           >
             <ShoppingCartIcon className="" />
           </Link>
-          <button
+          <Link
+            href="/account"
             aria-label="Profile"
             className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center"
           >
             <User className="w-5 h-5 text-[#637381]" />
-          </button>
+          </Link>
         </div>
       </Container>
     </header>
