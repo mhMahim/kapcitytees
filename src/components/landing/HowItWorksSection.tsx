@@ -35,7 +35,20 @@ const HowItWorksSection = () => {
         {/* Steps */}
         <div className="relative">
           {/* Timeline line */}
-          <div className="hidden lg:block absolute top-10.5 left-15 right-15 h-0.5 bg-[#1E6FA8]" />
+          <div className="absolute top-1/2 -translate-y-16.5 w-full">
+            <div className="grid grid-cols-3">
+              {Array(3)
+                .fill(null)
+                .map((_, index) => (
+                  <div className="relative z-10 pl-8" key={index}>
+                    <div className="w-16 h-16 rounded-[20px] bg-white shadow-[0px_4px_8px_rgba(0,0,0,0.06)] flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-[10px] bg-[#1E6FA8]" />
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <div className="hidden lg:block absolute top-1/2 left-0 -translate-y-1/2 right-0 h-1 bg-[#1E6FA8]" />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-8">
             {steps.map((step) => (
@@ -59,16 +72,9 @@ interface StepCardProps {
 const StepCard = ({ number, title, description }: StepCardProps) => (
   <div className="relative flex flex-col items-start">
     {/* Background number */}
-    <span className="text-[180px] lg:text-[204px] font-black leading-none text-[#D7EFFF]/30 tracking-tighter select-none pointer-events-none -mb-28 lg:-mb-32">
+    <span className="text-[180px] lg:text-[204px] font-black leading-none text-[#D7EFFF]/50 tracking-tighter select-none pointer-events-none block pl-25">
       {number}
     </span>
-
-    {/* Dot indicator */}
-    <div className="relative mb-12 z-10">
-      <div className="w-16 h-16 rounded-[20px] bg-white shadow-[0px_4px_8px_rgba(0,0,0,0.06)] flex items-center justify-center">
-        <div className="w-6 h-6 rounded-[10px] bg-[#1E6FA8]" />
-      </div>
-    </div>
 
     {/* Content */}
     <div className="flex flex-col gap-2">

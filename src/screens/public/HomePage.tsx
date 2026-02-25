@@ -9,7 +9,7 @@ import Navbar from "@/components/shared/layout/Navbar";
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <LandingHeroSection />
       <HowItWorksSection />

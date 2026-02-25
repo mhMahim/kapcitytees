@@ -8,6 +8,7 @@ import Logo from "../Logo";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -20,6 +21,7 @@ const navLinks = [
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn] = useState(false); // Placeholder for auth state
   const activePath = usePathname();
 
   useEffect(() => {
@@ -66,26 +68,33 @@ const Navbar = () => {
         </nav>
 
         {/* Actions */}
-        <div className="flex justify-end items-center gap-8 flex-1">
-          {/* <button
-            aria-label="Search"
-            className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
-          >
-            <SearchIcon2 />
-          </button> */}
-          <Link
-            href="/cart"
-            className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
-          >
-            <ShoppingCartIcon className="" />
-          </Link>
-          <Link
-            href="/account"
-            aria-label="Profile"
-            className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center"
-          >
-            <User className="w-5 h-5 text-[#637381]" />
-          </Link>
+        <div className="flex justify-end flex-1">
+          {isLoggedIn ? (
+            <div className="flex items-center gap-8">
+              <Link
+                href="/cart"
+                className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
+              >
+                <ShoppingCartIcon className="" />
+              </Link>
+              <Link
+                href="/account"
+                aria-label="Profile"
+                className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center"
+              >
+                <User className="w-5 h-5 text-[#637381]" />
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" asChild>
+                <Link href="/login">Sign In</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/register">Get Started</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </Container>
     </header>
