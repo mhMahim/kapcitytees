@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { User } from "lucide-react";
-import { SearchIcon2, ShoppingCartIcon } from "@/assets/icons";
+import { ShoppingCartIcon } from "@/assets/icons";
 import Container from "../Container";
 import Logo from "../Logo";
 import { useEffect, useState } from "react";
@@ -67,12 +67,12 @@ const Navbar = () => {
 
         {/* Actions */}
         <div className="flex justify-end items-center gap-8 flex-1">
-          <button
+          {/* <button
             aria-label="Search"
             className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
           >
             <SearchIcon2 />
-          </button>
+          </button> */}
           <Link
             href="/cart"
             className="text-[#637381] hover:text-[#0F2A3C] transition-colors"

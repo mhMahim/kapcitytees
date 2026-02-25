@@ -197,7 +197,7 @@ const BillingFormCard = ({
           {/* ── Pay Now ───────────────────────────────────────────── */}
           <button
             type="submit"
-            className="h-13 w-full bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors flex items-center justify-center"
+            className="h-13 w-full bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors flex items-center justify-center cursor-pointer"
           >
             Pay Now
           </button>

@@ -27,10 +27,9 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const TOPICS = [
   "General Inquiry",
-  "Order Support",
-  "Returns & Refunds",
-  "Become a Partner",
-  "Product Question",
+  "Product Information",
+  "Shipping & Delivery",
+  "Refunds & Returns",
   "Other",
 ];
 
