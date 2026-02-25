@@ -9,7 +9,7 @@ const LandingHeroSection = () => {
   return (
     <section className="px-8">
       <div className="bg-[#ECF2F8] rounded-3xl relative overflow-hidden">
-        <Container className="py-20 lg:py-60">
+        <Container className="pt-40 lg:pb-65">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-8">
             {/* Left content */}
             <div className="flex-1 flex flex-col gap-16">

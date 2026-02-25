@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const navLinks: any[] = [
   // { label: "Home", href: "/" },
@@ -21,7 +22,7 @@ const navLinks: any[] = [
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn] = useState(false); // Placeholder for auth state
+  const { isLoggedIn } = useStateContext();
   const activePath = usePathname();
 
   useEffect(() => {

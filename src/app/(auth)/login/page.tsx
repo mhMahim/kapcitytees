@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import React from "react";
 import { GoogleLoginBtn } from "@/assets/icons";
+import { useStateContext } from "@/hooks/useStateContext";
 
 interface RegisterPageProps {
   searchParams: Promise<{ type?: string }>;
@@ -31,6 +32,7 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 const LoginPage = ({ searchParams }: RegisterPageProps) => {
+  const { setIsLoggedIn } = useStateContext();
   const { type } = React.use(searchParams);
   console.log(type);
   const router = useRouter();
@@ -45,7 +47,8 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
 
   const onSubmit = (data: LoginFormValues) => {
     console.log("Login data:", data);
-    router.push("/dashboard");
+    setIsLoggedIn(true);
+    router.push("/account");
     // Handle login logic here
   };
 

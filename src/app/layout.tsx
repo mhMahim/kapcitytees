@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Licorice } from "next/font/google";
 import "./globals.css";
+import StateContextProvider from "@/providers/StateContextProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${licorice.variable} antialiased bg-[#F9FAFB] font-inter`}>
-        {children}
+        <StateContextProvider>{children}</StateContextProvider>
       </body>
     </html>
   );
