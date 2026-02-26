@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/shared/Logo";
 
 const loginFormSchema = z
   .object({
@@ -60,22 +61,23 @@ const BarberSignUpPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen col-span-4">
-      <div className="max-w-160 w-full py-12 px-8 flex flex-col gap-8">
+    <div className="flex items-center justify-center min-h-screen lg:col-span-4">
+      <div className="max-w-140 lg:max-w-160 w-full py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-7 lg:gap-8">
+        <Logo className="2xl:hidden size-16 sm:size-18 lg:size-22" />
         <div className="flex flex-col gap-1">
-          <h1 className="text-[32px] font-semibold text-textPrimary">
+          <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold text-textPrimary">
             Partner with Barber Certified
           </h1>
-          <p className="text-base text-[#637381] fonty-medium">
+          <p className="text-sm sm:text-base text-[#637381] font-medium">
             Join the Barber Certified network. We ship, you earn.
           </p>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4 sm:gap-5">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-8"
+              className="flex flex-col gap-6 sm:gap-7 lg:gap-8"
             >
               <div className="flex flex-col gap-4">
                 <FormField
@@ -191,12 +193,17 @@ const BarberSignUpPage = () => {
                 />
               </div>
 
-              <Button type="submit">Create Account</Button>
+              <Button
+                type="submit"
+                className="h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
+              >
+                Create Account
+              </Button>
             </form>
           </Form>
 
           <div className="flex justify-center">
-            <p className="text-lg text-[#637381] text-center font-medium">
+            <p className="text-base sm:text-lg text-[#637381] text-center font-medium">
               Already Have an Account?{" "}
               <Link
                 href="/login"
