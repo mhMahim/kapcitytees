@@ -33,7 +33,7 @@ const LandingCTASection = () => {
           </div>
 
           <Link
-            href="/register"
+            href="/register?type=barber"
             className="relative z-10 bg-white text-[#1E6FA8] font-semibold text-base leading-6 px-7 py-3.5 rounded-xl hover:bg-[#F4F6F8] hover:scale-102 transition-all duration-100"
           >
             Apply Now

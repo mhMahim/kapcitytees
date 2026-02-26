@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { useStateContext } from "@/hooks/useStateContext";
 import NavbarProfilePopover from "../NavbarProfilePopover";
 
-const navLinks: any[] = [
-  // { label: "Home", href: "/" },
-  // { label: "Shop", href: "/shop" },
-  // { label: "About us", href: "/about-us" },
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "For Barbers", href: "/for-barbers" },
+  { label: "For Clients", href: "/for-clients" },
   // { label: "Blog", href: "/blog" },
   // { label: "FAQ", href: "/faq" },
   // { label: "Contact Us", href: "/contact-us" },
@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
 
         {/* Nav Links */}
-        <nav className="hidden md:flex justify-center items-center gap-12 grow">
+        {/* <nav className="hidden md:flex justify-center items-center gap-12 grow">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -66,30 +66,47 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         {/* Actions */}
-        <div className="flex justify-end flex-1">
-          {isLoggedIn ? (
-            <div className="flex items-center gap-8">
+        <div className="flex justify-end gap-16 flex-1">
+          <nav className="flex justify-end items-center gap-12">
+            {navLinks.map((link) => (
               <Link
-                href="/cart"
-                className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
+                key={link.href}
+                href={link.href}
+                className={
+                  activePath === link.href
+                    ? "text-[#1E6FA8] font-semibold text-base"
+                    : "text-[#637381] font-normal text-base hover:text-[#0F2A3C] transition-colors"
+                }
               >
-                <ShoppingCartIcon className="" />
+                {link.label}
               </Link>
-              <NavbarProfilePopover />
-            </div>
-          ) : (
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" asChild>
-                <Link href="/login">Sign In</Link>
-              </Button>
-              <Button asChild>
+            ))}
+          </nav>
+          <div className="flex">
+            {isLoggedIn ? (
+              <div className="flex items-center gap-8">
+                <Link
+                  href="/cart"
+                  className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
+                >
+                  <ShoppingCartIcon className="" />
+                </Link>
+                <NavbarProfilePopover />
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Button asChild>
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                {/* <Button asChild>
                 <Link href="/register?type=barber">Get Started</Link>
-              </Button>
-            </div>
-          )}
+              </Button> */}
+              </div>
+            )}
+          </div>
         </div>
       </Container>
     </header>

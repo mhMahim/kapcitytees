@@ -1,42 +1,46 @@
 import Container from "../shared/Container";
+import SectionHeaderWithLines from "../shared/SectionHeaderWithLines";
 
-const calculationRows = [
-  { label: "Conversion rate (10%)", value: "12 units" },
-  { label: "Average product price", value: "$25" },
-  { label: "Commission per sale (30%)", value: "$7.50" },
+interface StatItem {
+  value: string;
+  label: string;
+}
+
+const stats: StatItem[] = [
+  { value: "120", label: "Clients Per Month" },
+  { value: "12", label: "Sales (10% Conversion)" },
+  { value: "$0", label: "Zero Earnings" },
 ];
 
 const RevenueSection = () => {
   return (
-    <section className="py-16 lg:py-24">
+    <section className="pt-10 pb-20 lg:pb-30">
       <Container>
-        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-12 lg:gap-20">
-          {/* Left content */}
-          <div className="flex-1 flex flex-col gap-10 max-w-163.5">
-            <h2 className="text-4xl lg:text-5xl font-bold leading-tight lg:leading-17 text-[#0F2A3C]">
-              Why Most Barbers Make $0 on Product
-            </h2>
+        <div className="flex flex-col gap-12 items-center">
+          <SectionHeaderWithLines
+            title={
+              <>
+                Why Most Barbers Make{" "}
+                <span className="text-[#D6342C]">$0</span> on Product
+              </>
+            }
+          />
 
-            <div className="flex flex-col gap-5 text-2xl font-medium leading-9 text-[#454F5B]">
-              <p>
-                Only recommending product you can make $90/month.
-              </p>
-              <div>
-                <p className="font-bold leading-10.25">
-                  That&apos;s $1,080 per year
-                </p>
-                <ul className="list-disc ml-9 leading-10.25">
-                  <li>without inventory</li>
-                  <li>without shelf space</li>
-                  <li>without operational risk</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Right calculation card */}
-          <div className="w-full lg:w-150 shrink-0">
-            <CalculationCard />
+          {/* Arrow stat bars */}
+          <div className="flex w-full relative">
+            {stats.map((stat, index) => (
+              <ArrowStatCard
+                key={stat.label}
+                {...stat}
+                position={
+                  index === 0
+                    ? "first"
+                    : index === stats.length - 1
+                      ? "last"
+                      : "middle"
+                }
+              />
+            ))}
           </div>
         </div>
       </Container>
@@ -46,36 +50,29 @@ const RevenueSection = () => {
 
 export default RevenueSection;
 
-const CalculationCard = () => (
-  <div className="bg-[#F9FAFB] rounded-3xl p-6 flex flex-col gap-8">
-    <p className="text-xl font-medium leading-7.5 text-[#454F5B]">
-      For example you have 120 clients per month
-    </p>
+interface ArrowStatCardProps extends StatItem {
+  position: "first" | "middle" | "last";
+}
 
-    <div className="flex flex-col gap-3">
-      {calculationRows.map((row) => (
-        <div key={row.label} className="flex items-center justify-between">
-          <span className="text-xl font-medium leading-7.5 text-[#454F5B]">
-            {row.label}
-          </span>
-          <span className="text-xl font-medium leading-7.5 text-[#454F5B] text-right">
-            {row.value}
-          </span>
-        </div>
-      ))}
+const ArrowStatCard = ({ value, label, position }: ArrowStatCardProps) => {
+  const clipPaths = {
+    first: "polygon(0 0, calc(100% - 36px) 0, 100% 50%, calc(100% - 36px) 100%, 0 100%)",
+    middle:
+      "polygon(0 0, calc(100% - 36px) 0, 100% 50%, calc(100% - 36px) 100%, 0 100%, 36px 50%)",
+    last: "polygon(0 0, 100% 0, 100% 100%, 0 100%, 36px 50%)",
+  };
 
-      {/* Divider */}
-      <div className="h-px bg-[#DFE3E8] my-1" />
-
-      {/* Total */}
-      <div className="flex items-center justify-between">
-        <span className="text-xl font-bold leading-7.5 text-[#454F5B]">
-          Potential Monthly Revenue
-        </span>
-        <span className="text-xl font-bold leading-7.5 text-[#454F5B] text-right">
-          $90
-        </span>
-      </div>
+  return (
+    <div
+      className="flex-1 flex flex-col items-center justify-center gap-1 lg:gap-2 bg-[#E9F1F6] py-6 lg:py-8"
+      style={{ clipPath: clipPaths[position] }}
+    >
+      <p className="text-3xl lg:text-[64px] font-bold leading-tight lg:leading-20 text-[#1E6FA8]">
+        {value}
+      </p>
+      <p className="text-sm lg:text-xl font-medium leading-normal lg:leading-7.5 text-[#5E707C]">
+        {label}
+      </p>
     </div>
-  </div>
-);
+  );
+};

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { CircleCheck, CircleX } from "lucide-react";
 import Container from "../shared/Container";
+import SectionHeaderWithLines from "../shared/SectionHeaderWithLines";
 
 interface ComparisonColumnData {
   title: string;
@@ -14,58 +15,33 @@ const columns: ComparisonColumnData[] = [
     title: "Barber Certified",
     variant: "positive",
     highlighted: true,
-    items: [
-      "No inventory risk",
-      "No shelf space needed",
-      "Centralized logistics",
-      "Higher margin control",
-      "Brand authority",
-    ],
+    items: ["No Inventory", "High Commissions", "We Handle Shipping"],
   },
   {
-    title: "Stocking Shelves",
+    title: "Stocking Inventory",
     variant: "negative",
-    items: [
-      "High upfront cost",
-      "Takes up space",
-      "You handle shipping",
-      "Inventory can expire",
-      "Generic branding",
-    ],
+    items: ["Upfront Costs", "Shelf Management", "Shipping Hassles"],
   },
   {
-    title: "Other brands",
+    title: "Other Brands",
     variant: "negative",
-    items: [
-      "Low commission (5-10%)",
-      "No brand control",
-      "Competing with everyone",
-      "No exclusivity",
-      "No exclusivity",
-    ],
+    items: ["Low Commissions", "No Control", "Limited Support"],
   },
 ];
 
 const ComparisonSection = () => {
   return (
-    <section className="py-16 lg:py-24">
+    <section className="pt-10 pb-20 lg:pb-30">
       <Container>
-        {/* Header */}
-        <div className="flex flex-col items-center gap-3 mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-[#0F2A3C] text-center">
-            How Barber Certified Compares
-          </h2>
-          <p className="text-lg font-medium leading-7 text-[#637381] text-center max-w-223.25">
-            See the difference between stocking inventory, affiliate promotion,
-            and a centralized distribution model.
-          </p>
-        </div>
+        <div className="flex flex-col gap-12">
+          <SectionHeaderWithLines title="Barber Certified vs. The Other Options" />
 
-        {/* Comparison Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {columns.map((column) => (
-            <ComparisonCard key={column.title} {...column} />
-          ))}
+          {/* Comparison Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            {columns.map((column) => (
+              <ComparisonCard key={column.title} {...column} />
+            ))}
+          </div>
         </div>
       </Container>
     </section>
@@ -82,7 +58,7 @@ const ComparisonCard = ({
 }: ComparisonColumnData) => (
   <div
     className={cn(
-      "rounded-3xl p-9 border flex flex-col gap-6",
+      "rounded-2xl p-9 border flex flex-col gap-6",
       highlighted
         ? "bg-white border-[#F4F6F8] shadow-[0px_12px_24px_-4px_rgba(145,158,171,0.16)]"
         : "bg-[#F9FAFB] border-[#F4F6F8]"
@@ -90,7 +66,7 @@ const ComparisonCard = ({
   >
     <h3
       className={cn(
-        "text-[32px] font-semibold leading-12",
+        "text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12",
         highlighted ? "text-[#1E6FA8]" : "text-[#3F5563]"
       )}
     >
@@ -129,7 +105,7 @@ const ComparisonListItem = ({
     )}
     <span
       className={cn(
-        "text-lg font-medium leading-7",
+        "text-base lg:text-lg font-medium leading-7",
         highlighted ? "text-[#0F2A3C]" : "text-[#3F5563]"
       )}
     >
