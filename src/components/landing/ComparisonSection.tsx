@@ -31,7 +31,7 @@ const columns: ComparisonColumnData[] = [
 
 const ComparisonSection = () => {
   return (
-    <section className="pt-10 pb-20 lg:pb-30">
+    <section className="pb-20 lg:pb-30">
       <Container>
         <div className="flex flex-col gap-12">
           <SectionHeaderWithLines title="Barber Certified vs. The Other Options" />

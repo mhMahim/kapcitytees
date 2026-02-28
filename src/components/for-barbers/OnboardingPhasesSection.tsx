@@ -21,7 +21,7 @@ const phases: PhaseCardData[] = [
   },
   {
     phase: 2,
-    title: "Intensive Sales Training",
+    title: "Consultant Training",
     description:
       "One-time online course on customer engagement & product knowledge.",
     image: "/images/landing/phase-training.svg",
@@ -81,12 +81,7 @@ const PhaseCard = ({
       {/* Illustration */}
       <div className="flex justify-center">
         <div className="w-25 h-25 lg:w-35 lg:h-35 relative">
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-contain"
-          />
+          <Image src={image} alt={title} fill className="object-contain" />
         </div>
       </div>
 

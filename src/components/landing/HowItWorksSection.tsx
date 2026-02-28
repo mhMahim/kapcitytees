@@ -1,12 +1,15 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Container from "../shared/Container";
 import SectionHeaderWithLines from "../shared/SectionHeaderWithLines";
+import WorkImg1 from "@/assets/images/work/work1.png";
+import WorkImg2 from "@/assets/images/work/work2.png";
+import WorkImg3 from "@/assets/images/work/work3.png";
 
 interface Step {
   number: number;
   title: string;
   description: string;
-  image: string;
+  image: StaticImageData;
 }
 
 const steps: Step[] = [
@@ -14,19 +17,19 @@ const steps: Step[] = [
     number: 1,
     title: "Consult Your Client",
     description: "Recommend top products.",
-    image: "/images/landing/step-consult.svg",
+    image: WorkImg1,
   },
   {
     number: 2,
     title: "Client Orders Online",
     description: "We handle the rest",
-    image: "/images/landing/step-order.svg",
+    image: WorkImg2,
   },
   {
     number: 3,
     title: "You Get Paid",
     description: "Collect commissions.",
-    image: "/images/landing/step-paid.svg",
+    image: WorkImg3,
   },
 ];
 
@@ -54,14 +57,9 @@ export default HowItWorksSection;
 const StepCard = ({ number, title, description, image }: Step) => (
   <div className="flex flex-col items-center gap-4 rounded-[20px] px-6 pt-6 pb-5">
     {/* Illustration */}
-    <div className="w-25 h-25 lg:w-35 lg:h-35 relative">
-      <Image
-        src={image}
-        alt={title}
-        fill
-        className="object-contain"
-      />
-    </div>
+    <figure className="size-35">
+      <Image src={image} alt={title} className="" />
+    </figure>
 
     {/* Text content */}
     <div className="flex flex-col items-center gap-2 text-center py-1 w-full">
