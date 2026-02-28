@@ -18,7 +18,7 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
     subtitle: "Track today\u2019s growth.",
   },
   "/dashboard/training": {
-    title: "Training",
+    title: "Training & Onboarding",
     subtitle: "Learn and understand your clients better",
   },
   "/dashboard/product": {

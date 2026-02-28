@@ -1,7 +1,7 @@
-import DashboardBlogPage from "@/screens/private/DashboardBlogPage";
+import DashboardTrainingPage from "@/screens/private/DashboardTrainingPage";
 
 const page = () => {
-  return <DashboardBlogPage />;
+  return <DashboardTrainingPage />;
 };
 
 export default page;
