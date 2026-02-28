@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,7 +38,7 @@ const loginFormSchema = z
 
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
-const RegisterPage = () => {
+const RegisterPageContent = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const router = useRouter();
@@ -187,5 +188,11 @@ const RegisterPage = () => {
     </div>
   );
 };
+
+const RegisterPage = () => (
+  <Suspense>
+    <RegisterPageContent />
+  </Suspense>
+);
 
 export default RegisterPage;

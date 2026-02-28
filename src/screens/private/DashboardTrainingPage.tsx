@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import BlogVideoCard from "@/components/dashboard/BlogVideoCard";
-import { TrainingIcon, TrainingIcon1 } from "@/assets/icons";
+import { TrainingIcon1 } from "@/assets/icons";
 import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import { cn } from "@/lib/utils";
 
