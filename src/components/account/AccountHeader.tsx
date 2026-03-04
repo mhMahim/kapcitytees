@@ -8,9 +8,9 @@ interface AccountHeaderProps {
 
 const AccountHeader = ({ name, email, avatarUrl }: AccountHeaderProps) => {
   return (
-    <div className="flex items-center gap-9">
+    <div className="flex items-center gap-4 sm:gap-6 lg:gap-9">
       {/* Avatar */}
-      <div className="size-39.5 shrink-0 rounded-full overflow-hidden bg-[#E7EAEC]">
+      <div className="size-16 sm:size-24 lg:size-39.5 shrink-0 rounded-full overflow-hidden bg-[#E7EAEC]">
         {avatarUrl ? (
           <Image
             src={avatarUrl}
@@ -26,14 +26,14 @@ const AccountHeader = ({ name, email, avatarUrl }: AccountHeaderProps) => {
 
       {/* User Info */}
       <div className="flex flex-col gap-3">
-        <p className="text-base font-semibold leading-6 text-[#1E6FA8]">
+        <p className="text-sm sm:text-base font-semibold leading-5 sm:leading-6 text-[#1E6FA8]">
           Welcome back
         </p>
         <div className="flex flex-col gap-1">
-          <h2 className="text-[32px] font-semibold leading-12 text-[#0F2A3C]">
+            <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight sm:leading-9 lg:leading-12 text-[#0F2A3C]">
             {name}
           </h2>
-          <p className="text-base font-normal leading-6 text-[#5E707C]">
+            <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
             {email}
           </p>
         </div>

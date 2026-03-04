@@ -72,62 +72,104 @@ const sampleOrderGroups: OrderGroup[] = [
 ];
 
 const OrderRow = ({ item }: { item: OrderItem }) => (
-  <div className="flex items-center w-full">
-    {/* Order ID */}
-    <p className="w-35 text-base font-normal text-[#0F2A3C] leading-6">
-      {item.orderId}
-    </p>
-
-    {/* Item */}
-    <div className="flex-1 flex items-center gap-4">
-      <div className="size-13.5 rounded overflow-hidden shrink-0">
-        <Image
-          src={item.itemImage}
-          alt={item.itemName}
-          width={54}
-          height={54}
-          className="size-full object-cover"
-        />
+  <>
+    {/* Mobile card layout */}
+    <div className="flex flex-col gap-2.5 sm:hidden">
+      <div className="flex items-center gap-3">
+        <div className="size-13.5 rounded overflow-hidden shrink-0">
+          <Image
+            src={item.itemImage}
+            alt={item.itemName}
+            width={54}
+            height={54}
+            className="size-full object-cover"
+          />
+        </div>
+        <p className="flex-1 text-base font-semibold text-[#0F2A3C] leading-6">
+          {item.itemName}
+        </p>
+        <p className="text-base font-semibold text-[#0F2A3C] leading-6 shrink-0">
+          {item.price}
+        </p>
       </div>
-      <p className="text-base font-semibold text-[#0F2A3C] leading-6">
-        {item.itemName}
-      </p>
+      <div className="flex items-center gap-3">
+        <p className="text-sm text-[#5E707C]">
+          Order:{" "}
+          <span className="text-[#0F2A3C] font-medium">{item.orderId}</span>
+        </p>
+        <span className="text-[#DFE3E8]">·</span>
+        <p className="text-sm text-[#5E707C]">
+          Qty:{" "}
+          <span className="text-[#0F2A3C] font-medium">{item.quantity}</span>
+        </p>
+      </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-[#0F2A3C] leading-5">{item.deliveryDate}</p>
+          <p className="text-xs text-[#5E707C] leading-4.5">expected</p>
+        </div>
+        <OrderStatusBadge status={item.status} />
+      </div>
     </div>
 
-    {/* Quantity */}
-    <p className="w-30 text-base font-normal text-[#0F2A3C] leading-6">
-      {item.quantity}
-    </p>
-
-    {/* Delivery Date */}
-    <div className="w-50 flex flex-col">
-      <p className="text-base font-normal text-[#0F2A3C] leading-6">
-        {item.deliveryDate}
+    {/* Desktop table row */}
+    <div className="hidden sm:flex items-center w-full">
+      {/* Order ID */}
+      <p className="w-35 text-base font-normal text-[#0F2A3C] leading-6">
+        {item.orderId}
       </p>
-      <p className="text-sm font-normal text-[#0F2A3C] leading-5.5">
-        expected
+
+      {/* Item */}
+      <div className="flex-1 flex items-center gap-4">
+        <div className="size-13.5 rounded overflow-hidden shrink-0">
+          <Image
+            src={item.itemImage}
+            alt={item.itemName}
+            width={54}
+            height={54}
+            className="size-full object-cover"
+          />
+        </div>
+        <p className="text-base font-semibold text-[#0F2A3C] leading-6">
+          {item.itemName}
+        </p>
+      </div>
+
+      {/* Quantity */}
+      <p className="w-30 text-base font-normal text-[#0F2A3C] leading-6">
+        {item.quantity}
+      </p>
+
+      {/* Delivery Date */}
+      <div className="w-50 flex flex-col">
+        <p className="text-base font-normal text-[#0F2A3C] leading-6">
+          {item.deliveryDate}
+        </p>
+        <p className="text-sm font-normal text-[#0F2A3C] leading-5.5">
+          expected
+        </p>
+      </div>
+
+      {/* Status */}
+      <div className="w-45">
+        <OrderStatusBadge status={item.status} />
+      </div>
+
+      {/* Price */}
+      <p className="w-35 text-base font-semibold text-[#0F2A3C] leading-6">
+        {item.price}
       </p>
     </div>
-
-    {/* Status */}
-    <div className="w-45">
-      <OrderStatusBadge status={item.status} />
-    </div>
-
-    {/* Price */}
-    <p className="w-35 text-base font-semibold text-[#0F2A3C] leading-6">
-      {item.price}
-    </p>
-  </div>
+  </>
 );
 
 const OrdersSection = ({
   orderGroups = sampleOrderGroups,
 }: Partial<OrdersSectionProps>) => {
   return (
-    <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-8 flex flex-col flex-1">
+    <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-8 flex flex-col flex-1">
       {/* Table Header */}
-      <div className="flex items-center px-4.5 py-2 text-base font-semibold text-[#5E707C] leading-6">
+      <div className="hidden sm:flex items-center px-4.5 py-2 text-base font-semibold text-[#5E707C] leading-6">
         <p className="w-36.5">Order ID</p>
         <p className="w-80.75">Items</p>
         <p className="w-30">Quantity</p>
@@ -141,7 +183,7 @@ const OrdersSection = ({
         {orderGroups.map((group, groupIndex) => (
           <div
             key={groupIndex}
-            className="border border-[#DFE3E8] rounded-xl px-6 py-4 flex flex-col gap-4.5"
+            className="border border-[#DFE3E8] rounded-xl px-3 py-3 sm:px-6 sm:py-4 flex flex-col gap-4 sm:gap-4.5"
           >
             {group.items.map((item, itemIndex) => (
               <OrderRow key={itemIndex} item={item} />

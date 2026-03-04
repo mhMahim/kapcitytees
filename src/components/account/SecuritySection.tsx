@@ -18,8 +18,8 @@ const SecuritySection = () => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-8 flex flex-col flex-1">
-        <div className="flex flex-col gap-6">
+      <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col flex-1">
+        <div className="flex flex-col gap-4 xl:gap-6">
           {/* Log Out */}
           <button
             type="button"
@@ -66,7 +66,7 @@ const SecuritySection = () => {
 
       {/* Log Out Dialog */}
       <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="sm:max-w-100 rounded-lg p-8 gap-5">
+        <DialogContent className="sm:max-w-100 rounded-lg p-5 sm:p-8 gap-5">
           <div className="flex flex-col items-center gap-2 text-center text-textPrimary">
             <DialogTitle className="text-2xl font-semibold leading-9">
               Log out
@@ -96,7 +96,7 @@ const SecuritySection = () => {
         open={showChangePasswordDialog}
         onOpenChange={setShowChangePasswordDialog}
       >
-        <DialogContent className="sm:max-w-128.5 rounded-2xl p-10 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
+        <DialogContent className="sm:max-w-128.5 rounded-2xl p-5 sm:p-8 lg:p-10 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
           <DialogTitle className="text-lg font-medium text-[#161C24] leading-7 text-center">
             Change Password
           </DialogTitle>
@@ -143,7 +143,7 @@ const SecuritySection = () => {
 
       {/* Delete Account Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent className="sm:max-w-120 rounded-2xl p-8 gap-0 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
+        <DialogContent className="sm:max-w-120 rounded-2xl p-5 sm:p-8 gap-0 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
           <DialogTitle className="text-xl font-medium text-[#161C24] leading-7.5 text-center">
             Delete Account
           </DialogTitle>
@@ -156,7 +156,7 @@ const SecuritySection = () => {
             <p className="text-sm font-semibold text-[#5E707C] leading-5.5">
               To confirm this, type &quot;Delete&quot;
             </p>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center">
               <input
                 type="text"
                 value={deleteConfirmText}
@@ -166,7 +166,7 @@ const SecuritySection = () => {
               <button
                 type="button"
                 disabled={deleteConfirmText !== "Delete"}
-                className="bg-[#FF4842] text-white text-[15px] font-medium h-10 px-6 rounded-xl hover:bg-[#e63e38] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="bg-[#FF4842] text-white text-[15px] font-medium h-10 px-6 rounded-xl hover:bg-[#e63e38] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
               >
                 Delete Account
               </button>

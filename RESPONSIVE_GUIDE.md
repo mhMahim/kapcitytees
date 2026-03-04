@@ -341,3 +341,78 @@ Identical scaling pattern to FAQHero:
 | Text alignment | `text-center items-center` | `sm:text-left sm:items-start` | `lg:text-center lg:items-center` |
 | Title | `text-base` | `sm:text-lg` | `lg:text-2xl` |
 | Hours text | `text-sm` | — | `lg:text-base` |
+
+---
+
+## Account Page (`/account`)
+
+### AccountLayout
+
+- Container gap + padding: `gap-12 py-12` → `gap-6 sm:gap-8 lg:gap-12 py-6 sm:py-8 lg:py-12`
+- Sidebar + Content row: `flex gap-5 items-start` → `flex flex-col lg:flex-row gap-5` — sidebar stacks above content on mobile
+
+### AccountHeader
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Flex gap | `gap-4` | `sm:gap-6` | `lg:gap-9` |
+| Avatar size | `size-16` | `sm:size-24` | `lg:size-39.5` |
+| Welcome text | `text-sm` | `sm:text-base` | — |
+| Name heading | `text-xl` | `sm:text-2xl` | `lg:text-[32px]` |
+| Email | `text-sm` | `sm:text-base` | — |
+
+### AccountSidebar
+
+Mobile becomes a horizontal scrollable strip (same pattern as FAQ categories):
+
+```
+mobile/sm:  flex-row overflow-x-auto  (scrolls horizontally, links shrink-0)
+lg+:        lg:flex-col lg:w-57.5 lg:shrink-0
+```
+
+| Property | default/sm | lg+ |
+|----------|-----------|-----|
+| Flex direction | `flex-row` | `lg:flex-col` |
+| Gap | `gap-2` | `lg:gap-4` |
+| Link width | `shrink-0` | `lg:w-full` |
+| Link padding | `px-4 py-3` | `lg:px-6 lg:py-4` |
+| Tab text | `text-sm sm:text-base` | `lg:text-lg` |
+
+### ProfileSection
+
+- Container padding: `pt-8 pb-12 px-10` → `pt-5 pb-8 px-4 sm:pt-6 sm:pb-10 sm:px-6 lg:pt-8 lg:pb-12 lg:px-10`
+- Container gap: `gap-10` → `gap-6 sm:gap-8 lg:gap-10`
+- Section heading: `text-2xl` → `text-lg sm:text-xl lg:text-2xl`
+- Edit link text: `text-lg` → `text-sm sm:text-base lg:text-lg`
+- Info rows (Row 1 & 2): `flex items-center` → `flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-0` — each field stacks on mobile
+- Date of Birth width: `w-[384px]` → `w-full sm:w-[384px]`
+- Field labels: `text-base` → `text-sm sm:text-base`
+- Field values: `text-lg` → `text-base sm:text-lg`
+
+### ProfileEditSection
+
+- Form padding: `px-10 py-8` → `px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-8`
+- Form gap: `gap-12` → `gap-6 sm:gap-8 lg:gap-12`
+- Fields container gap: `gap-8` → `gap-5 sm:gap-6 lg:gap-8`
+- All 2-column rows (Name/Phone, Email/DOB, City/State/Postal): `flex gap-6` → `flex flex-col sm:flex-row gap-4 sm:gap-6` — single column on mobile
+- Action buttons wrapper: `flex justify-end gap-4.5` → `flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4.5`
+- Buttons: `w-60` → `w-full sm:w-60` (full-width on mobile, fixed on sm+)
+
+### OrdersSection
+
+- Container padding: `p-8` → `p-4 sm:p-8`
+- Table header row: `flex` → `hidden sm:flex` (hidden on mobile)
+- Order group padding: `px-6 py-4 gap-4.5` → `px-3 py-3 sm:px-6 sm:py-4 gap-4 sm:gap-4.5`
+- `OrderRow` renders two layouts:
+  - **Mobile** (`sm:hidden`): Card — image + name + price on top row; Order ID + Qty in second row; delivery date + status badge in third row
+  - **Desktop** (`hidden sm:flex`): Original multi-column table row
+
+### SecuritySection
+
+- Main container padding: `p-8` → `p-4 sm:p-6 lg:p-8`
+- Dialog padding:
+  - Log Out dialog: `p-8` → `p-5 sm:p-8`
+  - Change Password dialog: `p-10` → `p-5 sm:p-8 lg:p-10`
+  - Delete Account dialog: `p-8` → `p-5 sm:p-8`
+- Delete confirmation row: `flex gap-4 items-center` → `flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center`
+- Delete button: added `w-full sm:w-auto` for full-width on mobile

@@ -98,12 +98,12 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] px-10 py-8 flex flex-col gap-12 flex-1"
+        className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-8 flex flex-col gap-6 sm:gap-8 lg:gap-12 flex-1"
       >
         {/* Form Fields */}
-        <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
           {/* Row 1: Full name + Phone */}
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <FormField
               control={form.control}
               name="fullName"
@@ -143,7 +143,7 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
           </div>
 
           {/* Row 2: Email + Date of Birth */}
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <FormField
               control={form.control}
               name="email"
@@ -230,7 +230,7 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
           />
 
           {/* Row 4: City + State + Postal code */}
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <FormField
               control={form.control}
               name="city"
@@ -289,17 +289,17 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-4.5">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4.5">
           <button
             type="button"
             onClick={() => router.push("/account")}
-            className="w-60 h-13 rounded-xl border border-[#B5BDC3] bg-white text-base font-semibold text-[#5E707C] tracking-[-0.32px] leading-7 hover:bg-gray-50 transition-colors cursor-pointer"
+            className="w-full sm:w-60 h-13 rounded-xl border border-[#B5BDC3] bg-white text-base font-semibold text-[#5E707C] tracking-[-0.32px] leading-7 hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="w-60 h-13 rounded-xl bg-[#1E6FA8] text-base font-semibold text-white leading-6 hover:bg-[#1A5F91] transition-colors cursor-pointer"
+            className="w-full sm:w-60 h-13 rounded-xl bg-[#1E6FA8] text-base font-semibold text-white leading-6 hover:bg-[#1A5F91] transition-colors cursor-pointer"
           >
             Save Changes
           </button>

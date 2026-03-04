@@ -21,16 +21,16 @@ const AccountSidebar = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-57.5 shrink-0">
+    <div className="flex flex-row lg:flex-col gap-2 lg:gap-4 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 w-full lg:w-57.5 lg:shrink-0">
       {tabs.map((tab) => (
         <Link
           key={tab.href}
           href={tab.href}
-          className="bg-white rounded-2xl px-6 py-4 shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)]"
+          className="shrink-0 lg:w-full bg-white rounded-2xl px-4 py-3 lg:px-6 lg:py-4 shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)]"
         >
           <span
             className={cn(
-              "text-lg leading-7",
+              "text-sm sm:text-base lg:text-lg leading-5 sm:leading-6 lg:leading-7 whitespace-nowrap",
               isActive(tab.href)
                 ? "font-semibold text-[#1E6FA8]"
                 : "font-medium text-[#637381]",
