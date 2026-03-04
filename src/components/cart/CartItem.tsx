@@ -34,11 +34,21 @@ const CartItem = ({
       {/* Product info */}
       <div className="flex gap-3 sm:gap-5 items-center sm:w-65">
         <div className="relative size-16 sm:size-20 shrink-0 rounded-xl overflow-hidden bg-[#F4F6F8]">
-          <Image src={image} alt={name} fill className="object-cover" unoptimized />
+          <Image
+            src={image}
+            alt={name}
+            fill
+            className="object-cover"
+            unoptimized
+          />
         </div>
         <div className="flex flex-col gap-1">
-          <p className="text-base sm:text-2xl font-semibold leading-6 sm:leading-9 text-[#0F2A3C]">{name}</p>
-          <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">{category}</p>
+          <p className="text-base sm:text-2xl font-semibold leading-6 sm:leading-9 text-[#0F2A3C]">
+            {name}
+          </p>
+          <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
+            {category}
+          </p>
         </div>
       </div>
 
@@ -50,7 +60,7 @@ const CartItem = ({
         <div className="flex gap-3 sm:gap-6 items-center">
           <button
             onClick={() => onDecrement(id)}
-            className="size-9 sm:size-12 rounded-full bg-[#E9F1F6] flex items-center justify-center hover:bg-[#D5E5F0] transition-colors shrink-0"
+            className="size-9 sm:size-12 rounded-full bg-[#E9F1F6] flex items-center justify-center hover:bg-[#D5E5F0] transition-colors shrink-0 cursor-pointer"
             aria-label="Decrease quantity"
           >
             <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F2A3C]" />
@@ -60,7 +70,7 @@ const CartItem = ({
           </span>
           <button
             onClick={() => onIncrement(id)}
-            className="size-9 sm:size-12 rounded-full bg-[#1E6FA8] flex items-center justify-center hover:bg-[#1A5F92] transition-colors shrink-0"
+            className="size-9 sm:size-12 rounded-full bg-[#1E6FA8] flex items-center justify-center hover:bg-[#1A5F92] transition-colors shrink-0 cursor-pointer"
             aria-label="Increase quantity"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -74,7 +84,7 @@ const CartItem = ({
           </p>
           <button
             onClick={() => onRemove(id)}
-            className="size-5 sm:size-6 flex items-center justify-center text-[#DE5D56] hover:text-[#c04940] transition-colors"
+            className="size-5 sm:size-6 flex items-center justify-center text-[#DE5D56] hover:text-[#c04940] transition-colors cursor-pointer"
             aria-label={`Remove ${name} from cart`}
           >
             <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />

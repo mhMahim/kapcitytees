@@ -187,15 +187,17 @@ const AccordionItem = ({
       <button
         onClick={onToggle}
         className={cn(
-          "w-full flex gap-5 text-left transition-colors cursor-pointer",
-          isOpen ? "items-start p-5" : "items-center px-5 py-4",
+          "w-full flex gap-3 sm:gap-5 text-left transition-colors cursor-pointer",
+          isOpen
+            ? "items-start p-3 sm:p-5"
+            : "items-center px-3 py-3 sm:px-5 sm:py-4",
         )}
         aria-expanded={isOpen}
       >
         {/* Number */}
         <span
           className={cn(
-            "shrink-0 text-[18px] font-semibold leading-[1.35]",
+            "shrink-0 text-sm sm:text-base lg:text-[18px] font-semibold leading-[1.35]",
             isOpen ? "text-[#1E6FA8]" : "text-[#170F49]",
           )}
         >
@@ -207,7 +209,7 @@ const AccordionItem = ({
           <div className="flex items-center justify-between gap-4">
             <p
               className={cn(
-                "text-[18px] font-semibold leading-[1.35]",
+                "text-sm sm:text-base lg:text-[18px] font-semibold leading-[1.35]",
                 isOpen ? "text-[#1E6FA8]" : "text-[#170F49]",
               )}
             >
@@ -231,7 +233,7 @@ const AccordionItem = ({
 
           {/* Answer */}
           {isOpen && (
-            <p className="text-[#3F5563] text-base font-normal leading-[1.66]">
+            <p className="text-[#3F5563] text-sm sm:text-base font-normal leading-[1.66]">
               {answer}
             </p>
           )}
@@ -261,11 +263,11 @@ const FAQContent = () => {
   };
 
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-8 sm:py-10 lg:py-16">
       <div className="max-w-382 mx-auto px-4 sm:px-5 lg:px-6 w-full">
-        <div className="flex gap-5 items-start">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
           {/* ── Sidebar ── */}
-          <div className="flex flex-col gap-4 shrink-0 w-57.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex flex-row lg:flex-col gap-2 lg:gap-4 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 w-full lg:w-57.5 lg:shrink-0">
             {faqData.map((category) => {
               const isActive = activeCategory === category.id;
               return (
@@ -273,13 +275,13 @@ const FAQContent = () => {
                   key={category.id}
                   onClick={() => handleCategoryChange(category.id)}
                   className={cn(
-                    "bg-white w-full flex items-center gap-4 px-6 py-4 rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] text-left transition-colors cursor-pointer",
+                    "bg-white shrink-0 lg:w-full flex items-center gap-3 lg:gap-4 px-3 lg:px-6 py-2 lg:py-4 rounded-xl lg:rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] text-left transition-colors cursor-pointer",
                     isActive
                       ? "text-[#1E6FA8] font-semibold"
                       : "text-[#637381] font-medium hover:text-[#454F5B]",
                   )}
                 >
-                  <span className="text-[18px] leading-7 whitespace-nowrap">
+                  <span className="text-sm sm:text-base lg:text-[18px] lg:leading-7 whitespace-nowrap">
                     {category.label}
                   </span>
                 </button>

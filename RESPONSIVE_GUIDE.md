@@ -248,3 +248,53 @@ The key challenge: on mobile a horizontal full-row layout is too cramped. Soluti
 - Section heading: `text-xl` → `text-base sm:text-xl`
 - Row labels: `text-base` → `text-sm sm:text-base`
 - Row values: `text-lg` → `text-base sm:text-lg`
+
+---
+
+## FAQ Page
+
+### FAQHero
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Section padding | `px-8` | `sm:px-6` | `lg:px-8` | — |
+| Hero height | `h-44` | `sm:h-60` | `lg:h-80` | `xl:h-100` |
+| Border radius | `rounded-2xl` | `sm:rounded-3xl` | — | — |
+| Breadcrumb text | `text-sm` | `sm:text-base` | `lg:text-xl` | — |
+| Heading | `text-2xl` | `sm:text-4xl` | `lg:text-5xl` | `xl:text-[64px]` |
+| Gap (breadcrumb → heading) | `gap-2` | `sm:gap-4` | — | — |
+
+### FAQContent — Layout
+
+- Section padding: `py-16` → `py-8 sm:py-10 lg:py-16`
+- Two-column layout: `flex gap-5 items-start` → `flex flex-col lg:flex-row gap-4 lg:gap-5` — stacks vertically on mobile
+
+### FAQContent — Category Sidebar
+
+Mobile becomes a horizontal scrollable strip; desktop is the original vertical sidebar:
+
+```
+mobile/sm:  flex-row overflow-x-auto  (pill row, scrolls horizontally)
+lg+:        lg:flex-col lg:overflow-visible lg:w-57.5 lg:shrink-0
+```
+
+| Property | default/sm | lg+ |
+|----------|-----------|-----|
+| Flex direction | `flex-row` | `lg:flex-col` |
+| Overflow | `overflow-x-auto` | `lg:overflow-visible` |
+| Gap | `gap-2` | `lg:gap-4` |
+| Width | `w-full` | `lg:w-57.5 lg:shrink-0` |
+| Button width | `shrink-0` (auto) | `lg:w-full` |
+| Button padding | `px-3 py-2` | `lg:px-6 lg:py-4` |
+| Button radius | `rounded-xl` | `lg:rounded-2xl` |
+| Label text | `text-sm sm:text-base` | `lg:text-[18px] lg:leading-7` |
+
+### FAQContent — AccordionItem
+
+| Property | default | sm |
+|----------|---------|----|
+| Button gap (number → content) | `gap-3` | `sm:gap-5` |
+| Padding (open) | `p-3` | `sm:p-5` |
+| Padding (closed) | `px-3 py-3` | `sm:px-5 sm:py-4` |
+| Number & question text | `text-sm` | `sm:text-base lg:text-[18px]` |
+| Answer text | `text-sm` | `sm:text-base` |
