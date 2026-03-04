@@ -9,10 +9,10 @@ interface ProfileViewSectionProps {
 
 const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
   return (
-    <div className="bg-white rounded-xl p-6 lg:p-8 flex flex-col gap-10 w-full">
+    <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8 lg:gap-10 w-full">
       {/* Avatar + Name */}
       <div className="flex gap-6 items-center">
-        <div className="size-25 lg:size-30 rounded-full overflow-hidden shrink-0 relative">
+        <div className="size-18 sm:size-25 lg:size-30 rounded-full overflow-hidden shrink-0 relative">
           <Image
             src="https://github.com/shadcn.png"
             alt="Profile"
@@ -21,10 +21,10 @@ const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
           />
         </div>
         <div className="flex flex-col">
-          <h2 className="text-2xl lg:text-[32px] font-semibold text-[#4E545B] leading-12">
+          <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold text-[#4E545B] leading-8 sm:leading-10 lg:leading-12">
             Cameron Williamson
           </h2>
-          <p className="text-base text-[#747B81]">
+          <p className="text-sm sm:text-base text-[#747B81]">
             cameronwilliamson@email.com
           </p>
         </div>
@@ -48,16 +48,16 @@ const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
         </div>
 
         {/* Info Grid */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8">
           {/* Row 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-0">
             <InfoField label="Full name" value="Cameron Williamson" />
             <InfoField label="Phone number" value="+1 234 567 890" />
             <InfoField label="Email" value="cameronwilliamson@inimal.com" />
           </div>
 
           {/* Row 2 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-0">
             <InfoField label="Shop name" value="Barber Shop" />
             <InfoField label="Barber license" value="0123456789" />
             <InfoField
@@ -85,9 +85,9 @@ function InfoField({
   value: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-base text-[#637381] leading-6">{label}</p>
-      <p className="text-lg font-medium text-[#454F5B] leading-7">{value}</p>
+    <div className="flex flex-col gap-1 sm:gap-2">
+      <p className="text-sm sm:text-base text-[#637381] leading-5 sm:leading-6">{label}</p>
+      <p className="text-base sm:text-lg font-medium text-[#454F5B] leading-6 sm:leading-7">{value}</p>
     </div>
   );
 }

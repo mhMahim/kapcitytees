@@ -34,9 +34,9 @@ const AccountPage = () => {
         )}
         {activeTab === "notification" && <NotificationSection />}
         {activeTab === "payment" && (
-          <div className="bg-white rounded-xl p-6 lg:p-8">
-            <h3 className="text-lg font-medium text-[#454F5B]">Payment</h3>
-            <p className="text-base text-[#637381] mt-2">
+          <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8">
+            <h3 className="text-base sm:text-lg font-medium text-[#454F5B]">Payment</h3>
+            <p className="text-sm sm:text-base text-[#637381] mt-2">
               Payment settings coming soon.
             </p>
           </div>

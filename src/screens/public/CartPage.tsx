@@ -9,9 +9,30 @@ import BillingFormCard from "@/components/cart/BillingFormCard";
 const PRODUCT_IMG = "https://i.ibb.co.com/27rvh0W6/Rectangle-55.png";
 
 const INITIAL_ITEMS: CartItemData[] = [
-  { id: 1, name: "Beard Oil", category: "Beard", price: 49.99, quantity: 1, image: PRODUCT_IMG },
-  { id: 2, name: "Beard Oil", category: "Beard", price: 49.99, quantity: 1, image: PRODUCT_IMG },
-  { id: 3, name: "Beard Oil", category: "Beard", price: 49.99, quantity: 1, image: PRODUCT_IMG },
+  {
+    id: 1,
+    name: "Beard Oil",
+    category: "Beard",
+    price: 49.99,
+    quantity: 1,
+    image: PRODUCT_IMG,
+  },
+  {
+    id: 2,
+    name: "Beard Oil",
+    category: "Beard",
+    price: 49.99,
+    quantity: 1,
+    image: PRODUCT_IMG,
+  },
+  {
+    id: 3,
+    name: "Beard Oil",
+    category: "Beard",
+    price: 49.99,
+    quantity: 1,
+    image: PRODUCT_IMG,
+  },
 ];
 
 const TAX = 12;
@@ -22,14 +43,14 @@ const CartPage = () => {
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
   const handleIncrement = (id: string | number) => {
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
     );
   };
 
@@ -38,8 +59,8 @@ const CartPage = () => {
       prev.map((item) =>
         item.id === id && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -54,19 +75,19 @@ const CartPage = () => {
 
   return (
     <main className="min-h-screen bg-[#F9FAFB]">
-      <Container className="py-14 flex flex-col gap-6">
+      <Container className="py-8 sm:py-10 lg:py-14 flex flex-col gap-5 sm:gap-6">
         {/* Page heading */}
         <div className="flex flex-col gap-1">
-          <h1 className="text-[32px] font-semibold leading-12 text-[#0F2A3C]">
+          <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold leading-9 sm:leading-10 lg:leading-12 text-[#0F2A3C]">
             Your Cart
           </h1>
-          <p className="text-base font-normal leading-6 text-[#5E707C]">
+          <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
             Review the products in your cart before proceeding to checkout.
           </p>
         </div>
 
         {/* Two-column layout: cart items left, billing right */}
-        <div className="flex flex-col lg:flex-row gap-5 items-start">
+        <div className="flex flex-col lg:flex-row gap-5">
           {/* Cart items */}
           <div className="flex flex-col gap-5 flex-1 min-w-0 w-full">
             {items.length === 0 ? (

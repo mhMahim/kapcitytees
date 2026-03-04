@@ -9,10 +9,10 @@ interface ProfileEditSectionProps {
 
 const ProfileEditSection = ({ onCancel }: ProfileEditSectionProps) => {
   return (
-    <div className="bg-white rounded-xl p-6 lg:p-8 flex flex-col gap-10 items-end w-full">
+    <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8 lg:gap-10 items-end w-full">
       {/* Avatar + Name */}
-      <div className="flex gap-6 items-center w-full">
-        <div className="relative size-25 lg:size-30 shrink-0">
+      <div className="flex gap-4 sm:gap-6 items-center w-full">
+        <div className="relative size-18 sm:size-25 lg:size-30 shrink-0">
           <div className="size-full rounded-full overflow-hidden relative">
             <Image
               src="https://github.com/shadcn.png"
@@ -29,10 +29,10 @@ const ProfileEditSection = ({ onCancel }: ProfileEditSectionProps) => {
           </button>
         </div>
         <div className="flex flex-col">
-          <h2 className="text-2xl lg:text-[32px] font-semibold text-[#4E545B] leading-12">
+          <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold text-[#4E545B] leading-8 sm:leading-10 lg:leading-12">
             Cameron Williamson
           </h2>
-          <p className="text-base text-[#747B81]">
+          <p className="text-sm sm:text-base text-[#747B81]">
             cameronwilliamson@email.com
           </p>
         </div>
@@ -50,13 +50,13 @@ const ProfileEditSection = ({ onCancel }: ProfileEditSectionProps) => {
         {/* Form Fields */}
         <div className="flex flex-col gap-8">
           {/* Row 1: Full Name + Phone */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <FormField label="Full Name" defaultValue="Cameron Williamson" />
             <FormField label="Phone number" defaultValue="+1 234 567 890" />
           </div>
 
           {/* Row 2: Email + Shop Name */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <FormField
               label="Email"
               defaultValue="cameronwilliamson@inimal.com"
@@ -65,7 +65,7 @@ const ProfileEditSection = ({ onCancel }: ProfileEditSectionProps) => {
           </div>
 
           {/* Row 3: Barber License + Shop Address */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <FormField label="Barber license" defaultValue="0123456789" />
             <FormField
               label="Shop address"
@@ -80,7 +80,7 @@ const ProfileEditSection = ({ onCancel }: ProfileEditSectionProps) => {
       <button
         type="button"
         onClick={onCancel}
-        className="bg-[#1E6FA8] text-white font-semibold text-base px-5 py-3 rounded-xl hover:bg-[#1a5f92] transition-colors cursor-pointer"
+        className="bg-[#1E6FA8] text-white font-semibold text-sm sm:text-base px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-[#1a5f92] transition-colors cursor-pointer"
       >
         Save Changes
       </button>
@@ -98,20 +98,20 @@ function FormField({
   isTextArea?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-base font-semibold text-[#454F5B] leading-6">
+    <div className="flex flex-col gap-1.5 sm:gap-2">
+      <label className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
         {label}
       </label>
       {isTextArea ? (
         <textarea
           defaultValue={defaultValue}
-          className="border border-[#DFE3E8] rounded-lg px-5 py-3 text-lg font-medium text-[#454F5B] leading-7 outline-none focus:border-[#1E6FA8] transition-colors resize-none min-h-20"
+          className="border border-[#DFE3E8] rounded-lg px-4 sm:px-5 py-3 text-sm sm:text-base lg:text-lg font-medium text-[#454F5B] leading-6 sm:leading-7 outline-none focus:border-[#1E6FA8] transition-colors resize-none min-h-20"
         />
       ) : (
         <input
           type="text"
           defaultValue={defaultValue}
-          className="border border-[#DFE3E8] rounded-lg h-12 px-5 py-3 text-lg font-medium text-[#454F5B] leading-7 outline-none focus:border-[#1E6FA8] transition-colors"
+          className="border border-[#DFE3E8] rounded-lg h-11 sm:h-12 px-4 sm:px-5 py-3 text-sm sm:text-base lg:text-lg font-medium text-[#454F5B] leading-6 sm:leading-7 outline-none focus:border-[#1E6FA8] transition-colors"
         />
       )}
     </div>

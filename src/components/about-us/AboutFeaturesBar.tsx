@@ -98,13 +98,13 @@ const features: FeatureItem[] = [
 ];
 
 const FeatureCard = ({ icon: Icon, title, description }: FeatureItem) => (
-  <div className="flex-1 flex items-center gap-5 bg-[#E9F1F6] rounded-2xl p-12">
-    <Icon />
-    <div className="flex flex-col gap-2">
-      <h3 className="text-2xl font-semibold leading-9 text-[#11161C]">
+  <div className="flex-1 flex items-center gap-3 sm:gap-4 lg:gap-5 bg-[#E9F1F6] rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 xl:p-12">
+    <Icon className="size-10 sm:size-12 lg:size-14 xl:size-16 shrink-0" />
+    <div className="flex flex-col gap-1 sm:gap-2">
+      <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold leading-6 sm:leading-7 lg:leading-8 xl:leading-9 text-[#11161C]">
         {title}
       </h3>
-      <p className="text-base font-normal leading-6 text-[#637381]">
+      <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#637381]">
         {description}
       </p>
     </div>
@@ -115,7 +115,7 @@ const AboutFeaturesBar = () => {
   return (
     <section className="w-full">
       <Container>
-        <div className="flex flex-col md:flex-row gap-12">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
           {features.map((feature) => (
             <FeatureCard key={feature.title} {...feature} />
           ))}

@@ -18,14 +18,14 @@ const SecuritySection = () => {
 
   return (
     <>
-      <div className="bg-white rounded-xl p-6 lg:p-8 flex flex-col gap-8 w-full">
+      <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8 w-full">
         {/* Log out */}
         <button
           type="button"
           onClick={() => setShowLogoutDialog(true)}
-          className="flex items-center gap-10 cursor-pointer group w-full text-left"
+          className="flex items-center gap-4 sm:gap-6 lg:gap-10 cursor-pointer group w-full text-left"
         >
-          <p className="flex-1 text-xl font-medium text-[#454F5B] leading-7.5">
+          <p className="flex-1 text-base sm:text-lg lg:text-xl font-medium text-[#454F5B] leading-6 sm:leading-7 lg:leading-7.5">
             Log out
           </p>
           <ChevronRight className="size-6 text-[#637381] rotate-0 group-hover:translate-x-0.5 transition-transform" />
@@ -37,9 +37,9 @@ const SecuritySection = () => {
         <button
           type="button"
           onClick={() => setShowChangePasswordDialog(true)}
-          className="flex items-center gap-10 cursor-pointer group w-full text-left"
+          className="flex items-center gap-4 sm:gap-6 lg:gap-10 cursor-pointer group w-full text-left"
         >
-          <p className="flex-1 text-xl font-medium text-[#454F5B] leading-7.5">
+          <p className="flex-1 text-base sm:text-lg lg:text-xl font-medium text-[#454F5B] leading-6 sm:leading-7 lg:leading-7.5">
             Change password
           </p>
           <ChevronRight className="size-6 text-[#637381] group-hover:translate-x-0.5 transition-transform" />
@@ -51,9 +51,9 @@ const SecuritySection = () => {
         <button
           type="button"
           onClick={() => setShowDeleteDialog(true)}
-          className="flex items-center gap-10 cursor-pointer group w-full text-left"
+          className="flex items-center gap-4 sm:gap-6 lg:gap-10 cursor-pointer group w-full text-left"
         >
-          <p className="flex-1 text-xl font-medium text-[#454F5B] leading-7.5">
+          <p className="flex-1 text-base sm:text-lg lg:text-xl font-medium text-[#454F5B] leading-6 sm:leading-7 lg:leading-7.5">
             Delete account
           </p>
           <ChevronRight className="size-6 text-[#637381] group-hover:translate-x-0.5 transition-transform" />
@@ -62,24 +62,24 @@ const SecuritySection = () => {
 
       {/* Sign Out Dialog */}
       <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="sm:max-w-100 rounded-lg p-8 gap-5">
+        <DialogContent className="sm:max-w-100 rounded-lg p-5 sm:p-8 gap-4 sm:gap-5">
           <div className="flex flex-col items-center gap-2 text-center text-textPrimary">
-            <DialogTitle className="text-2xl font-semibold leading-9">
+            <DialogTitle className="text-xl sm:text-2xl font-semibold leading-8 sm:leading-9">
               Log out
             </DialogTitle>
-            <p className="text-base leading-6">Are you sure you want to Log out?</p>
+            <p className="text-sm sm:text-base leading-5 sm:leading-6">Are you sure you want to Log out?</p>
           </div>
           <div className="flex gap-2 w-full">
             <button
               type="button"
               onClick={() => setShowLogoutDialog(false)}
-              className="flex-1 border border-[#454F5B] rounded py-4 px-8 text-[15px] font-bold text-[#454F5B] hover:bg-gray-50 transition-colors cursor-pointer"
+              className="flex-1 border border-[#454F5B] rounded py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-[15px] font-bold text-[#454F5B] hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Back
             </button>
             <button
               type="button"
-              className="flex-1 bg-[#FF4842] rounded py-4 px-8 text-[15px] font-bold text-white hover:bg-[#e63e38] transition-colors cursor-pointer"
+              className="flex-1 bg-[#FF4842] rounded py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-[15px] font-bold text-white hover:bg-[#e63e38] transition-colors cursor-pointer"
             >
               Log Out
             </button>
@@ -92,8 +92,8 @@ const SecuritySection = () => {
         open={showChangePasswordDialog}
         onOpenChange={setShowChangePasswordDialog}
       >
-        <DialogContent className="sm:max-w-128.5 rounded-2xl p-10 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
-          <DialogTitle className="text-lg font-medium text-[#161C24] leading-7">
+        <DialogContent className="sm:max-w-128.5 rounded-2xl p-5 sm:p-10 gap-4 sm:gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
+          <DialogTitle className="text-lg font-medium text-[#161C24] leading-7 text-center">
             Change Password
           </DialogTitle>
           <div className="border-b border-[#DFE3E8]" />
@@ -139,7 +139,7 @@ const SecuritySection = () => {
 
       {/* Delete Account Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent className="sm:max-w-120 rounded-2xl p-8 gap-0 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
+        <DialogContent className="sm:max-w-120 rounded-2xl p-5 sm:p-8 gap-0 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
           <DialogTitle className="text-xl font-medium text-[#161C24] leading-7.5 text-center">
             Delete Account
           </DialogTitle>
@@ -152,12 +152,12 @@ const SecuritySection = () => {
             <p className="text-sm font-semibold text-[#5E707C] leading-5.5">
               To confirm this, type &quot;Delete&quot;
             </p>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
               <input
                 type="text"
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
-                className="flex-1 h-10 border border-[#DFE3E8] rounded-lg bg-white px-3 text-sm outline-none focus:border-[#1E6FA8] transition-colors"
+                className="flex-1 min-h-10 border border-[#DFE3E8] rounded-lg bg-white px-3 text-sm outline-none focus:border-[#1E6FA8] transition-colors"
               />
               <button
                 type="button"

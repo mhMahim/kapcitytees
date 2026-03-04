@@ -9,32 +9,32 @@ const OrderSummary = ({ subtotal, tax, shipping }: OrderSummaryProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xl font-medium leading-7.5 text-[#0F2A3C]">
+      <p className="text-base sm:text-xl font-medium leading-6 sm:leading-7.5 text-[#0F2A3C]">
         Order Summary
       </p>
       <div className="flex flex-col gap-3 pl-3">
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <span className="text-base font-normal leading-6 text-[#3F5563]">
+            <span className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#3F5563]">
               Subtotal
             </span>
-            <span className="text-lg font-semibold leading-7 text-[#0F2A3C]">
+            <span className="text-base sm:text-lg font-semibold leading-6 sm:leading-7 text-[#0F2A3C]">
               ${subtotal}
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-base font-normal leading-6 text-[#3F5563]">
+            <span className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#3F5563]">
               Estimated Tax
             </span>
-            <span className="text-lg font-semibold leading-7 text-[#0F2A3C]">
+            <span className="text-base sm:text-lg font-semibold leading-6 sm:leading-7 text-[#0F2A3C]">
               ${tax}
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-base font-normal leading-6 text-[#3F5563]">
+            <span className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#3F5563]">
               Estimated shipping &amp; Handling
             </span>
-            <span className="text-lg font-semibold leading-7 text-[#0F2A3C]">
+            <span className="text-base sm:text-lg font-semibold leading-6 sm:leading-7 text-[#0F2A3C]">
               ${shipping}
             </span>
           </div>
@@ -44,10 +44,10 @@ const OrderSummary = ({ subtotal, tax, shipping }: OrderSummaryProps) => {
         <div className="h-px bg-[#DFE3E8] w-full" />
 
         <div className="flex items-center justify-between">
-          <span className="text-base font-semibold leading-6 text-[#3F5563]">
+          <span className="text-sm sm:text-base font-semibold leading-5 sm:leading-6 text-[#3F5563]">
             Total
           </span>
-          <span className="text-lg font-semibold leading-7 text-[#0F2A3C]">
+          <span className="text-base sm:text-lg font-semibold leading-6 sm:leading-7 text-[#0F2A3C]">
             ${total}
           </span>
         </div>

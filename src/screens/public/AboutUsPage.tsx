@@ -4,13 +4,11 @@ import PhotoGallerySection from "@/components/about-us/PhotoGallerySection";
 import StatsSection from "@/components/about-us/StatsSection";
 import MissionSection from "@/components/about-us/MissionSection";
 import PhilosophySection from "@/components/about-us/PhilosophySection";
-import BarberCertifiedSection from "@/components/about-us/BarberCertifiedSection";
 import AboutFeaturesBar from "@/components/about-us/AboutFeaturesBar";
 
 const AboutUsPage = () => {
   return (
-    <main className="flex flex-col gap-30 pb-50">
-      {/* Hero Banner */}
+    <main className="flex flex-col gap-12 sm:gap-16 lg:gap-24 xl:gap-30 pb-16 sm:pb-24 lg:pb-36 xl:pb-50">
       <ShopHeroBanner
         title="About Us"
         breadcrumb={[
@@ -18,26 +16,11 @@ const AboutUsPage = () => {
           { label: "About us", href: "/about-us" },
         ]}
       />
-
-      {/* Our Story */}
       <OurStorySection />
-
-      {/* Photo Gallery */}
       <PhotoGallerySection />
-
-      {/* Stats */}
       <StatsSection />
-
-      {/* Mission / Our Commitment */}
       <MissionSection />
-
-      {/* Philosophy */}
       <PhilosophySection />
-
-      {/* Barber Certified */}
-      {/* <BarberCertifiedSection /> */}
-
-      {/* Features Bar */}
       <AboutFeaturesBar />
     </main>
   );

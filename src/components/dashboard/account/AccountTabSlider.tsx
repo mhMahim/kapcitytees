@@ -18,7 +18,7 @@ interface AccountTabSliderProps {
 
 const AccountTabSlider = ({ activeTab, onTabChange }: AccountTabSliderProps) => {
   return (
-    <div className="bg-white rounded-xl p-4 flex flex-col gap-4 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full lg:w-51 shrink-0 h-full">
+    <div className="bg-white rounded-xl p-2 sm:p-3 lg:p-4 sm:flex flex-row lg:flex-col gap-1 sm:gap-2 lg:gap-4 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full lg:w-51 shrink-0 lg:h-full grid grid-cols-2">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.value;
         return (
@@ -27,7 +27,7 @@ const AccountTabSlider = ({ activeTab, onTabChange }: AccountTabSliderProps) => 
             type="button"
             onClick={() => onTabChange(tab.value)}
             className={cn(
-              "px-5 py-3 rounded-lg text-sm text-left transition-colors cursor-pointer",
+              "flex-1 lg:flex-none whitespace-nowrap px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 lg:py-3 rounded-lg text-sm text-center lg:text-left transition-colors cursor-pointer shrink-0",
               isActive
                 ? "bg-[#E9F1F6] text-[#1E6FA8] font-semibold"
                 : "text-[#637381] font-normal hover:bg-gray-50"

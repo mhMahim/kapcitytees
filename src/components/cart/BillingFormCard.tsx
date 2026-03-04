@@ -59,21 +59,21 @@ const BillingFormCard = ({
   const labelClass = "text-base font-semibold text-[#454F5B] mb-1";
 
   return (
-    <div className="bg-white flex flex-col gap-10 p-8 rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] flex-1 min-w-0">
+    <div className="bg-white flex flex-col gap-10 p-4 sm:p-6 lg:p-8 rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] flex-1 min-w-0">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-10"
+          className="flex flex-col gap-6 sm:gap-8 lg:gap-10"
         >
           {/* ── Billing Information ──────────────────────────────── */}
-          <div className="flex flex-col gap-8">
-            <h2 className="text-2xl font-semibold leading-9 text-[#0F2A3C]">
+            <div className="flex flex-col gap-5 sm:gap-8">
+            <h2 className="text-xl sm:text-2xl font-semibold leading-8 sm:leading-9 text-[#0F2A3C]">
               Billing Information
             </h2>
 
             <div className="flex flex-col gap-4">
               {/* Full Name + Phone Number */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <FormField
                   control={form.control}
                   name="fullName"
@@ -152,7 +152,7 @@ const BillingFormCard = ({
               />
 
               {/* City + State */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <FormField
                   control={form.control}
                   name="city"

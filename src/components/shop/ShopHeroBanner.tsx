@@ -19,8 +19,8 @@ const ShopHeroBanner = ({
   ],
 }: ShopHeroBannerProps) => {
   return (
-    <div className="px-8">
-      <div className="relative h-100 w-full overflow-hidden rounded-3xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="relative h-44 sm:h-60 lg:h-80 xl:h-100 w-full overflow-hidden rounded-2xl sm:rounded-3xl mx-auto">
         {/* Background image */}
         <Image
           src={bgImage}
@@ -34,8 +34,8 @@ const ShopHeroBanner = ({
         <div className="absolute inset-0 bg-black/15" />
 
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-          <h1 className="text-white text-6xl font-bold leading-tight">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 sm:gap-3">
+          <h1 className="text-white text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
             {title}
           </h1>
 

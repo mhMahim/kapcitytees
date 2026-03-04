@@ -12,7 +12,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       {/* Main Content Area */}
       <div className="min-w-0 grow">
         <DashboardTopbar />
-        <div className="p-8 pt-2">{children}</div>
+        <div className="p-4 pt-1 sm:p-5 sm:pt-1.5 lg:p-8 lg:pt-2">{children}</div>
       </div>
     </div>
   );

@@ -56,16 +56,16 @@ const NotificationSection = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 lg:p-8 flex flex-col gap-8 w-full">
+    <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8 w-full">
       {notificationItems.map((item, index) => (
         <div key={item.id}>
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-4 sm:gap-6 lg:gap-10">
             {/* Text content */}
             <div className="flex-1 flex flex-col gap-2">
-              <h4 className="text-xl font-medium text-[#454F5B] leading-7.5">
+              <h4 className="text-base sm:text-lg lg:text-xl font-medium text-[#454F5B] leading-6 sm:leading-7 lg:leading-7.5">
                 {item.title}
               </h4>
-              <p className="text-base text-[#454F5B] leading-6">
+              <p className="text-sm sm:text-base text-[#454F5B] leading-5 sm:leading-6">
                 {item.description}
               </p>
             </div>
@@ -81,7 +81,7 @@ const NotificationSection = () => {
 
           {/* Divider (not after last item) */}
           {index < notificationItems.length - 1 && (
-            <div className="border-b border-[#DFE3E8] mt-8" />
+            <div className="border-b border-[#DFE3E8] mt-6 sm:mt-8" />
           )}
         </div>
       ))}

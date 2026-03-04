@@ -10,13 +10,14 @@ interface FeatureProps {
   description: string;
 }
 
-const ProGradeIcon = () => (
+const ProGradeIcon = ({ className = "" }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="64"
     height="64"
     viewBox="0 0 64 64"
     fill="none"
+    className={className}
   >
     <g clip-path="url(#clip0_20084_16517)">
       <path
@@ -36,13 +37,14 @@ const ProGradeIcon = () => (
   </svg>
 );
 
-const ElitePerformanceIcon = () => (
+const ElitePerformanceIcon = ({ className = "" }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="64"
     height="64"
     viewBox="0 0 64 64"
     fill="none"
+    className={className}
   >
     <path
       d="M54.3153 30.2418L58.2653 23.8968C58.2933 23.8518 58.3153 23.8038 58.3363 23.7568L61.2113 20.8818C61.3883 20.6998 61.4866 20.4554 61.4849 20.2016C61.4831 19.9477 61.3815 19.7047 61.202 19.5252C61.0224 19.3456 60.7794 19.244 60.5256 19.2422C60.2717 19.2405 60.0273 19.3388 59.8453 19.5158L57.4523 21.9078L55.4723 19.9288L57.8653 17.5358C58.0423 17.3538 58.1406 17.1094 58.1389 16.8556C58.1371 16.6017 58.0355 16.3587 57.8559 16.1792C57.6764 15.9996 57.4334 15.898 57.1796 15.8962C56.9257 15.8945 56.6813 15.9928 56.4993 16.1698L54.1063 18.5628L52.1263 16.5828L54.5203 14.1908C54.61 14.101 54.6811 13.9945 54.7297 13.8772C54.7782 13.76 54.8031 13.6343 54.8031 13.5074C54.803 13.3805 54.778 13.2549 54.7294 13.1377C54.6808 13.0205 54.6096 12.914 54.5198 12.8243C54.4301 12.7346 54.3235 12.6635 54.2063 12.6149C54.089 12.5664 53.9634 12.5415 53.8365 12.5415C53.7096 12.5416 53.5839 12.5666 53.4667 12.6152C53.3495 12.6638 53.243 12.735 53.1533 12.8248L50.7603 15.2178L48.7813 13.2378L51.1743 10.8448C51.27 10.7566 51.3469 10.6499 51.4004 10.5312C51.4538 10.4126 51.4827 10.2843 51.4854 10.1542C51.488 10.024 51.4644 9.89469 51.4158 9.77393C51.3672 9.65318 51.2947 9.54349 51.2027 9.45145C51.1106 9.35941 51.0009 9.28692 50.8802 9.23833C50.7594 9.18974 50.6301 9.16606 50.5 9.16871C50.3698 9.17136 50.2416 9.20028 50.1229 9.25374C50.0042 9.30719 49.8975 9.38408 49.8093 9.47979L47.4163 11.8728L45.4363 9.89279L47.8293 7.49979C47.919 7.41003 47.9901 7.30349 48.0387 7.18624C48.0872 7.06899 48.1121 6.94333 48.1121 6.81644C48.112 6.68955 48.087 6.56391 48.0384 6.44669C47.9898 6.32948 47.9186 6.22298 47.8288 6.13329C47.7391 6.0436 47.6325 5.97246 47.5153 5.92395C47.398 5.87543 47.2724 5.85048 47.1455 5.85053C47.0186 5.85058 46.8929 5.87561 46.7757 5.92422C46.6585 5.97282 46.552 6.04403 46.4623 6.13379L44.0703 8.52679L42.0903 6.54679L44.4833 4.15379C44.573 4.0641 44.6442 3.95762 44.6927 3.84043C44.7412 3.72324 44.7662 3.59764 44.7662 3.47079C44.7662 3.34395 44.7412 3.21834 44.6927 3.10115C44.6442 2.98396 44.573 2.87748 44.4833 2.78779C44.3936 2.6981 44.2871 2.62695 44.17 2.57841C44.0528 2.52987 43.9272 2.50488 43.8003 2.50488C43.6735 2.50488 43.5479 2.52987 43.4307 2.57841C43.3135 2.62695 43.207 2.6981 43.1173 2.78779L40.2433 5.66179C40.1953 5.68279 40.1473 5.70579 40.1013 5.73479L33.7573 9.68479C33.2593 9.99479 33.1203 10.6278 33.3873 11.1118C34.2092 10.6219 35.1387 10.341 36.0943 10.2938C36.9073 10.2568 37.7191 10.3895 38.478 10.6834C39.2369 10.9773 39.9263 11.4259 40.5023 12.0008L51.9993 23.4968C52.5745 24.0728 53.0233 24.7624 53.3172 25.5215C53.6111 26.2806 53.7436 27.0926 53.7063 27.9058C53.6591 28.8614 53.3782 29.7909 52.8883 30.6128C53.1286 30.7453 53.4106 30.7807 53.6762 30.7117C53.9418 30.6427 54.1699 30.4745 54.3153 30.2418Z"
@@ -60,13 +62,13 @@ const ElitePerformanceIcon = () => (
 );
 
 const FeatureItem = ({ icon, title, description }: FeatureProps) => (
-  <div className="flex-1 flex flex-col items-start gap-5">
+  <div className="flex-1 flex flex-col items-start gap-4 sm:gap-5">
     {icon}
-    <div className="flex flex-col gap-3">
-      <h4 className="text-2xl font-semibold leading-9 text-[#0F2A3C]">
+    <div className="flex flex-col gap-2 sm:gap-3">
+      <h4 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-7 sm:leading-8 lg:leading-9 text-[#0F2A3C]">
         {title}
       </h4>
-      <p className="text-base font-normal leading-6 text-[#637381]">
+      <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#637381]">
         {description}
       </p>
     </div>
@@ -77,18 +79,18 @@ const MissionSection = () => {
   return (
     <section className="w-full">
       <Container>
-        <div className="flex flex-col lg:flex-row items-stretch gap-0 relative">
+        <div className="flex flex-col lg:flex-row items-stretch gap-0 relative bg-[rgba(231,234,236,0.4)] rounded-2xl sm:rounded-[28px] lg:rounded-4xl">
           {/* Left Content Card */}
-          <div className="flex-1 bg-[rgba(231,234,236,0.4)] rounded-[32px] p-10 flex flex-col justify-between min-h-181">
-            <div className="flex flex-col gap-4 max-w-148.75">
-              <p className="text-base font-medium leading-6 text-[#DE5D56] uppercase tracking-[3px]">
+          <div className="flex-1 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-10 sm:gap-14 lg:gap-0 lg:min-h-181">
+            <div className="flex flex-col gap-4 max-w-full">
+              <p className="text-sm sm:text-base font-medium leading-5 sm:leading-6 text-[#DE5D56] uppercase tracking-[3px]">
                 OUR COMMITMENT
               </p>
-              <div className="flex flex-col gap-6">
-                <h2 className="text-5xl font-bold leading-16 text-[#0F2A3C]">
+              <div className="flex flex-col gap-4 sm:gap-6">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-8 sm:leading-10 xl:leading-16 text-[#0F2A3C]">
                   Setting the Standard for Professional Grooming
                 </h2>
-                <p className="text-base font-normal leading-6 text-[#5E707C]">
+                <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
                   We curate only the highest-grade tools and formulas used by
                   elite barbers worldwide. Elevate your daily routine with
                   products designed for precision, performance, and style.
@@ -96,14 +98,18 @@ const MissionSection = () => {
               </div>
             </div>
 
-            <div className="flex gap-16 max-w-159.25">
+            <div className="flex flex-col sm:flex-row gap-8 sm:gap-10 lg:gap-16 max-w-full">
               <FeatureItem
-                icon={<ProGradeIcon />}
+                icon={
+                  <ProGradeIcon className="size-10 sm:size-12 lg:size-14 xl:size-16" />
+                }
                 title="Pro-Grade Tools"
                 description="Engineered for maximum precision and durability to give you that shop-fresh look at home."
               />
               <FeatureItem
-                icon={<ElitePerformanceIcon />}
+                icon={
+                  <ElitePerformanceIcon className="size-10 sm:size-12 lg:size-14 xl:size-16" />
+                }
                 title="Elite Performance"
                 description="Designed with comfort in mind for effortless styling and perfect lining every single time."
               />
@@ -111,12 +117,12 @@ const MissionSection = () => {
           </div>
 
           {/* Right Image */}
-          <div className="relative w-full lg:w-182.5 h-181 rounded-[32px] overflow-hidden lg:-ml-40.25">
+          <div className="relative flex-1 rounded-2xl sm:rounded-[28px] lg:rounded-4xl overflow-hidden">
             <Image
               src={MISSION_IMAGE}
               alt="Professional grooming standard"
               fill
-              className="object-cover"
+              className="object-cover w-full h-full"
               unoptimized
             />
           </div>

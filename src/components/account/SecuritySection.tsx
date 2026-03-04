@@ -97,7 +97,7 @@ const SecuritySection = () => {
         onOpenChange={setShowChangePasswordDialog}
       >
         <DialogContent className="sm:max-w-128.5 rounded-2xl p-10 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
-          <DialogTitle className="text-lg font-medium text-[#161C24] leading-7">
+          <DialogTitle className="text-lg font-medium text-[#161C24] leading-7 text-center">
             Change Password
           </DialogTitle>
           <div className="border-b border-[#DFE3E8]" />
@@ -161,7 +161,7 @@ const SecuritySection = () => {
                 type="text"
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
-                className="flex-1 h-10 border border-[#DFE3E8] rounded-lg bg-white px-3 text-sm outline-none focus:border-[#1E6FA8] transition-colors"
+                className="flex-1 min-h-10 border border-[#DFE3E8] rounded-lg bg-white px-3 text-sm outline-none focus:border-[#1E6FA8] transition-colors"
               />
               <button
                 type="button"

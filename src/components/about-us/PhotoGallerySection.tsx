@@ -16,11 +16,11 @@ const VIDEO_BG =
 const PhotoGallerySection = () => {
   return (
     <section className="w-full">
-      <Container className="flex flex-col gap-6">
+      <Container className="flex flex-col gap-4 sm:gap-6">
         {/* Photo Grid */}
-        <div className="flex gap-6 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full">
           {/* Large left image */}
-          <div className="relative w-1/2 aspect-square rounded-[32px] overflow-hidden">
+          <div className="relative w-full sm:w-1/2 aspect-4/3 sm:aspect-square rounded-2xl sm:rounded-[28px] lg:rounded-4xl overflow-hidden">
             <Image
               src={GALLERY_LEFT}
               alt="Barber at work"
@@ -31,8 +31,8 @@ const PhotoGallerySection = () => {
           </div>
 
           {/* Two stacked right images */}
-          <div className="flex flex-col gap-6 w-1/2">
-            <div className="relative flex-1 rounded-[32px] overflow-hidden">
+          <div className="flex flex-row sm:flex-col gap-4 sm:gap-6 w-full sm:w-1/2">
+            <div className="relative flex-1 aspect-4/3 sm:aspect-auto rounded-2xl sm:rounded-[28px] lg:rounded-4xl overflow-hidden min-h-32 sm:min-h-0">
               <Image
                 src={GALLERY_TOP_RIGHT}
                 alt="Professional grooming"
@@ -41,7 +41,7 @@ const PhotoGallerySection = () => {
                 unoptimized
               />
             </div>
-            <div className="relative flex-1 rounded-[32px] overflow-hidden">
+            <div className="relative flex-1 aspect-4/3 sm:aspect-auto rounded-2xl sm:rounded-[28px] lg:rounded-4xl overflow-hidden min-h-32 sm:min-h-0">
               <Image
                 src={GALLERY_BOTTOM_RIGHT}
                 alt="Grooming products"
@@ -54,7 +54,7 @@ const PhotoGallerySection = () => {
         </div>
 
         {/* Video Section */}
-        <div className="relative w-full h-152 rounded-4xl overflow-hidden">
+        <div className="relative w-full h-52 sm:h-80 lg:h-112 xl:h-152 rounded-2xl sm:rounded-3xl lg:rounded-4xl overflow-hidden">
           <Image
             src={VIDEO_BG}
             alt="Video preview"
@@ -69,7 +69,7 @@ const PhotoGallerySection = () => {
             className="absolute inset-0 flex items-center justify-center"
             aria-label="Play video"
           >
-            <PlayIcon className="size-32" />
+            <PlayIcon className="size-14 sm:size-20 lg:size-28 xl:size-32" />
           </button>
         </div>
       </Container>
