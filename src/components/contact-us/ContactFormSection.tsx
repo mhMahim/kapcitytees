@@ -55,21 +55,21 @@ const ContactFormSection = () => {
   };
 
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-8 sm:py-10 lg:py-16">
       <Container>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-4 sm:gap-6"
           >
             {/* Row 1: Full Name + Phone Number */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <FormField
                 control={form.control}
                 name="fullName"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="text-base font-semibold text-[#454F5B] leading-6">
+                    <FormLabel className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
                       Full Name <span className="text-[#DE5D56]">*</span>
                     </FormLabel>
                     <FormControl>
@@ -88,7 +88,7 @@ const ContactFormSection = () => {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="text-base font-semibold text-[#454F5B] leading-6">
+                    <FormLabel className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
                       Phone Number <span className="text-[#DE5D56]">*</span>
                     </FormLabel>
                     <FormControl>
@@ -106,13 +106,13 @@ const ContactFormSection = () => {
             </div>
 
             {/* Row 2: Email + Topic */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="text-base font-semibold text-[#454F5B] leading-6">
+                    <FormLabel className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
                       Email Address <span className="text-[#DE5D56]">*</span>
                     </FormLabel>
                     <FormControl>
@@ -132,7 +132,7 @@ const ContactFormSection = () => {
                 name="topic"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="text-base font-semibold text-[#454F5B] leading-6">
+                    <FormLabel className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
                       Topic
                     </FormLabel>
                     <FormControl>
@@ -168,7 +168,7 @@ const ContactFormSection = () => {
               name="message"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
-                  <FormLabel className="text-base font-semibold text-[#454F5B] leading-6">
+                  <FormLabel className="text-sm sm:text-base font-semibold text-[#454F5B] leading-5 sm:leading-6">
                     Your Message <span className="text-[#DE5D56]">*</span>
                   </FormLabel>
                   <FormControl>
@@ -188,7 +188,7 @@ const ContactFormSection = () => {
             <div className="flex justify-center pt-2">
               <button
                 type="submit"
-                className="bg-[#1E6FA8] hover:bg-[#1a5f91] transition-colors text-white font-semibold text-base leading-6 px-25 py-3 rounded-xl cursor-pointer"
+                className="bg-[#1E6FA8] hover:bg-[#1a5f91] transition-colors text-white font-semibold text-sm sm:text-base leading-6 px-10 sm:px-25 py-3 rounded-xl cursor-pointer w-full sm:w-auto"
               >
                 Send Message
               </button>

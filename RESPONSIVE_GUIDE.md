@@ -298,3 +298,46 @@ lg+:        lg:flex-col lg:overflow-visible lg:w-57.5 lg:shrink-0
 | Padding (closed) | `px-3 py-3` | `sm:px-5 sm:py-4` |
 | Number & question text | `text-sm` | `sm:text-base lg:text-[18px]` |
 | Answer text | `text-sm` | `sm:text-base` |
+
+---
+
+## Contact Us Page
+
+### ContactHero
+
+Identical scaling pattern to FAQHero:
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Section padding | `px-4` | `sm:px-6` | `lg:px-8` | — |
+| Hero height | `h-44` | `sm:h-60` | `lg:h-80` | `xl:h-100` |
+| Border radius | `rounded-2xl` | `sm:rounded-3xl` | — | — |
+| Heading | `text-2xl` | `sm:text-4xl` | `lg:text-5xl` | `xl:text-[64px]` |
+| Breadcrumb text | `text-sm` | `sm:text-base` | `lg:text-xl` | — |
+| Gap (heading → breadcrumb) | `gap-2` | `sm:gap-4` | — | — |
+
+### ContactFormSection
+
+- Section padding: `py-16` → `py-8 sm:py-10 lg:py-16`
+- Form gap: `gap-6` → `gap-4 sm:gap-6`
+- Grid rows (Name/Phone, Email/Topic): `grid-cols-2 gap-6` → `grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6` — single column on mobile, 2 columns on sm+
+- Form labels: `text-base` → `text-sm sm:text-base`
+- Submit button: `px-25` → `px-10 sm:px-25`; full-width on mobile (`w-full sm:w-auto`); `text-sm sm:text-base`
+
+### ContactInfoStrip
+
+- Section bottom padding: `pb-16` → `pb-8 sm:pb-10 lg:pb-16`
+- Strip border radius: `rounded-3xl` → `rounded-2xl sm:rounded-3xl`
+- Strip padding: `px-[calc(10%)] py-4` → `px-4 sm:px-8 lg:px-[calc(10%)] py-4`
+- Items layout: `flex gap-10` (always row) → `flex-col sm:flex-row gap-0 sm:gap-6 lg:gap-10` — stack on mobile
+
+**Each info card (default → sm → lg):**
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Card flex direction | `flex-col` | `sm:flex-row` | `lg:flex-col` |
+| Card gap | `gap-3` | `sm:gap-4` | `lg:gap-5` |
+| Card padding | `p-4` | `sm:p-5` | `lg:p-8` |
+| Text alignment | `text-center items-center` | `sm:text-left sm:items-start` | `lg:text-center lg:items-center` |
+| Title | `text-base` | `sm:text-lg` | `lg:text-2xl` |
+| Hours text | `text-sm` | — | `lg:text-base` |
