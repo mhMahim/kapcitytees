@@ -416,3 +416,40 @@ lg+:        lg:flex-col lg:w-57.5 lg:shrink-0
   - Delete Account dialog: `p-8` → `p-5 sm:p-8`
 - Delete confirmation row: `flex gap-4 items-center` → `flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center`
 - Delete button: added `w-full sm:w-auto` for full-width on mobile
+
+---
+
+## Dashboard — Earning Page
+
+### Top Cards Row
+
+- `flex gap-6 items-stretch` → `flex flex-col sm:flex-row gap-6 items-stretch` — cards stack vertically on mobile
+
+### Available for Withdrawal Card
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Title | `text-base` | `sm:text-xl` | — |
+| Amount | `text-3xl` | `sm:text-4xl` | `lg:text-5xl` |
+| Amount leading | `leading-tight` | `sm:leading-16` | — |
+| Button padding | `px-4 py-2.5` | `sm:px-5 sm:py-3 sm:w-37.25` | — |
+| Button text | `text-sm` | `sm:text-base` | — |
+| Amount+button row offset | `px-1` | `sm:px-2` | — |
+| Background wave | `w-full h-24` | `sm:w-150 sm:h-32` | — |
+
+### Lifetime Income Card
+
+- Width: `w-100.75` (fixed) → `w-full sm:w-100.75` — full-width when stacked on mobile
+- Title: `text-lg` → `text-sm sm:text-lg`
+- Wallet icon: `size-10` → `size-7 sm:size-10`
+- Amount: `text-[32px] leading-12` → `text-2xl sm:text-[32px] leading-tight sm:leading-12`
+- Card gap: none → `gap-2 sm:gap-0` (title + amount spacing when stacked small)
+
+### Payment History Table
+
+- Table header title: `text-lg` → `text-base sm:text-lg`; wrapper: `h-14` → `min-h-14`; padding: `px-4` → `px-3 sm:px-4`
+- Column headers row: `flex` → `hidden sm:flex` (hidden on mobile)
+- Table padding: `px-3` → `px-2 sm:px-3`
+- Each row renders **two layouts**:
+  - **Mobile** (`sm:hidden`): inline `flex justify-between` showing "Date" label+value / "Amount" label+value / status chip — all in one compact row
+  - **Desktop** (`hidden sm:flex`): original fixed-width column layout (`w-64`, `flex-1`, `w-54`)
