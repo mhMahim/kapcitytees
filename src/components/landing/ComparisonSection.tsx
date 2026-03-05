@@ -31,13 +31,13 @@ const columns: ComparisonColumnData[] = [
 
 const ComparisonSection = () => {
   return (
-    <section className="pb-20 lg:pb-30">
+    <section className="pb-10 sm:pb-16 lg:pb-30">
       <Container>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12">
           <SectionHeaderWithLines title="Barber Certified vs. The Other Options" />
 
           {/* Comparison Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {columns.map((column) => (
               <ComparisonCard key={column.title} {...column} />
             ))}
@@ -58,7 +58,7 @@ const ComparisonCard = ({
 }: ComparisonColumnData) => (
   <div
     className={cn(
-      "rounded-2xl p-9 border flex flex-col gap-6",
+      "rounded-2xl p-5 sm:p-7 lg:p-9 border flex flex-col gap-4 sm:gap-5 lg:gap-6",
       highlighted
         ? "bg-white border-[#F4F6F8] shadow-[0px_12px_24px_-4px_rgba(145,158,171,0.16)]"
         : "bg-[#F9FAFB] border-[#F4F6F8]"
@@ -66,14 +66,14 @@ const ComparisonCard = ({
   >
     <h3
       className={cn(
-        "text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12",
+        "text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12",
         highlighted ? "text-[#1E6FA8]" : "text-[#3F5563]"
       )}
     >
       {title}
     </h3>
 
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2 sm:gap-3">
       {items.map((item, index) => (
         <ComparisonListItem
           key={index}
@@ -105,7 +105,7 @@ const ComparisonListItem = ({
     )}
     <span
       className={cn(
-        "text-base lg:text-lg font-medium leading-7",
+        "text-sm sm:text-base lg:text-lg font-medium leading-6 sm:leading-7",
         highlighted ? "text-[#0F2A3C]" : "text-[#3F5563]"
       )}
     >

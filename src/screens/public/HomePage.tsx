@@ -1,6 +1,5 @@
 import LandingHeroSection from "@/components/landing/LandingHeroSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-// import RevenueSection from "@/components/landing/RevenueSection";
 import ComparisonSection from "@/components/landing/ComparisonSection";
 import LandingCTASection from "@/components/landing/LandingCTASection";
 import Footer from "@/components/shared/layout/Footer";
@@ -14,7 +13,6 @@ const HomePage = () => {
       <LandingHeroSection />
       <HowItWorksSection />
       <EarningPotentialSection />
-      {/* <RevenueSection /> */}
       <ComparisonSection />
       <LandingCTASection />
       <Footer />

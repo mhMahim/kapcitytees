@@ -453,3 +453,105 @@ lg+:        lg:flex-col lg:w-57.5 lg:shrink-0
 - Each row renders **two layouts**:
   - **Mobile** (`sm:hidden`): inline `flex justify-between` showing "Date" label+value / "Amount" label+value / status chip — all in one compact row
   - **Desktop** (`hidden sm:flex`): original fixed-width column layout (`w-64`, `flex-1`, `w-54`)
+
+---
+
+## Home Page (`src/screens/public/HomePage.tsx`)
+
+Components live in `src/components/landing/` and `src/components/for-barbers/`. Shared section header is `SectionHeaderWithLines`.
+
+### SectionHeaderWithLines (shared)
+
+Used on landing, about-us, for-barbers, and other public pages. Updated to scale title through intermediate breakpoints:
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Heading | `text-2xl` | `sm:text-3xl` | `lg:text-5xl` |
+| Leading | `leading-tight` | — | `lg:leading-17` |
+| Line–title gap | `gap-3` | `sm:gap-5` | `lg:gap-8` |
+| Subtitle text | `text-sm` | `sm:text-base` | `lg:text-lg` |
+| Subtitle leading | `leading-6` | `sm:leading-7` | — |
+
+### LandingHeroSection
+
+**Key strategy**: the dashboard image is absolutely positioned (decorative) on `lg+`, but shown inline as a contained `fill` image on `< lg` to avoid invisible content.
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Section px | `px-4` | `sm:px-6` | `lg:px-8` | — |
+| Border radius | `rounded-2xl` | `sm:rounded-3xl` | — | — |
+| Container top padding | `pt-12` | `sm:pt-20` | `lg:pt-40` | — |
+| Container bottom padding | `pb-8` | `sm:pb-14` | `lg:pb-65` | — |
+| H1 | `text-[28px]` | `sm:text-4xl` | `lg:text-5xl` | `xl:text-[64px]` |
+| Left-content gap | `gap-8` | `sm:gap-10` | `lg:gap-16` | — |
+| Buttons text | `text-sm` | `sm:text-base` | — | — |
+| Buttons px/py | `px-5 py-3` | `sm:px-7 sm:py-3.5` | — | — |
+
+**Mobile image** (inline, `lg:hidden`):
+```
+relative w-full rounded-xl sm:rounded-2xl overflow-hidden aspect-[16/10] sm:aspect-[16/9]
+→ <Image fill className="object-cover object-left-top" />
+```
+
+**Desktop images** (absolute): both receive `hidden lg:block`; original translate positioning preserved.
+
+### HowItWorksSection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Section py | `py-10` | `sm:py-16` | `lg:py-30` |
+| Outer flex gap | `gap-8` | `sm:gap-10` | `lg:gap-12` |
+| Grid gap | `gap-6` | `sm:gap-8` | — |
+
+**StepCard:**
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Illustration size | `size-24` | `sm:size-28` | `lg:size-35` |
+| Card gap | `gap-3` | `sm:gap-4` | — |
+| Title | `text-lg` | `sm:text-xl` | `lg:text-[32px]` |
+| Description | `text-sm` | `sm:text-base` | `lg:text-lg` |
+
+### EarningPotentialSection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Section pb | `pb-12` | `sm:pb-20` | `lg:pb-30` |
+| Card px | `px-4` | `sm:px-8` | `lg:px-10` |
+| Card py | `py-5` | `sm:py-7` | `lg:py-8` |
+| Card gap | `gap-5` | `sm:gap-7` | `lg:gap-8` |
+| "Monthly Clients" label | `text-base` | `sm:text-xl` | `lg:text-2xl` |
+| Stats grid | `grid-cols-3 gap-2` | `sm:gap-4` | `lg:gap-6` |
+| Stats label | `text-[10px]` | `sm:text-sm` | `lg:text-base xl:text-lg` |
+| Stats value | `text-lg` | `sm:text-2xl` | `lg:text-[32px]` |
+| Earnings box label | `text-xs` | `sm:text-sm` | `lg:text-base xl:text-lg` |
+| Earnings box amount | `text-2xl` | `sm:text-4xl` | `lg:text-[48px]` |
+
+> Stats labels ("Conversion Rate", "Units/Month", "Commission Rate") will naturally wrap to 2 lines on `<360px` at `text-[10px]`; this is intentional and readable.
+
+### ComparisonSection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Section pb | `pb-10` | `sm:pb-16` | `lg:pb-30` |
+| Outer flex gap | `gap-8` | `sm:gap-10` | `lg:gap-12` |
+| Grid gap | `gap-4` | `sm:gap-6` | `lg:gap-8` |
+| Card padding | `p-5` | `sm:p-7` | `lg:p-9` |
+| Card inner gap | `gap-4` | `sm:gap-5` | `lg:gap-6` |
+| Card title | `text-xl` | `sm:text-2xl` | `lg:text-[32px]` |
+| List item text | `text-sm` | `sm:text-base` | `lg:text-lg` |
+
+### LandingCTASection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Section mb | `mb-10` | `sm:mb-16` | `lg:mb-30` |
+| Banner rounded | `rounded-2xl` | `sm:rounded-3xl` | — |
+| Banner px | `px-5` | `sm:px-8` | `lg:px-20` |
+| Banner py | `py-10` | `sm:py-14` | `lg:py-16` |
+| Banner gap | `gap-8` | `sm:gap-12` | `lg:gap-16` |
+| H2 | `text-[26px]` | `sm:text-4xl` | `lg:text-5xl` |
+| H2 leading | `leading-tight` | — | `lg:leading-17` |
+| Body text | `text-sm` | `sm:text-base` | `lg:text-lg` |
+| Button text | `text-sm` | `sm:text-base` | — |
+| Button px/py | `px-6 py-3` | `sm:px-7 sm:py-3.5` | — |

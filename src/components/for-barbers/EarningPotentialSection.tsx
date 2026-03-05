@@ -32,14 +32,14 @@ const EarningPotentialSection = () => {
 
   return (
     <Container>
-      <div className="w-full pt-10 pb-30 flex flex-col gap-8 sm:gap-10 lg:gap-12 items-center">
+      <div className="w-full pt-8 sm:pt-10 pb-12 sm:pb-20 lg:pb-30 flex flex-col gap-8 sm:gap-10 lg:gap-12 items-center">
         <SectionHeaderWithLines title="Your Earning Potential" />
 
         {/* Calculator Card */}
-        <div className="bg-white rounded-2xl w-full max-w-4xl px-6 sm:px-8 lg:px-10 py-6 sm:py-7 lg:py-8 flex flex-col gap-6 sm:gap-7 lg:gap-8 shadow-sm">
+        <div className="bg-white rounded-2xl w-full max-w-4xl px-4 sm:px-8 lg:px-10 py-5 sm:py-7 lg:py-8 flex flex-col gap-5 sm:gap-7 lg:gap-8 shadow-sm">
           {/* Slider Section */}
-          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
-            <p className="font-semibold text-lg sm:text-xl lg:text-2xl leading-9 text-[#454F5B]">
+          <div className="flex flex-col gap-3 sm:gap-5 lg:gap-6">
+            <p className="font-semibold text-base sm:text-xl lg:text-2xl leading-7 sm:leading-9 text-[#454F5B]">
               Monthly Clients
             </p>
             <div className="flex flex-col gap-2">
@@ -119,28 +119,28 @@ const EarningPotentialSection = () => {
           <div className="h-px bg-[#DFE3E8] w-full" />
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
             <div className="flex flex-col gap-1 sm:gap-2">
-              <p className="text-sm sm:text-base lg:text-lg font-medium text-[#5E707C] leading-7">
+              <p className="text-[10px] sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
                 Conversion Rate
               </p>
-              <p className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
+              <p className="text-lg sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
                 {(CONVERSION_RATE * 100).toFixed(0)}%
               </p>
             </div>
             <div className="flex flex-col gap-1 sm:gap-2">
-              <p className="text-sm sm:text-base lg:text-lg font-medium text-[#5E707C] leading-7">
+              <p className="text-[10px] sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
                 Units/Month
               </p>
-              <p className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
+              <p className="text-lg sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
                 {units}
               </p>
             </div>
             <div className="flex flex-col gap-1 sm:gap-2">
-              <p className="text-sm sm:text-base lg:text-lg font-medium text-[#5E707C] leading-7">
+              <p className="text-[10px] sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
                 Commission Rate
               </p>
-              <p className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
+              <p className="text-lg sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
                 {(COMMISSION_RATE * 100).toFixed(0)}%
               </p>
             </div>
@@ -150,10 +150,10 @@ const EarningPotentialSection = () => {
           <div className="flex flex-col gap-3 sm:gap-4">
             {/* Monthly Earnings Highlight Box */}
             <div className="bg-[#E9F1F6] border border-[#B9D2E4] rounded-2xl px-4 sm:px-5 py-4 sm:py-5 flex flex-col gap-1 sm:gap-2">
-              <p className="text-sm sm:text-base lg:text-lg font-medium text-[#5E707C] leading-7">
+              <p className="text-xs sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
                 Your Monthly Earnings
               </p>
-              <p className="text-3xl sm:text-4xl lg:text-[48px] font-semibold leading-tight lg:leading-16 text-[#1E6FA8]">
+              <p className="text-2xl sm:text-4xl lg:text-[48px] font-semibold leading-tight lg:leading-16 text-[#1E6FA8]">
                 {formatCurrency(monthlyEarnings)}
               </p>
             </div>
