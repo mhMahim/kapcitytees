@@ -8,17 +8,17 @@ const LandingCTASection = () => {
   return (
     <section className="mb-10 sm:mb-16 lg:mb-30">
       <Container>
-        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-linear-to-br from-[#328AC8] to-[#1E6FA8] px-5 py-10 sm:px-8 sm:py-14 lg:px-20 lg:py-16 flex flex-col items-center gap-8 sm:gap-12 lg:gap-16">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-linear-to-br from-[#328AC8] to-[#1E6FA8] px-5 py-10 sm:px-8 sm:py-14 lg:p-18 xl:p-24 flex flex-col items-center gap-6 lg:gap-10 xl:gap-12">
           {/* Decorative background shapes */}
           <Image
             src={Gradient1}
             alt="Gradient 1"
-            className="absolute top-0 left-0"
+            className="absolute top-0 left-0 opacity-0 lg:opacity-30 xl:opacity-100"
           />
           <Image
             src={Gradient2}
             alt="Gradient 2"
-            className="absolute bottom-0 right-0"
+            className="absolute bottom-0 right-0 opacity-70 lg:opacity-100"
           />
 
           {/* Content */}

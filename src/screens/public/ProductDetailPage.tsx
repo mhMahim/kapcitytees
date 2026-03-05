@@ -108,9 +108,9 @@ const relatedProducts: ShopProductCardProps[] = [
 const ProductDetailPage = () => {
   return (
     <main className="min-h-screen">
-      <Container className="pt-6 pb-50 flex flex-col gap-20">
+      <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
         {/* Product Hero: Image Gallery + Info */}
-        <div className="flex flex-col lg:flex-row gap-16">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
           <ProductImageGallery
             images={productImages}
             productName="Beard Oil"

@@ -50,9 +50,9 @@ const BarberFAQSection = ({
   };
 
   return (
-    <section className="pt-10 pb-20 lg:pb-30">
+    <section className="pt-6 sm:pt-10 pb-10 sm:pb-16 lg:pb-30">
       <Container>
-        <div className="flex flex-col items-center gap-12">
+        <div className="flex flex-col items-center gap-8 sm:gap-10 lg:gap-12">
           <SectionHeaderWithLines title={title} />
 
           {/* Accordion list */}
@@ -98,15 +98,15 @@ const AccordionItem = ({
       <button
         onClick={onToggle}
         className={cn(
-          "w-full flex gap-5 text-left transition-colors cursor-pointer",
-          isOpen ? "items-start p-5" : "items-center px-5 py-4"
+          "w-full flex gap-3 sm:gap-5 text-left transition-colors cursor-pointer",
+          isOpen ? "items-start p-4 sm:p-5" : "items-center px-4 py-3 sm:px-5 sm:py-4"
         )}
         aria-expanded={isOpen}
       >
         {/* Number */}
         <span
           className={cn(
-            "shrink-0 text-lg font-semibold leading-[1.35]",
+            "shrink-0 text-base sm:text-lg font-semibold leading-[1.35]",
             isOpen ? "text-[#1E6FA8] pt-0.5" : "text-[#170F49]"
           )}
         >
@@ -114,11 +114,11 @@ const AccordionItem = ({
         </span>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col gap-4 min-w-0">
-          <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 flex flex-col gap-3 sm:gap-4 min-w-0">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
             <p
               className={cn(
-                "text-lg font-semibold leading-[1.35]",
+                "text-base sm:text-lg font-semibold leading-[1.35]",
                 isOpen ? "text-[#1E6FA8]" : "text-[#170F49]"
               )}
             >

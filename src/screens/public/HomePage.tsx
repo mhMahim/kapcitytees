@@ -8,7 +8,7 @@ import EarningPotentialSection from "@/components/for-barbers/EarningPotentialSe
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Navbar />
       <LandingHeroSection />
       <HowItWorksSection />

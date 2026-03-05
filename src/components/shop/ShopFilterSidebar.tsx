@@ -38,7 +38,7 @@ const CheckboxRow = ({
         </svg>
       )}
     </div>
-    <span className="flex-1 font-semibold text-base text-[#3F5563]">{label}</span>
+    <span className="flex-1 font-semibold text-sm sm:text-base text-[#3F5563]">{label}</span>
     {count !== undefined && (
       <span className="text-sm text-[#919DA5]">({count})</span>
     )}
@@ -64,7 +64,7 @@ const FilterSection = ({
         className="flex items-center justify-between w-full"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="text-xl font-medium text-[#3F5563]">{title}</span>
+        <span className="text-base sm:text-xl font-medium text-[#3F5563]">{title}</span>
         {open ? (
           <ChevronUp className="w-4 h-4 text-[#3F5563]" />
         ) : (
@@ -90,17 +90,17 @@ const PriceRangeFilter = () => {
   return (
     <div className="flex flex-col gap-4 w-full">
       <button className="flex items-center justify-between w-full">
-        <span className="text-xl font-medium text-[#3F5563]">Price</span>
+        <span className="text-base sm:text-xl font-medium text-[#3F5563]">Price</span>
         <ChevronUp className="w-4 h-4 text-[#3F5563]" />
       </button>
 
       {/* Dual range track */}
-      <div className="relative w-full h-[15px] flex items-center">
+      <div className="relative w-full h-3.75 flex items-center">
         {/* Track bg */}
-        <div className="absolute w-full h-[5px] bg-[#E7EAEC] rounded-full" />
+        <div className="absolute w-full h-1.25 bg-[#E7EAEC] rounded-full" />
         {/* Active track */}
         <div
-          className="absolute h-[5px] bg-[#1E6FA8] rounded-full"
+          className="absolute h-1.25 bg-[#1E6FA8] rounded-full"
           style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
         />
         {/* Min thumb */}
@@ -176,10 +176,10 @@ const ShopFilterSidebar = () => {
     );
 
   return (
-    <aside className="flex flex-col gap-6 w-full">
-      <h2 className="text-2xl font-semibold text-[#0F2A3C]">Filters</h2>
+    <aside className="flex flex-col gap-4 sm:gap-6 w-full">
+      <h2 className="text-xl sm:text-2xl font-semibold text-[#0F2A3C]">Filters</h2>
 
-      <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-8 flex flex-col gap-6 w-full">
+      <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 w-full">
         {/* Price */}
         <PriceRangeFilter />
 

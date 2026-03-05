@@ -32,7 +32,7 @@ const EarningPotentialSection = () => {
 
   return (
     <Container>
-      <div className="w-full pt-8 sm:pt-10 pb-12 sm:pb-20 lg:pb-30 flex flex-col gap-8 sm:gap-10 lg:gap-12 items-center">
+      <div className="w-full pb-12 sm:pb-20 lg:pb-30 flex flex-col gap-8 sm:gap-10 lg:gap-12 items-center">
         <SectionHeaderWithLines title="Your Earning Potential" />
 
         {/* Calculator Card */}

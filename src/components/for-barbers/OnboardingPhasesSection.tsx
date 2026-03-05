@@ -39,16 +39,16 @@ const phases: PhaseCardData[] = [
 
 const OnboardingPhasesSection = () => {
   return (
-    <section className="py-20 lg:py-30">
+    <section className="py-10 sm:py-16 lg:py-30">
       <Container>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12">
           <SectionHeaderWithLines
             title="Structured Onboarding for Professional Barbers"
             subtitle="Access is not open to everyone. We work with established barbers who align with our high standards of professionalism."
           />
 
           {/* Phase cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 2xl:gap-8">
             {phases.map((phase) => (
               <PhaseCard key={phase.phase} {...phase} />
             ))}
@@ -69,10 +69,10 @@ const PhaseCard = ({
   duration,
 }: PhaseCardData) => (
   <div className="bg-white rounded-2xl shadow-[0px_12px_24px_-4px_rgba(145,158,171,0.10)] overflow-hidden flex flex-col">
-    <div className="flex flex-col gap-6 px-6 lg:px-8 pt-6 pb-8 flex-1">
+    <div className="flex flex-col gap-6 px-4 xl:px-8 pt-6 pb-8 flex-1">
       {/* Phase label + divider */}
       <div className="flex flex-col gap-3 items-center">
-        <p className="text-lg lg:text-xl font-medium leading-7.5 text-[#637381] text-center">
+        <p className="sm:text-lg xl:text-xl font-medium leading-7.5 text-[#637381] text-center">
           PHASE {phase}
         </p>
         <div className="w-full h-px bg-[#E9F1F6]" />
@@ -87,10 +87,10 @@ const PhaseCard = ({
 
       {/* Text content */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
+        <h3 className="text-xl sm:text-2xl xl:text-3xl 2xl:text-[32px] font-semibold leading-tight 2xl:leading-12 text-[#1E6FA8]">
           {title}
         </h3>
-        <p className="text-base lg:text-lg font-medium leading-7 text-[#637381]">
+        <p className="text-sm lg:text-base xl:text-lg font-medium xl:leading-7 text-[#637381]">
           {description}
         </p>
       </div>
@@ -98,8 +98,8 @@ const PhaseCard = ({
 
     {/* Duration badge */}
     <div className="mx-2 mb-2">
-      <div className="bg-[#E9F1F6] rounded-lg py-4 text-center">
-        <p className="text-xl lg:text-2xl font-semibold leading-9 text-[#4B8CB9]">
+      <div className="bg-[#E9F1F6] rounded-lg py-2 sm:py-3 2xl:py-4 text-center">
+        <p className="sm:text-lg lg:text-xl 2xl:text-2xl font-semibold xl:leading-9 text-[#4B8CB9]">
           {duration}
         </p>
       </div>

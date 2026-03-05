@@ -37,11 +37,11 @@ const HowItWorksSection = () => {
   return (
     <section className="py-10 sm:py-16 lg:py-30">
       <Container>
-        <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12">
+        <div className="flex flex-col sm:gap-10 lg:gap-12">
           <SectionHeaderWithLines title="How It Works" />
 
           {/* Steps */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:gap-6 xl:gap-8">
             {steps.map((step) => (
               <StepCard key={step.number} {...step} />
             ))}
@@ -55,7 +55,7 @@ const HowItWorksSection = () => {
 export default HowItWorksSection;
 
 const StepCard = ({ number, title, description, image }: Step) => (
-  <div className="flex flex-col items-center gap-3 sm:gap-4 rounded-[20px] px-4 sm:px-6 pt-5 sm:pt-6 pb-4 sm:pb-5">
+  <div className="flex flex-col items-center gap-3 xl:gap-4 rounded-[20px] px-4 xl:px-6 pt-5 xl:pt-6 pb-4 xl:pb-5">
     {/* Illustration */}
     <figure className="size-24 sm:size-28 lg:size-35">
       <Image src={image} alt={title} className="" />
@@ -63,10 +63,10 @@ const StepCard = ({ number, title, description, image }: Step) => (
 
     {/* Text content */}
     <div className="flex flex-col items-center gap-1 sm:gap-2 text-center py-1 w-full">
-      <h3 className="text-lg sm:text-xl lg:text-[32px] font-bold leading-tight lg:leading-12 text-[#1E6FA8]">
+      <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-[32px] font-bold leading-tight xl:leading-12 text-[#1E6FA8]">
         {number}. {title}
       </h3>
-      <p className="text-sm sm:text-base lg:text-lg font-medium leading-6 sm:leading-7 text-[#5E707C]">
+      <p className="text-sm sm:text-base xl:text-lg font-medium leading-6 sm:leading-7 text-[#5E707C]">
         {description}
       </p>
     </div>

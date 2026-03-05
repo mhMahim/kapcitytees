@@ -17,11 +17,11 @@ const ProductImageGallery = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <div className="flex flex-col gap-6 w-full lg:w-182.5 shrink-0">
+    <div className="flex flex-col gap-6 w-full lg:w-[420px] xl:w-182.5 shrink-0">
       {/* Main Image */}
       <div className="relative w-full aspect-730/585 rounded-3xl overflow-hidden bg-[#F4F6F8]">
         {barberCertified && (
-          <div className="absolute top-6 right-6 z-10 w-14 h-15.5">
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 z-10 w-10 h-11 sm:w-12 sm:h-13 lg:w-14 lg:h-15.5">
             <Image
               src="https://i.ibb.co.com/twtcsf1r/YPnixy-Qc3eo-Ln-Eg-Jd-Vbl-image-2.png"
               alt="Barber Certified"

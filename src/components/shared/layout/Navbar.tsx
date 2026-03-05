@@ -52,25 +52,23 @@ const Navbar = () => {
         {/* Logo */}
         <Logo className="size-11 sm:size-13 lg:size-16" />
 
-        {/* Desktop nav — centred between logo and actions */}
-        <nav className="hidden lg:flex flex-1 items-center justify-center gap-8 xl:gap-12 px-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={
-                activePath === link.href
-                  ? "text-[#1E6FA8] font-semibold text-base"
-                  : "text-[#637381] font-normal text-base hover:text-[#0F2A3C] transition-colors"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
         {/* Right: auth controls + hamburger */}
         <div className="flex items-center gap-3 sm:gap-4">
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-8 xl:gap-12 px-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={
+                  activePath === link.href
+                    ? "text-[#1E6FA8] font-semibold text-base"
+                    : "text-[#637381] font-normal text-base hover:text-[#0F2A3C] transition-colors"
+                }
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
           {isLoggedIn ? (
             <div className="flex items-center gap-4 lg:gap-8">
               <Link
@@ -82,7 +80,10 @@ const Navbar = () => {
               <NavbarProfilePopover />
             </div>
           ) : (
-            <Button asChild className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 lg:h-11">
+            <Button
+              asChild
+              className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 lg:h-11"
+            >
               <Link href="/login">Sign In</Link>
             </Button>
           )}
@@ -91,7 +92,7 @@ const Navbar = () => {
           <button
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="lg:hidden flex items-center justify-center size-9 rounded-lg text-[#637381] hover:text-[#0F2A3C] hover:bg-[#F4F6F8] transition-colors"
+            className="lg:hidden flex items-center justify-center size-9 rounded-lg hover:text-[#0F2A3C] hover:bg-[#F4F6F8] transition-colors border border-primary text-primary"
           >
             {mobileMenuOpen ? (
               <X className="w-5 h-5" />
@@ -104,7 +105,7 @@ const Navbar = () => {
 
       {/* ─── Mobile menu drawer ───────────────────────────── */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#E7EAEC]/60 bg-white">
+        <div className="lg:hidden border-t border-[#E7EAEC]/60 bg-white fixed w-full shadow">
           <Container className="py-3 sm:py-4">
             <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (

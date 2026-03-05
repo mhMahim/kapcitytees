@@ -487,10 +487,11 @@ Used on landing, about-us, for-barbers, and other public pages. Updated to scale
 | Buttons text | `text-sm` | `sm:text-base` | — | — |
 | Buttons px/py | `px-5 py-3` | `sm:px-7 sm:py-3.5` | — | — |
 
-**Mobile image** (inline, `lg:hidden`):
+**Mobile image** (inline, `lg:hidden`):  
+Tailwind v4 uses shorthand aspect-ratio utilities — use `aspect-16/10` (not `aspect-[16/10]`) and `sm:aspect-video` (not `sm:aspect-[16/9]`).
 ```
-relative w-full rounded-xl sm:rounded-2xl overflow-hidden aspect-[16/10] sm:aspect-[16/9]
-→ <Image fill className="object-cover object-left-top" />
+relative w-full rounded-xl sm:rounded-2xl overflow-hidden aspect-16/10 sm:aspect-video
+→ <Image fill className="object-cover object-top-left" />
 ```
 
 **Desktop images** (absolute): both receive `hidden lg:block`; original translate positioning preserved.
@@ -629,3 +630,271 @@ The header receives `bg-white border-b shadow-sm` when **either** `isScrolled ==
 | Gap | `gap-3` | `sm:gap-4` |
 | Copyright / legal text | `text-sm` | `sm:text-base` |
 | Terms+Privacy gap | `gap-4` | `sm:gap-6` |
+
+---
+
+## For Barbers Page (`src/screens/public/ForBarberPage.tsx`)
+
+Components live in `src/components/for-barbers/`. Shares `LandingCTASection` (already documented above) and `SectionHeaderWithLines`.
+
+### ForBarberHeroSection
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Section px | `px-4` | `sm:px-5` | `lg:px-8` | — |
+| Border radius | `rounded-2xl` | `sm:rounded-3xl` | — | — |
+| Container py | `py-12` | `sm:py-18` | `lg:py-45` | — |
+| Outer gap | `gap-8` | `sm:gap-10` | `lg:gap-12` | — |
+| Inner gap (heading+sub) | `gap-3` | `sm:gap-4` | — | — |
+| H1 | `text-[26px]` | `sm:text-4xl` | `lg:text-5xl` | `xl:text-[64px]` |
+| H1 leading | `leading-tight` | `sm:leading-snug` | `lg:leading-20` | — |
+| Subtitle | `text-sm` | `sm:text-base` | `lg:text-lg` | `xl:text-xl` |
+| Subtitle max-w | `max-w-full` | `sm:max-w-180` | `lg:max-w-200` | — |
+| Button text | `text-sm` | `sm:text-base` | — | — |
+| Button px/py | `px-5 py-3` | `sm:px-7 sm:py-3.5` | — | — |
+
+### OnboardingPhasesSection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|  
+| Section py | `py-10` | `sm:py-16` | `lg:py-30` |
+| Outer flex gap | `gap-8` | `sm:gap-10` | `lg:gap-12` |
+| Grid gap | `gap-4` | `sm:gap-6` | `lg:gap-8` |
+
+**PhaseCard:**
+
+| Property | default | sm | lg |
+|----------|---------|----|----|  
+| Card px | `px-4` | `sm:px-6` | `lg:px-8` |
+| Card pt | `pt-4` | `sm:pt-6` | — |
+| Card pb | `pb-5` | `sm:pb-8` | — |
+| Card inner gap | `gap-4` | `sm:gap-6` | — |
+| Phase label gap | `gap-2` | `sm:gap-3` | — |
+| Phase label text | `text-sm` | `sm:text-base` | `lg:text-lg` |
+| Illustration | `w-20 h-20` | `sm:w-25 sm:h-25` | `lg:w-35 lg:h-35` |
+| Card title | `text-xl` | `sm:text-2xl` | `lg:text-[32px]` |
+| Card description | `text-sm` | `sm:text-base` | `lg:text-lg` |
+| Duration text | `text-lg` | `sm:text-xl` | `lg:text-2xl` |
+| Duration py | `py-3` | `sm:py-4` | — |
+
+### EligibilitySection
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Section pt | `pt-6` | `sm:pt-10` | — | — |
+| Section pb | `pb-10` | `sm:pb-16` | `lg:pb-30` | — |
+| Flex gap | `gap-8` | `sm:gap-10` | `lg:gap-12` | — |
+| Left content `max-w` | `max-w-full` | — | `lg:max-w-170` | — |
+| Left `shrink-0` | not applied | — | `lg:shrink-0` | — |
+| Left `py` | `py-0` | — | `lg:py-12` | — |
+| Left gap | `gap-5` | `sm:gap-6` | `lg:gap-8` | — |
+| H2 | `text-2xl` | `sm:text-[28px]` | `lg:text-4xl` | `xl:text-5xl` |
+| Requirements item gap | `gap-3` | `sm:gap-4` | — | — |
+| Checkmark icon | `size-6` | `sm:size-8` | — | — |
+| Requirement text | `text-base` | `sm:text-lg` | `lg:text-xl` | — |
+| Right image min-h | `min-h-52` | `sm:min-h-60` | `lg:min-h-110` | — |
+
+> Right image container uses `w-full relative aspect-5/3` to fill available space inside the `flex-col lg:flex-row` layout. Decorative bg blobs (`w-156`, `w-136`) are `hidden lg:block` — only shown on desktop where they're positioned absolutely.
+
+### BarberFAQSection
+
+| Property | default | sm | lg |
+|----------|---------|----|----|  
+| Section pt | `pt-6` | `sm:pt-10` | — |
+| Section pb | `pb-10` | `sm:pb-16` | `lg:pb-30` |
+| Inner flex gap | `gap-8` | `sm:gap-10` | `lg:gap-12` |
+
+**AccordionItem:**
+
+| Property | default | sm |
+|----------|---------|----|  
+| Button gap | `gap-3` | `sm:gap-5` |
+| Open padding | `p-4` | `sm:p-5` |
+| Closed padding | `px-4 py-3` | `sm:px-5 sm:py-4` |
+| Number text | `text-base` | `sm:text-lg` |
+| Question text | `text-base` | `sm:text-lg` |
+| Content div gap | `gap-3` | `sm:gap-4` |
+| Inner row gap | `gap-3` | `sm:gap-4` |
+| Answer text | `text-base` | — (fixed) |
+
+---
+
+## Shop Page (`src/screens/public/ShopPage.tsx`)
+
+Components live in `src/components/shop/`. The page uses a two-column layout at `lg+` (filter sidebar left, product grid right), stacked on mobile.
+
+### ShopPage layout
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Container py | `py-6` | `sm:py-10` | `lg:py-14` |
+| Flex direction | `flex-col` | — | `lg:flex-row` |
+| Flex gap | `gap-6` | — | `lg:gap-8` |
+| Sidebar width | `w-full` | — | `lg:w-88.75 lg:shrink-0` |
+
+> Do **not** add `px-*` to the container — it defers to the shared `Container` component which already provides `px-4 sm:px-5 lg:px-6`.
+
+### ShopHeroBanner
+
+Height, heading, and overlay scaling already established in the About Us / FAQ sections. Only the breadcrumb was updated:
+
+| Property | default | sm |
+|----------|---------|----|
+| Breadcrumb text | `text-sm` | `sm:text-base` |
+
+### ShopFilterSidebar
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Aside gap | `gap-4` | `sm:gap-6` | — |
+| "Filter" heading | `text-xl` | `sm:text-2xl` | — |
+| Filter card padding | `p-4` | `sm:p-6` | `lg:p-8` |
+| Card inner gap | `gap-4` | `sm:gap-6` | — |
+| FilterSection title | `text-base` | `sm:text-xl` | — |
+| Price range title | `text-base` | `sm:text-xl` | — |
+| Checkbox row label | `text-sm` | `sm:text-base` | — |
+
+> **Tailwind v4 note**: the custom range track/thumb uses `h-3.75` (not `h-[15px]`) and `h-1.25` (not `h-[5px]`).
+
+### ShopProductGrid
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Header title | `text-base` | `sm:text-xl` | `lg:text-2xl` | — |
+| "Showing X of Y" text | `text-sm truncate` | — | — | — |
+| Header gap | `gap-2` | `sm:gap-4` | `lg:gap-6` | — |
+| Sort button px | `px-3` | `sm:px-5` | — | — |
+| Sort button py | `py-2` | `sm:py-3` | — | — |
+| Sort button gap | `gap-1.5` | `sm:gap-2` | — | — |
+| Grid columns | `grid-cols-2` | `sm:grid-cols-2` | `lg:grid-cols-2` | `xl:grid-cols-3` |
+| Grid gap | `gap-3` | `sm:gap-4` | `lg:gap-5` | — |
+
+> The sort button container gets `shrink-0` so it never collapses; the header title truncates instead.
+
+### ShopProductCard
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Image height | `h-44` | `sm:h-52` | `lg:h-60` | `xl:h-73.25` |
+| Info section gap | `gap-3` | `sm:gap-4` | `lg:gap-6` | — |
+| Info section padding | `p-2` | `sm:p-3` | — | — |
+| Category text | `text-xs` | `sm:text-sm` | `lg:text-base` | — |
+| Product name | `text-base` | `sm:text-lg` | `lg:text-xl` | `xl:text-2xl` |
+| Name leading | `leading-tight` | `sm:leading-7` | `lg:leading-9` | — |
+| Price | `text-xl` | `sm:text-2xl` | `lg:text-[28px]` | `xl:text-[32px]` |
+| Price leading | `leading-tight` | — | `lg:leading-12` | — |
+| Cart button size | `w-9 h-9` | `sm:w-10 sm:h-10` | `lg:w-12 lg:h-12` | — |
+| Cart icon size | `w-4 h-4` | `sm:w-5 sm:h-5` | `lg:w-6 lg:h-6` | — |
+| "New" badge position | `top-3 right-3` | `sm:top-4 sm:right-4` | `lg:top-6 lg:right-6` | — |
+| "New" badge size | `w-8 h-9` | `sm:w-9 sm:h-10` | `lg:w-11 lg:h-12` | — |
+
+### ShopPagination
+
+No changes needed — pagination uses fixed button sizes (`size-10`) and standard `gap-2` spacing that reads cleanly at all breakpoints.
+
+---
+
+## Product Detail Page (`src/screens/public/ProductDetailPage.tsx`)
+
+Components live in `src/components/shop/`. The hero section uses side-by-side layout (`flex-col lg:flex-row`). All sections stack vertically on mobile.
+
+### ProductDetailPage layout
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Container pb | `pb-16` | `sm:pb-24` | `lg:pb-50` |
+| Section gap (outer) | `gap-10` | `sm:gap-14` | `lg:gap-20` |
+| Hero row gap | `gap-8` | — | `lg:gap-16` |
+
+### ProductImageGallery
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Gallery width | `w-full` | — | `lg:w-[420px]` | `xl:w-182.5` |
+| Badge position | `top-3 right-3` | `sm:top-4 sm:right-4` | `lg:top-6 lg:right-6` | — |
+| Badge size | `w-10 h-11` | `sm:w-12 sm:h-13` | `lg:w-14 lg:h-15.5` | — |
+
+> The `aspect-730/585` main image and square thumbnail strip are already proportional — no height overrides needed.
+
+### ProductInfo
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Breadcrumb text | `text-sm` | `sm:text-base` | — |
+| Inner wrapper gap | `gap-8` | `sm:gap-14` | `lg:gap-18` |
+| Product details gap | `gap-5` | `sm:gap-8` | — |
+| Product name (H1) | `text-2xl` | `sm:text-3xl` | `lg:text-[40px]` |
+| Category text | `text-xs` | `sm:text-sm` | `lg:text-base` |
+| Stars+review gap | `gap-3` | `sm:gap-6` | — |
+| Review count text | `text-sm` | `sm:text-base` | — |
+| Description text | `text-sm` | `sm:text-base` | — |
+| Price+actions gap | `gap-6` | `sm:gap-10` | `lg:gap-12` |
+| Price | `text-3xl` | `sm:text-4xl` | `lg:text-5xl` |
+| Price leading | `leading-tight` | `sm:leading-12` | `lg:leading-16` |
+| Qty+buttons outer gap | `gap-4` | `sm:gap-8` | `lg:gap-16` |
+| Qty selector gap | `gap-3` | `sm:gap-4` | `lg:gap-6` |
+| Qty buttons size | `w-9 h-9` | `sm:w-10 sm:h-10` | `lg:w-12 lg:h-12` |
+| Qty icons | `w-4 h-4` | `sm:w-5 sm:h-5` | — |
+| Qty number | `text-lg` | `sm:text-xl` | `lg:text-2xl` |
+| Action buttons gap | `gap-2` | `sm:gap-4` | — |
+| Add to Cart height | `h-11` | `sm:h-12` | `lg:h-13` |
+| Add to Cart px | `px-5` | `sm:px-10` | `lg:px-15` |
+| View Cart height | `h-11` | `sm:h-12` | `lg:h-13` |
+| View Cart width | auto (px only) | — | `lg:w-52.5` (fixed) |
+| Button text | `text-sm` | `sm:text-base` | — |
+
+> The qty selector + buttons row uses `flex-wrap` on its outer container — on narrow screens (<360px) the two groups wrap naturally rather than overflowing.
+
+### ProductDescriptionTabs
+
+#### Tab Bar
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Tab gap | `gap-4` | `sm:gap-8` | `lg:gap-14` |
+| Tab text | `text-sm` | `sm:text-base` | `lg:text-xl` |
+| Tab px/py | `px-2 py-2` | `sm:px-4 sm:py-2.5` | — |
+
+#### Description Tab Content
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Content gap | `gap-6` | `sm:gap-8` | `lg:gap-10` |
+| Content pt | `pt-8` | `sm:pt-10` | `lg:pt-14` |
+| Section title | `text-lg` | `sm:text-xl` | `lg:text-2xl` |
+| Paragraph max-w | `max-w-full` | — | `lg:max-w-263.5` |
+
+#### Review Tab
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Outer gap | `gap-10` | `sm:gap-14` | `lg:gap-20` |
+| Outer pt | `pt-8` | `sm:pt-10` | `lg:pt-14` |
+| Reviews list gap | `gap-8` | `sm:gap-10` | `lg:gap-12` |
+| Reviews list max-w | `max-w-full` | — | `lg:max-w-245.5` |
+| Individual review gap | `gap-6` | `sm:gap-8` | `lg:gap-10` |
+| ReviewCard gap | `gap-3` | `sm:gap-6` | — |
+| Reviewer name | `text-base` | `sm:text-lg` | — |
+| Rate form max-w | `max-w-full` | — | `lg:max-w-245.5` |
+| Rate form gap | `gap-6` | `sm:gap-10` | `lg:gap-12` |
+| "Rate" heading | `text-lg` | `sm:text-xl` | `lg:text-2xl` |
+| Stars gap | `gap-1.5` | `sm:gap-3` | — |
+| Star button size | `size-9` | `sm:size-10` | `lg:size-12` |
+| Star icon | `w-6 h-6` | `sm:w-7 sm:h-7` | `lg:w-8 lg:h-8` |
+| Textarea min-h | `min-h-30` | `sm:min-h-43.75` | `lg:min-h-50` |
+| Submit button height | `h-11` | `sm:h-12` | `lg:h-13` |
+| Submit button width | `w-full` | `sm:w-auto` | — |
+| Submit button px | `px-8` | `sm:px-12` | — |
+| Submit button text | `text-sm` | `sm:text-base` | — |
+
+> Textarea uses responsive `min-h-*` (not `style={{ height }}`). Tailwind v4: `min-h-30`=120px, `min-h-43.75`=175px, `min-h-50`=200px.
+
+### RelatedProducts
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Section gap | `gap-4` | `sm:gap-6` | `lg:gap-8` |
+| Title | `text-xl` | `sm:text-2xl` | `lg:text-[32px]` |
+| Title leading | `leading-tight` | `sm:leading-9` | `lg:leading-12` |
+| Grid columns | `grid-cols-2` | — | `lg:grid-cols-4` |
+| Grid gap | `gap-3` | `sm:gap-4` | `lg:gap-5` |

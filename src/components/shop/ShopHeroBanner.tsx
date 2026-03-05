@@ -39,7 +39,7 @@ const ShopHeroBanner = ({
             {title}
           </h1>
 
-          <p className="text-[#E9F1F6] text-base font-medium">
+          <p className="text-[#E9F1F6] text-sm sm:text-base font-medium">
             {breadcrumb.map((crumb, i) => (
               <span key={crumb.href}>
                 {i > 0 && <span className="mx-2">/</span>}

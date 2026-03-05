@@ -44,7 +44,7 @@ const SAMPLE_REVIEWS: Review[] = [
 ];
 
 const ReviewCard = ({ review }: { review: Review }) => (
-  <div className="flex gap-6 items-start w-full">
+  <div className="flex gap-3 sm:gap-6 items-start w-full">
     <div className="relative size-12.75 rounded-full overflow-hidden shrink-0">
       <Image
         src={review.avatar}
@@ -57,7 +57,7 @@ const ReviewCard = ({ review }: { review: Review }) => (
     <div className="flex flex-col gap-5 flex-1 min-w-0">
       <div className="flex flex-col gap-2.5">
         <div className="flex gap-3 items-center">
-          <p className="text-lg font-medium leading-7 text-[#0F2A3C]">
+          <p className="text-base sm:text-lg font-medium leading-7 text-[#0F2A3C]">
             {review.name}
           </p>
           <p className="text-xs font-normal leading-4.5 text-[#5E707C]">
@@ -89,10 +89,10 @@ const ReviewTab = () => {
   const activeRating = hovered || selected;
 
   return (
-    <div className="flex flex-col gap-20 pt-14">
+    <div className="flex flex-col gap-10 sm:gap-14 lg:gap-20 pt-8 sm:pt-10 lg:pt-14">
       {/* Reviews List */}
-      <div className="flex flex-col gap-12 max-w-245.5">
-        <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12 max-w-full lg:max-w-245.5">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
           {SAMPLE_REVIEWS.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}
@@ -103,12 +103,12 @@ const ReviewTab = () => {
       </div>
 
       {/* Rate this product form */}
-      <div className="flex flex-col gap-12 items-end max-w-245.5">
+      <div className="flex flex-col gap-6 sm:gap-10 lg:gap-12 items-end max-w-full lg:max-w-245.5">
         <div className="flex flex-col gap-5.25 w-full">
-          <p className="text-2xl font-semibold leading-9 text-[#0F2A3C]">
+          <p className="text-lg sm:text-xl lg:text-2xl font-semibold leading-9 text-[#0F2A3C]">
             Rate this product
           </p>
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-1.5 sm:gap-3 items-center">
             {Array.from({ length: 5 }).map((_, i) => (
               <button
                 key={i}
@@ -116,19 +116,19 @@ const ReviewTab = () => {
                 onMouseLeave={() => setHovered(0)}
                 onClick={() => setSelected(i + 1)}
                 aria-label={`Rate ${i + 1} star`}
-                className="size-12 flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                className="size-9 sm:size-10 lg:size-12 flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
               >
                 {i < activeRating ? (
-                  <StarFilledIcon className="w-8 h-8" />
+                  <StarFilledIcon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
                 ) : (
-                  <StarEmptyIcon className="w-8 h-8 text-[#4B8CB9]" />
+                  <StarEmptyIcon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-[#4B8CB9]" />
                 )}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 w-full" style={{ height: 230 }}>
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-base font-semibold leading-6 text-[#454F5B]">
             Write your Thought
           </label>
@@ -136,11 +136,11 @@ const ReviewTab = () => {
             value={thought}
             onChange={(e) => setThought(e.target.value)}
             placeholder="Enter your review..."
-            className="flex-1 w-full bg-[#F9FAFB] border border-[#DFE3E8] rounded-xl px-5 py-3 text-base font-normal text-[#0F2A3C] placeholder:text-[#919EAB] resize-none focus:outline-none focus:border-[#1E6FA8] transition-colors"
+            className="min-h-30 sm:min-h-43.75 lg:min-h-50 w-full bg-[#F9FAFB] border border-[#DFE3E8] rounded-xl px-5 py-3 text-base font-normal text-[#0F2A3C] placeholder:text-[#919EAB] resize-none focus:outline-none focus:border-[#1E6FA8] transition-colors"
           />
         </div>
 
-        <button className="h-13 px-12 py-3 bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors shrink-0 cursor-pointer">
+        <button className="h-11 w-full sm:w-auto sm:h-12 lg:h-13 px-8 sm:px-12 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors shrink-0 cursor-pointer">
           Submit
         </button>
       </div>
@@ -170,11 +170,11 @@ const ProductDescriptionTabs = ({ sections }: ProductDescriptionTabsProps) => {
   return (
     <div className="flex flex-col gap-0 w-full">
       {/* Tab Bar */}
-      <div className="flex gap-14 items-center border-b-2 border-[#E7EAEC]">
+      <div className="flex gap-4 sm:gap-8 lg:gap-14 items-center border-b-2 border-[#E7EAEC]">
         <button
           onClick={() => setActiveTab("description")}
           className={cn(
-            "px-4 py-2.5 text-xl leading-7.5 transition-colors border-b-2 translate-y-0.5 cursor-pointer",
+            "px-2 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base lg:text-xl leading-7.5 transition-colors border-b-2 translate-y-0.5 cursor-pointer",
             activeTab === "description"
               ? "text-[#1E6FA8] font-semibold border-[#1E6FA8]"
               : "text-[#637381] font-normal border-transparent",
@@ -185,7 +185,7 @@ const ProductDescriptionTabs = ({ sections }: ProductDescriptionTabsProps) => {
         <button
           onClick={() => setActiveTab("review")}
           className={cn(
-            "px-4 py-2.5 text-xl leading-7.5 transition-colors border-b-2 translate-y-0.5 cursor-pointer",
+            "px-2 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base lg:text-xl leading-7.5 transition-colors border-b-2 translate-y-0.5 cursor-pointer",
             activeTab === "review"
               ? "text-[#1E6FA8] font-semibold border-[#1E6FA8]"
               : "text-[#637381] font-normal border-transparent",
@@ -197,14 +197,14 @@ const ProductDescriptionTabs = ({ sections }: ProductDescriptionTabsProps) => {
 
       {/* Tab Content */}
       {activeTab === "description" && (
-        <div className="flex flex-col gap-10 pt-14">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10 pt-8 sm:pt-10 lg:pt-14">
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex} className="flex flex-col gap-4">
-              <h3 className="text-2xl font-semibold leading-9 text-[#0F2A3C]">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-9 text-[#0F2A3C]">
                 {section.title}
               </h3>
               {section.paragraph && (
-                <p className="text-base font-normal leading-6 text-[#5E707C] max-w-263.5">
+                <p className="text-base font-normal leading-6 text-[#5E707C] max-w-full lg:max-w-263.5">
                   {section.paragraph}
                 </p>
               )}

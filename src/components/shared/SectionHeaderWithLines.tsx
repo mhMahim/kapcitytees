@@ -20,7 +20,7 @@ const SectionHeaderWithLines = ({
         <div className="flex-1 h-px bg-[#B9D2E4]" />
         <h2
           className={cn(
-            "text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight lg:leading-17 text-[#0F2A3C] text-center shrink-0",
+            "text-2xl sm:text-3xl lg:text-4xl 2xl:text-5xl font-bold leading-tight xl:leading-17 text-[#0F2A3C] text-center",
             titleClassName
           )}
         >

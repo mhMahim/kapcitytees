@@ -105,8 +105,8 @@ const ShopPage = () => {
       <ShopHeroBanner />
 
       {/* Main content */}
-      <Container className="w-full px-6 lg:px-8 py-14 flex flex-col lg:flex-row gap-8 flex-1">
-        {/* Left: Filters */}
+      <Container className="py-6 sm:py-10 lg:py-14 flex flex-col lg:flex-row gap-6 lg:gap-8 flex-1">
+        {/* Left: Filters — full-width stacked on mobile, fixed-width sidebar on lg+ */}
         <div className="w-full lg:w-88.75 shrink-0">
           <ShopFilterSidebar />
         </div>

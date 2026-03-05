@@ -9,12 +9,12 @@ const LandingHeroSection = () => {
   return (
     <section className="px-4 sm:px-6 lg:px-8">
       <div className="bg-[#ECF2F8] rounded-2xl sm:rounded-3xl relative overflow-hidden">
-        <Container className="pt-12 sm:pt-20 lg:pt-40 pb-8 sm:pb-14 lg:pb-65">
-          <div className="flex flex-col gap-8 sm:gap-10 lg:gap-8">
+        <Container className="pt-12 sm:pt-20 lg:pt-28 xl:pt-36 2xl:pt-40 pb-8 sm:pb-14 lg:pb-36 xl:pb-48 2xl:pb-65">
+          <div className="flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-12">
             {/* Left content */}
-            <div className="flex flex-col gap-8 sm:gap-10 lg:gap-16 lg:flex-1">
+            <div className="flex flex-col gap-8 sm:gap-10 xl:gap-16 lg:flex-1 max-w-167.5">
               <div className="flex flex-col gap-3 sm:gap-4">
-                <h1 className="text-[28px] sm:text-4xl lg:text-5xl xl:text-[64px] font-bold leading-tight sm:leading-snug lg:leading-20 text-[#1E6FA8]">
+                <h1 className="text-[28px] sm:text-4xl xl:text-5xl 2xl:text-[64px] font-bold leading-tight sm:leading-snug 2xl:leading-20 text-[#1E6FA8]">
                   Turn Your Chair Into a Revenue Engine.
                 </h1>
                 <p className="text-base sm:text-lg font-medium leading-6 sm:leading-7 text-[#637381]">
@@ -59,7 +59,7 @@ const LandingHeroSection = () => {
         <Image
           src={DashboardPreview}
           alt="Dashboard Preview"
-          className="hidden lg:block max-w-295 h-auto absolute bottom-0 right-0 translate-x-[30%] translate-y-[25%]"
+          className="hidden lg:block lg:max-w-180 xl:max-w-220 2xl:max-w-295 h-auto absolute bottom-0 right-0 translate-x-[30%] translate-y-[25%]"
           width={1180}
           height={850}
         />
