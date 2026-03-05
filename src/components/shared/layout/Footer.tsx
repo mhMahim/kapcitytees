@@ -27,14 +27,16 @@ interface FooterLinkColumnProps {
 }
 
 const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
-  <div className="flex flex-col gap-4">
-    <h3 className="text-lg font-medium text-white leading-7">{title}</h3>
-    <ul className="flex flex-col gap-3">
+  <div className="flex flex-col gap-3 sm:gap-4">
+    <h3 className="text-sm sm:text-base lg:text-lg font-medium text-white leading-6 sm:leading-7">
+      {title}
+    </h3>
+    <ul className="flex flex-col gap-2 sm:gap-3">
       {links.map((link) => (
         <li key={link.label}>
           <Link
             href={link.href}
-            className="text-base text-[#E7EAEC] hover:text-white transition-colors leading-6"
+            className="text-sm sm:text-base text-[#E7EAEC] hover:text-white transition-colors leading-5 sm:leading-6"
           >
             {link.label}
           </Link>
@@ -47,13 +49,13 @@ const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
 const Footer = () => {
   return (
     <footer className="bg-[#0F2A3C] w-full">
-      <Container className="pt-20 pb-8 flex flex-col gap-20">
+      <Container className="pt-10 sm:pt-14 lg:pt-20 pb-6 sm:pb-8 flex flex-col gap-10 sm:gap-14 lg:gap-20">
         {/* Top section */}
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-8 sm:gap-10 lg:gap-12">
           {/* Logo + Description */}
-          <div className="flex flex-col gap-7 max-w-105">
-            <Logo className="size-20" />
-            <p className="text-base text-[#E7EAEC] leading-6">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-7 max-w-full lg:max-w-105">
+            <Logo className="size-14 sm:size-16 lg:size-20" />
+            <p className="text-sm sm:text-base text-[#E7EAEC] leading-5 sm:leading-6">
               Premium men&apos;s grooming essentials crafted with high-quality,
               skin-safe ingredients to help you look sharp, feel confident, and
               take control of your style every single day.
@@ -61,7 +63,7 @@ const Footer = () => {
           </div>
 
           {/* Link columns */}
-          <div className="flex flex-col sm:flex-row gap-16 lg:gap-30">
+          <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 lg:gap-20 xl:gap-30 w-full sm:w-auto">
             <FooterLinkColumn title="Company" links={companyLinks} />
             <FooterLinkColumn title="Customer Services" links={customerLinks} />
             <FooterLinkColumn title="Follow Us" links={socialLinks} />
@@ -69,18 +71,20 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-[#3F5563] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-base text-[#E7EAEC]">Copyright © 2025</p>
-          <div className="flex items-center gap-6">
+        <div className="border-t border-[#3F5563] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <p className="text-sm sm:text-base text-[#E7EAEC]">
+            Copyright &copy; 2025
+          </p>
+          <div className="flex items-center gap-4 sm:gap-6">
             <Link
               href="/terms"
-              className="text-base text-[#E7EAEC] hover:text-white transition-colors"
+              className="text-sm sm:text-base text-[#E7EAEC] hover:text-white transition-colors"
             >
               Terms &amp; Conditions
             </Link>
             <Link
               href="/privacy"
-              className="text-base text-[#E7EAEC] hover:text-white transition-colors"
+              className="text-sm sm:text-base text-[#E7EAEC] hover:text-white transition-colors"
             >
               Privacy Policy
             </Link>

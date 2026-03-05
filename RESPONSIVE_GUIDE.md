@@ -555,3 +555,77 @@ relative w-full rounded-xl sm:rounded-2xl overflow-hidden aspect-[16/10] sm:aspe
 | Body text | `text-sm` | `sm:text-base` | `lg:text-lg` |
 | Button text | `text-sm` | `sm:text-base` | — |
 | Button px/py | `px-6 py-3` | `sm:px-7 sm:py-3.5` | — |
+
+---
+
+## Shared Layout Components
+
+### Navbar (`src/components/shared/layout/Navbar.tsx`)
+
+**Strategy**: full horizontal nav on `lg+`; hamburger + slide-down drawer on `< lg`.
+
+#### Main bar
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Container `py` | `py-3` | `sm:py-4` | `lg:py-5` |
+| Logo size | `size-11` | `sm:size-13` | `lg:size-16` |
+| Desktop nav | `hidden` | — | `lg:flex` |
+| Desktop nav gap | — | — | `gap-8 xl:gap-12` |
+| Sign In button height | `h-9` | `sm:h-10` | `lg:h-11` |
+| Sign In button text | `text-sm` | `sm:text-base` | — |
+| Sign In button px | `px-4` | `sm:px-5` | — |
+| Hamburger button | `flex` (visible) | — | `lg:hidden` |
+
+#### Background state rule
+
+The header receives `bg-white border-b shadow-sm` when **either** `isScrolled === true` **or** `mobileMenuOpen === true`, so the drawer always appears against an opaque background.
+
+#### Mobile menu drawer
+
+- Shown only when `mobileMenuOpen && < lg`; wraps in `lg:hidden border-t border-[#E7EAEC]/60 bg-white`
+- Links use vertical `flex flex-col gap-1` layout with `px-3 py-2.5 rounded-xl`
+- Active link: `text-[#1E6FA8] bg-[#ECF2F8] font-semibold`
+- Inactive link: `text-[#637381] hover:bg-[#F4F6F8]`
+- `onClick={() => setMobileMenuOpen(false)}` on each link closes the drawer on navigation (no extra `useEffect` needed — every link handles its own close)
+
+---
+
+### Footer (`src/components/shared/layout/Footer.tsx`)
+
+#### Container
+
+| Property | default | sm | lg |
+|----------|---------|----|----|
+| Top padding | `pt-10` | `sm:pt-14` | `lg:pt-20` |
+| Bottom padding | `pb-6` | `sm:pb-8` | — |
+| Outer gap | `gap-10` | `sm:gap-14` | `lg:gap-20` |
+
+#### Top section
+
+- Layout: `flex-col lg:flex-row` — logo+description stacks above link columns on mobile
+- Outer gap: `gap-8 sm:gap-10 lg:gap-12`
+- Logo: `size-14 sm:size-16 lg:size-20`
+- Logo+description gap: `gap-4 sm:gap-5 lg:gap-7`
+- Description `max-w`: `max-w-full lg:max-w-105` — unconstrained on mobile
+- Description text: `text-sm sm:text-base`
+
+#### Link columns
+
+| Property | default | sm | lg | xl |
+|----------|---------|----|----|-----|
+| Column direction | `flex-col` | `sm:flex-row` | — | — |
+| Column gap | `gap-8` | `sm:gap-12` | `lg:gap-20` | `xl:gap-30` |
+| Column width | `w-full` | `sm:w-auto` | — | — |
+| Column title | `text-sm` | `sm:text-base` | `lg:text-lg` | — |
+| Link text | `text-sm` | `sm:text-base` | — | — |
+| Item gap | `gap-2` | `sm:gap-3` | — | — |
+
+#### Bottom bar
+
+| Property | default | sm |
+|----------|---------|----|
+| Direction | `flex-col` | `sm:flex-row` |
+| Gap | `gap-3` | `sm:gap-4` |
+| Copyright / legal text | `text-sm` | `sm:text-base` |
+| Terms+Privacy gap | `gap-4` | `sm:gap-6` |
