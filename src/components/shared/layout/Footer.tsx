@@ -27,7 +27,7 @@ interface FooterLinkColumnProps {
 }
 
 const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
-  <div className="flex flex-col gap-3 sm:gap-4">
+  <div className="flex flex-col gap-3 sm:gap-4 max-w-[40%] w-full sm:w-auto sm:max-w-auto">
     <h3 className="text-sm sm:text-base lg:text-lg font-medium text-white leading-6 sm:leading-7">
       {title}
     </h3>
@@ -63,7 +63,7 @@ const Footer = () => {
           </div>
 
           {/* Link columns */}
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 lg:gap-20 xl:gap-30 w-full sm:w-auto">
+          <div className="flex flex-wrap lg:flex-nowrap gap-8 sm:gap-12 lg:gap-14 xl:gap-30 w-full sm:w-auto">
             <FooterLinkColumn title="Company" links={companyLinks} />
             <FooterLinkColumn title="Customer Services" links={customerLinks} />
             <FooterLinkColumn title="Follow Us" links={socialLinks} />
