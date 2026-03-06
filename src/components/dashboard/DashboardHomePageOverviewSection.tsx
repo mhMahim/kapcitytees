@@ -45,12 +45,12 @@ const DashboardHomePageOverviewSection = () => {
   ];
 
   return (
-    <div className="flex gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-3.5 2xl:gap-4">
       {statsData.map((item, i) => (
         <div
           key={i}
           className={cn(
-            `flex p-6 flex-col gap-6 grow basis-0 rounded-2xl relative`,
+            `flex p-4 sm:p-5 2xl:p-6 flex-col gap-4 sm:gap-5 2xl:gap-6 rounded-xl sm:rounded-2xl relative`,
             item.activeStatus
               ? "bg-[radial-gradient(171.85%_139.66%_at_100%_100%,#328AC8_0%,#1E6FA8_96.15%)] shadow-[0_4px_21px_0_rgba(75,140,185,0.32)]"
               : "bg-white shadow-[0_4px_21px_0_rgba(98,101,120,0.04)]",
@@ -59,7 +59,7 @@ const DashboardHomePageOverviewSection = () => {
           <div className="flex justify-between items-center">
             <span
               className={cn(
-                `text-lg font-medium`,
+                `text-sm sm:text-base 2xl:text-lg font-medium`,
                 item.activeStatus ? "text-white" : "text-[#637381]",
               )}
             >
@@ -76,7 +76,7 @@ const DashboardHomePageOverviewSection = () => {
           <div className="flex justify-between items-center">
             <span
               className={cn(
-                `text-[32px] font-semibold`,
+                `text-xl sm:text-2xl 2xl:text-[32px] font-semibold`,
                 item.activeStatus ? "text-white" : "text-[#0f2a3c]",
               )}
             >
@@ -86,7 +86,7 @@ const DashboardHomePageOverviewSection = () => {
             <div className="flex gap-1 items-center">
               <span
                 className={cn(
-                  `text-lg font-medium`,
+                  `text-sm sm:text-base 2xl:text-lg font-medium`,
                   item.activeStatus ? "text-[#e9f1f6]" : "text-[#637381]",
                 )}
               >

@@ -4,7 +4,7 @@ import TopAffiliatesSection from "@/components/dashboard/TopAffiliatesSection";
 
 const page = () => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6 2xl:space-y-8">
       <DashboardHomePageOverviewSection />
       <ActivityOverviewSection />
       <TopAffiliatesSection />

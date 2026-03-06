@@ -23,9 +23,9 @@ const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
   };
 
   return (
-    <div className="bg-white flex gap-6 items-end p-4 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] h-55.5">
+    <div className="bg-white flex flex-col sm:flex-row gap-3 sm:gap-4 2xl:gap-6 sm:items-end p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] sm:h-44 lg:h-48 2xl:h-55.5">
       {/* Product Image */}
-      <div className="h-full aspect-square rounded-lg overflow-hidden shrink-0 bg-[#ededed] relative">
+      <div className="h-44 sm:h-full w-full sm:w-auto aspect-video sm:aspect-square rounded-lg overflow-hidden shrink-0 bg-[#ededed] relative">
         <Image
           src={product.image}
           alt={product.name}
@@ -35,17 +35,17 @@ const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 h-full justify-between pt-2 min-w-0">
+      <div className="flex flex-col flex-1 sm:h-full justify-between pt-1 sm:pt-2 min-w-0 gap-3 sm:gap-0">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-1">
-            <h5 className="text-xl font-medium text-[#454F5B] leading-7.5 truncate">
+            <h5 className="text-base sm:text-lg 2xl:text-xl font-medium text-[#454F5B] leading-6 sm:leading-7 2xl:leading-7.5 truncate">
               {product.name}
             </h5>
             <p className="text-base text-[#637381] leading-6">
               {product.category}
             </p>
           </div>
-          <p className="text-[32px] font-semibold text-[#1E6FA8] leading-12">
+          <p className="text-xl sm:text-2xl 2xl:text-[32px] font-semibold text-[#1E6FA8] leading-8 sm:leading-10 2xl:leading-12">
             {product.price}$
           </p>
         </div>
@@ -54,16 +54,16 @@ const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
         <div className="flex gap-2.5 w-full">
           <button
             onClick={handleCopyLink}
-            className="flex-1 bg-[#E9F1F6] rounded-xl flex items-center justify-center gap-2.5 py-3 px-5 cursor-pointer hover:bg-[#dce8ef] transition-colors"
+            className="flex-1 bg-[#E9F1F6] rounded-lg sm:rounded-xl flex items-center justify-center gap-2 sm:gap-2.5 py-2.5 sm:py-3 px-3 sm:px-5 cursor-pointer hover:bg-[#dce8ef] transition-colors"
           >
             <Copy className="size-5 text-[#1E6FA8]" />
-            <span className="text-base font-semibold text-[#1E6FA8] leading-6">
+            <span className="text-sm sm:text-base font-semibold text-[#1E6FA8] leading-5 sm:leading-6">
               Copy Link
             </span>
           </button>
           <button
             onClick={() => onQrCodeClick(product)}
-            className="bg-[#E9F1F6] rounded-xl size-12 shrink-0 flex items-center justify-center p-1 cursor-pointer hover:bg-[#dce8ef] transition-colors"
+            className="bg-[#E9F1F6] rounded-lg sm:rounded-xl size-10 sm:size-12 shrink-0 flex items-center justify-center p-1 cursor-pointer hover:bg-[#dce8ef] transition-colors"
           >
             <QrCode className="size-6 text-[#1E6FA8]" />
           </button>

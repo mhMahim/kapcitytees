@@ -191,9 +191,9 @@ const columns = [
 
 const TopAffiliatesSection = () => {
   return (
-    <div className="bg-white flex flex-col overflow-clip p-8 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full">
-      <div className="flex items-center justify-between pb-3 h-14">
-        <h3 className="text-lg font-semibold leading-6 text-textPrimary">
+    <div className="bg-white flex flex-col overflow-clip p-4 sm:p-5 lg:p-6 2xl:p-8 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full">
+      <div className="flex items-center justify-between pb-2 sm:pb-3 h-12 sm:h-14">
+        <h3 className="text-base sm:text-lg font-semibold leading-5 sm:leading-6 text-textPrimary">
           Top Affiliates
         </h3>
         <Link

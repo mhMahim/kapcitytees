@@ -52,7 +52,7 @@ const dashboardNavlinks: DashboardNavLink[] = [
   },
 ];
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   // const [logoutLoading, setLogoutLoading] = useState(false);
 
   // const handleLogout = () => {
@@ -66,7 +66,7 @@ const DashboardSidebar = () => {
       </div>
       <div className="grow flex flex-col gap-2 xl:gap-2.5">
         {dashboardNavlinks.map((link) => {
-          return <SidebarLink key={link.path} link={link} />;
+          return <SidebarLink key={link.path} link={link} onNavigate={onNavigate} />;
         })}
       </div>
       {/* <div className="">

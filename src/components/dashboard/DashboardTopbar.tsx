@@ -46,7 +46,11 @@ function getPageMeta(pathname: string) {
   return pageMeta["/dashboard"]!;
 }
 
-const DashboardTopbar = () => {
+interface DashboardTopbarProps {
+  onMenuToggle?: () => void;
+}
+
+const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
   const pathname = usePathname();
   const meta = getPageMeta(pathname);
 
@@ -56,6 +60,7 @@ const DashboardTopbar = () => {
       <div className="flex items-center gap-3">
         {/* Mobile hamburger menu */}
         <button
+          onClick={onMenuToggle}
           className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
           aria-label="Toggle menu"
         >
@@ -73,7 +78,7 @@ const DashboardTopbar = () => {
       </div>
 
       {/* Right section with notifications and avatar */}
-      <div className="right flex gap-2 sm:gap-3 lg:gap-6">
+      <div className="right flex gap-2 sm:gap-3 lg:gap-4 xl:gap-6">
         <NotificationPopover>
           <div className="bg-white aspect-square rounded-full size-10 sm:size-12 lg:size-15 flex items-center justify-center cursor-pointer relative select-none shadow-[0_0_21px_0_rgba(26,29,49,0.04)]">
             <NotificationIcon className="size-5 sm:size-6 lg:size-7" />
@@ -83,7 +88,7 @@ const DashboardTopbar = () => {
         <Popover>
           <PopoverTrigger asChild>
             <button className="flex gap-3 bg-white p-2 pr-5 rounded-full cursor-pointer">
-              <Avatar className="aspect-square shrink-0 size-11">
+              <Avatar className="aspect-square shrink-0  size-10 sm:size-12 lg:size-15">
                 <AvatarImage src="https://github.com/shadcn.png" alt="User" />
                 <AvatarFallback>AD</AvatarFallback>
               </Avatar>

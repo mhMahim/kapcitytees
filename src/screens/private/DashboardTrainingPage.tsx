@@ -153,22 +153,22 @@ const DashboardTrainingPage = () => {
     modules.find((m) => m.id === activeModuleId) ?? modules[0];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3 sm:gap-4 2xl:gap-5">
       {/* ── Warning Banner ── */}
-      <div className="bg-white flex items-center gap-3 px-6 py-4 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
+      <div className="bg-white flex items-center gap-2 sm:gap-3 px-3 sm:px-4 lg:px-5 2xl:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
         <TrainingIcon1 />
-        <p className="font-semibold text-base leading-6 text-[#637381]">
+        <p className="font-semibold text-sm sm:text-base leading-5 sm:leading-6 text-[#637381]">
           Please complete your training to get full access to the dashboard.
         </p>
       </div>
 
       {/* ── Progress Section ── */}
-      <div className="bg-white flex items-center gap-2 overflow-hidden rounded-2xl pl-10 pr-20 py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
+      <div className="bg-white flex items-center gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 sm:px-6 lg:px-8 2xl:pl-10 2xl:pr-20 py-4 sm:py-5 2xl:py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
         <div className="flex flex-col gap-2 flex-1">
           <p className="font-normal text-base leading-6 text-[#637381]">
             Your Progress
           </p>
-          <p className="font-semibold text-[32px] leading-12 text-[#1E6FA8]">
+          <p className="font-semibold text-xl sm:text-2xl 2xl:text-[32px] leading-8 sm:leading-10 2xl:leading-12 text-[#1E6FA8]">
             {completedModules}/{totalModules} Modules Completed
           </p>
         </div>
@@ -176,19 +176,19 @@ const DashboardTrainingPage = () => {
       </div>
 
       {/* ── Modules + Videos ── */}
-      <div className="flex gap-5 items-start">
+      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 2xl:gap-5 lg:items-start">
         {/* Modules Sidebar */}
-        <div className="bg-white flex flex-col gap-6 rounded-2xl px-6 py-4 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-76 shrink-0">
-          <h2 className="font-semibold text-2xl leading-9 text-[#0F2A3C]">
+        <div className="bg-white flex flex-col gap-3 sm:gap-4 2xl:gap-6 rounded-xl sm:rounded-2xl px-3 sm:px-4 lg:px-5 2xl:px-6 py-3 sm:py-4 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full lg:w-60 xl:w-68 2xl:w-76 lg:shrink-0">
+          <h2 className="font-semibold text-lg sm:text-xl 2xl:text-2xl leading-7 sm:leading-8 2xl:leading-9 text-[#0F2A3C]">
             Modules
           </h2>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
             {modules.map((mod) => (
               <button
                 key={mod.id}
                 onClick={() => setActiveModuleId(mod.id)}
                 className={cn(
-                  "flex flex-col items-start px-4 py-3 rounded-lg w-full text-left transition-colors cursor-pointer",
+                  "flex flex-col items-start px-3 sm:px-4 py-2 sm:py-3 rounded-lg shrink-0 lg:shrink lg:w-full text-left transition-colors cursor-pointer",
                   mod.id === activeModuleId
                     ? "bg-[#E9F1F6]"
                     : "hover:bg-[#F4F6F8]",
@@ -207,7 +207,7 @@ const DashboardTrainingPage = () => {
 
         {/* Video Cards Grid */}
         <div className="flex-1 min-w-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
             {activeModule.videos.map((video) => (
               <BlogVideoCard
                 key={video.id}

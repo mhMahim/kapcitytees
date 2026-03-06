@@ -61,7 +61,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (!revenueEntry) return null;
     return (
       <div className="flex flex-col items-center">
-        <div className="bg-[#4B8CB9] text-white text-base font-semibold leading-6 px-7.25 py-1.75 rounded-[35px]">
+        <div className="bg-[#4B8CB9] text-white text-xs sm:text-sm 2xl:text-base font-semibold leading-4 sm:leading-5 2xl:leading-6 px-4 sm:px-5 2xl:px-7.25 py-1 sm:py-1.5 2xl:py-1.75 rounded-[35px]">
           ${revenueEntry.value}
         </div>
         <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-[#4B8CB9]" />
@@ -79,14 +79,14 @@ const ActivityOverviewSection = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-white flex flex-col gap-4 p-8 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full">
+    <div className="bg-white flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 lg:p-6 2xl:p-8 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full">
       {/* Header */}
       <div className="flex items-center justify-between w-full">
-        <div className="flex gap-10 items-center">
-          <h2 className="text-2xl font-semibold leading-9 text-[#0F2A3C]">
+        <div className="flex gap-3 sm:gap-5 lg:gap-7 2xl:gap-10 items-center flex-wrap">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-7 sm:leading-8 lg:leading-9 text-[#0F2A3C]">
             Activity Overview
           </h2>
-          <div className="flex gap-10 items-center">
+          <div className="hidden sm:flex gap-4 lg:gap-7 2xl:gap-10 items-center">
             <div className="flex gap-1.5 items-center">
               <div className="size-4 rounded bg-[#4B8CB9]" />
               <span className="text-sm text-[#919EAB]">Revenue</span>
@@ -132,7 +132,7 @@ const ActivityOverviewSection = () => {
       </div>
 
       {/* Chart */}
-      <div className="w-full h-90.75">
+      <div className="w-full h-48 sm:h-60 lg:h-72 2xl:h-90.75">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}

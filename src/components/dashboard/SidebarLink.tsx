@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashboardNavLink } from "./DashboardSidebar";
 
-const SidebarLink = ({ link }: { link: DashboardNavLink }) => {
+const SidebarLink = ({ link, onNavigate }: { link: DashboardNavLink; onNavigate?: () => void }) => {
   const pathname = usePathname();
 
   const isActive =
@@ -16,6 +16,7 @@ const SidebarLink = ({ link }: { link: DashboardNavLink }) => {
   return (
     <Link
       href={link.path}
+      onClick={onNavigate}
       className={cn(
         "flex items-center gap-2.5 xl:gap-3 px-3.5 xl:px-4 py-3 text-[#637381] hover:text-white hover:bg-primary/75 transition-all duration-200 w-full rounded-xl cursor-pointer text-base font-medium",
         { "bg-primary text-white hover:bg-primary": isActive },

@@ -52,10 +52,10 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4 sm:gap-6 2xl:gap-8">
       {/* Search Bar */}
-      <div className="bg-white flex gap-5 items-center h-15 px-5 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
-        <SearchIcon className="size-6 shrink-0" />
+      <div className="bg-white flex gap-3 sm:gap-4 2xl:gap-5 items-center h-12 sm:h-13 2xl:h-15 px-3 sm:px-4 2xl:px-5 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
+        <SearchIcon className="size-5 sm:size-6 shrink-0" />
         <input
           type="text"
           placeholder="Search any product and get link"
@@ -69,7 +69,7 @@ const ProductPage = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 2xl:gap-6">
         {paginatedProducts.map((product, index) => (
           <ProductCard
             key={`${product.id}-${index}`}
