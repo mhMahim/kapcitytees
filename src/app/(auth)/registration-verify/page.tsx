@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -17,105 +18,182 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useRouter } from "next/navigation";
+import { ChevronLeftIcon } from "@/assets/icons";
 import Logo from "@/components/shared/Logo";
+import axios from "axios";
+import { toast } from "sonner";
+import { useStateContext } from "@/hooks/useStateContext";
 
-const verifySchema = z.object({
-  otp: z.string().min(6, "Please enter all 6 digits"),
+const verificationSchema = z.object({
+  code: z.string().min(6, "Please enter the 6-digit code"),
 });
 
-type VerifyFormValues = z.infer<typeof verifySchema>;
+type VerificationValues = z.infer<typeof verificationSchema>;
 
-const RegistrationVerifyPage = () => {
+const RegistrationVerifyContent = () => {
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
+  const { tempMail } = useStateContext();
 
-  const form = useForm<VerifyFormValues>({
-    resolver: zodResolver(verifySchema),
+  const form = useForm<VerificationValues>({
+    resolver: zodResolver(verificationSchema),
     defaultValues: {
-      otp: "",
+      code: "",
     },
   });
 
-  const onSubmit = (data: VerifyFormValues) => {
-    console.log("Verification code:", data);
-    // Handle verification logic here
-    router.push("/register-success");
+  const onSubmit = async (data: VerificationValues) => {
+    try {
+      setIsPending(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reg/verify-otp`,
+        {
+          email: tempMail,
+          otp: data.code,
+        },
+      );
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.data.role);
+      toast.success("Email verified successfully. Please log in.");
+      form.reset();
+      router.push(
+        response.data.data.role === "barber"
+          ? "/barber-after-register"
+          : "/for-clients",
+      );
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Verification failed. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
-  const handleBack = () => {
-    router.back();
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  const handleResendCode = async () => {
+    try {
+      setIsResending(true);
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/reg/resend-otp`, {
+        email: tempMail,
+      });
+      toast.success("A new verification code has been sent to your email.");
+      setCountdown(60);
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to resend code. Please try again.",
+      );
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen lg:col-span-4">
-      <div className="w-full max-w-125 px-4 sm:px-6 lg:px-0 py-8 sm:py-10 lg:py-12 flex flex-col gap-6 sm:gap-8">
-        <Logo className="2xl:hidden size-16 sm:size-18 lg:size-22" />
-        <div className="border border-[#DFE3E8] rounded-[20px] shadow-[0px_0px_40px_0px_rgba(204,204,204,0.16)] p-6 sm:p-8 lg:p-12 flex flex-col gap-6 sm:gap-7 lg:gap-8">
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold leading-8 sm:leading-10 lg:leading-12 text-textPrimary">
-              Email Verify
-            </h1>
-            <p className="text-sm sm:text-base leading-5 sm:leading-6 text-[#333B42]">
-              We&apos;ve sent a 6-digit code to your email. Please enter the
-              code below to continue.
-            </p>
-          </div>
+      <div className="max-w-132.5 w-full py-8 sm:py-10 lg:py-15 px-4 sm:px-6 lg:px-8 flex flex-col gap-8 sm:gap-10 lg:gap-12">
+        <Logo className="2xl:hidden size-16 sm:size-18 lg:size-22 mx-auto" />
+        {/* Back Button */}
+        <Link
+          href="/register"
+          className="flex items-center gap-2 text-[#637381] text-[13px] font-semibold hover:text-[#454F5B] transition-colors w-fit"
+        >
+          <ChevronLeftIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+          Back
+        </Link>
 
-          {/* Form */}
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-5 sm:gap-6"
-            >
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <InputOTP
-                        maxLength={6}
-                        value={field.value}
-                        onChange={field.onChange}
-                        containerClassName="justify-between"
-                      >
-                        <InputOTPGroup className="gap-2 sm:gap-3 mx-auto">
-                          <InputOTPSlot index={0} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                          <InputOTPSlot index={1} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                          <InputOTPSlot index={2} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                          <InputOTPSlot index={3} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                          <InputOTPSlot index={4} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                          <InputOTPSlot index={5} className="size-11 sm:size-14 lg:size-16 text-lg sm:text-xl lg:text-2xl" />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Buttons */}
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={handleBack}
-                  className="flex-1 h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
-                >
-                  Back
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
-                >
-                  Verify
-                </Button>
-              </div>
-            </form>
-          </Form>
+        {/* Header Section */}
+        <div className="flex flex-col gap-2 items-center text-center">
+          <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold leading-8 sm:leading-10 lg:leading-12 text-textPrimary">
+            Please check your email!
+          </h1>
+          <p className="text-sm sm:text-base leading-5 sm:leading-6 text-[#637381] font-normal max-w-120">
+            We&apos;ve emailed a 6-digit confirmation code, please enter the
+            code in below box to verify your email.
+          </p>
         </div>
+
+        {/* OTP Input Section */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8 sm:gap-10 lg:gap-12"
+          >
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-center gap-3 sm:gap-4">
+                  <FormControl>
+                    <InputOTP
+                      maxLength={6}
+                      {...field}
+                      containerClassName="gap-2 sm:gap-3 lg:gap-4"
+                    >
+                      <InputOTPGroup className="gap-2 sm:gap-3 lg:gap-4">
+                        {Array(6)
+                          .fill(null)
+                          .map((_, index) => (
+                            <InputOTPSlot
+                              key={index}
+                              index={index}
+                              className="size-11 sm:size-14 lg:size-16 bg-[#F4F6F8] border-[#EAECEF] text-lg sm:text-xl lg:text-2xl font-semibold text-[#637381] rounded-lg data-[active=true]:border-[#1E6FA8]"
+                            />
+                          ))}
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex flex-col gap-4 sm:gap-5 items-center">
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full h-11 sm:h-12 lg:h-13 bg-[#1E6FA8] hover:bg-[#1a5f8f] text-white font-semibold text-sm sm:text-base rounded-lg"
+              >
+                {isPending ? "Verifying..." : "Verify"}
+              </Button>
+
+              <p className="text-base lg:text-lg text-[#637381] font-medium text-center">
+                Didn&apos;t get the code?{" "}
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={isResending || countdown > 0}
+                  className="text-[#454F5B] font-semibold hover:text-textPrimary transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-fit relative after:content-[''] after:block after:w-full after:h-px after:bg-textPrimary after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+                >
+                  {isResending
+                    ? "Sending..."
+                    : countdown > 0
+                      ? `Resend code (${countdown}s)`
+                      : "Resend code"}
+                </button>
+              </p>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
 };
 
-export default RegistrationVerifyPage;
+const RegistrationVerify = () => (
+  <Suspense>
+    <RegistrationVerifyContent />
+  </Suspense>
+);
+
+export default RegistrationVerify;

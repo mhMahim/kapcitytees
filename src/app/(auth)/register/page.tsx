@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import { Input } from "@/components/auth-ui/input";
 import { Label } from "@/components/auth-ui/label";
 import { PasswordInput } from "@/components/auth-ui/password-input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import {
   Form,
   FormControl,
@@ -20,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { GoogleLoginBtn } from "@/assets/icons";
 import Logo from "@/components/shared/Logo";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const loginFormSchema = z
   .object({
@@ -42,6 +45,7 @@ const RegisterPageContent = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const router = useRouter();
+  const { setTempMail } = useStateContext();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -53,9 +57,35 @@ const RegisterPageContent = () => {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Register data:", data);
-    router.push(type === "barber" ? "/barber-after-register" : "/for-clients");
+  const [isPending, setIsPending] = useState(false);
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      setIsPending(true);
+      console.log(data);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/register`,
+        {
+          name: data.fullName,
+          email: data.email,
+          password: data.password,
+          password_confirmation: data.confirmPassword,
+          role: type === "barber" ? "barber" : "user",
+        },
+      );
+      console.log(response.data);
+      toast.success("Registration successful, please verify your account.");
+      router.push(`/registration-verify`);
+      setTempMail(data.email);
+      form.reset();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Registration failed. Please try again.",
+      );
+      return;
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -152,9 +182,10 @@ const RegisterPageContent = () => {
 
               <Button
                 type="submit"
+                disabled={isPending}
                 className="h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
               >
-                Create Account
+                {isPending ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
           </Form>
