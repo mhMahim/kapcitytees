@@ -1,4 +1,4 @@
-import { StateContext } from "@/providers/StateContextProvider";
+import { StateContext } from "@/provider/StateContextProvider";
 import { useContext } from "react";
 
 export const useStateContext = () => {

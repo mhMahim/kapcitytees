@@ -1,12 +1,16 @@
+"use client";
+
+import { useStateContext } from "@/hooks/useStateContext";
 import Image from "next/image";
 
-interface AccountHeaderProps {
-  name: string;
-  email: string;
-  avatarUrl?: string;
-}
+const AccountHeader = () => {
+  const { userData } = useStateContext();
+  const data = userData?.data;
 
-const AccountHeader = ({ name, email, avatarUrl }: AccountHeaderProps) => {
+  const name = data?.name ?? "";
+  const email = data?.email ?? "";
+  const avatarUrl = data?.avatar ?? null;
+
   return (
     <div className="flex items-center gap-4 sm:gap-6 lg:gap-9">
       {/* Avatar */}
@@ -30,10 +34,10 @@ const AccountHeader = ({ name, email, avatarUrl }: AccountHeaderProps) => {
           Welcome back
         </p>
         <div className="flex flex-col gap-1">
-            <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight sm:leading-9 lg:leading-12 text-[#0F2A3C]">
+          <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight sm:leading-9 lg:leading-12 text-[#0F2A3C]">
             {name}
           </h2>
-            <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
+          <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
             {email}
           </p>
         </div>

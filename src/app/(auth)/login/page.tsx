@@ -22,6 +22,7 @@ import { useStateContext } from "@/hooks/useStateContext";
 import Logo from "@/components/shared/Logo";
 import axios from "axios";
 import { toast } from "sonner";
+import { googleLogin } from "@/lib/auth";
 
 interface RegisterPageProps {
   searchParams: Promise<{ type?: string }>;
@@ -40,6 +41,7 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
   console.log(type);
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [isGooglePending, setIsGooglePending] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -158,10 +160,25 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
             <div className="flex-1 h-px bg-[#EAECEF]"></div>
           </div>
 
-          <div className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
+          <div
+            onClick={async () => {
+              if (isGooglePending) return;
+              setIsGooglePending(true);
+              try {
+                await googleLogin(setIsLoggedIn, "/for-clients");
+              } catch (error: any) {
+                toast.error(
+                  error?.response?.data?.message ||
+                    "Google login failed. Please try again.",
+                );
+              } finally {
+                setIsGooglePending(false);
+              }
+            }}
+            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
             <GoogleLoginBtn />
             <p className="text-[#454F5B] text-base sm:text-lg font-medium">
-              Log in with Google
+              {isGooglePending ? "Signing in..." : "Log in with Google"}
             </p>
           </div>
 

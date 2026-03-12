@@ -1,21 +1,22 @@
+"use client";
+
 import Link from "next/link";
 import { EditIcon } from "@/assets/icons";
+import { useStateContext } from "@/hooks/useStateContext";
 
-interface PersonalInfoProps {
-  fullName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  address: string;
-}
+const ProfileSection = () => {
+  const { userData } = useStateContext();
+  const data = userData?.data;
 
-const ProfileSection = ({
-  fullName,
-  email,
-  phone,
-  dateOfBirth,
-  address,
-}: PersonalInfoProps) => {
+  const fullName = data?.name ?? "—";
+  const email = data?.email ?? "—";
+  const phone = data?.phone ?? "—";
+  const dateOfBirth = data?.dob ?? "—";
+  const address =
+    [data?.address, data?.city, data?.state, data?.postal_code]
+      .filter(Boolean)
+      .join(", ") || "—";
+
   return (
     <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] pt-5 pb-8 px-4 sm:pt-6 sm:pb-10 sm:px-6 lg:pt-8 lg:pb-12 lg:px-10 flex flex-col gap-6 sm:gap-8 lg:gap-10 flex-1">
       {/* Header */}
@@ -28,12 +29,14 @@ const ProfileSection = ({
           className="flex items-center gap-2 text-[#1E6FA8] hover:opacity-80 transition-opacity"
         >
           <EditIcon className="size-6 text-[#1E6FA8]" />
-          <span className="text-sm sm:text-base lg:text-lg font-medium leading-6 lg:leading-9">Edit</span>
+          <span className="text-sm sm:text-base lg:text-lg font-medium leading-6 lg:leading-9">
+            Edit
+          </span>
         </Link>
       </div>
 
       {/* Info Grid */}
-        <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
+      <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
         {/* Row 1 */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-0">
           <div className="flex-1 flex flex-col gap-2">

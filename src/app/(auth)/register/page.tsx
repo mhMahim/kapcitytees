@@ -23,6 +23,7 @@ import Logo from "@/components/shared/Logo";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useStateContext } from "@/hooks/useStateContext";
+import { googleLogin } from "@/lib/auth";
 
 const loginFormSchema = z
   .object({
@@ -45,7 +46,7 @@ const RegisterPageContent = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const router = useRouter();
-  const { setTempMail } = useStateContext();
+  const { setTempMail, setIsLoggedIn } = useStateContext();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -58,6 +59,7 @@ const RegisterPageContent = () => {
   });
 
   const [isPending, setIsPending] = useState(false);
+  const [isGooglePending, setIsGooglePending] = useState(false);
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setIsPending(true);
@@ -196,10 +198,28 @@ const RegisterPageContent = () => {
             <div className="flex-1 h-px bg-[#EAECEF]"></div>
           </div>
 
-          <div className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
+          <div
+            onClick={async () => {
+              if (isGooglePending) return;
+              setIsGooglePending(true);
+              try {
+                await googleLogin(
+                  setIsLoggedIn,
+                  type === "barber" ? "/barber-after-register" : "/dashboard",
+                );
+              } catch (error: any) {
+                toast.error(
+                  error?.response?.data?.message ||
+                    "Google sign-up failed. Please try again.",
+                );
+              } finally {
+                setIsGooglePending(false);
+              }
+            }}
+            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
             <GoogleLoginBtn />
             <p className="text-[#454F5B] text-base sm:text-lg font-medium">
-              Sign up with Google
+              {isGooglePending ? "Signing up..." : "Sign up with Google"}
             </p>
           </div>
 

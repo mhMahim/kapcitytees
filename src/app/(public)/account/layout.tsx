@@ -6,7 +6,7 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Container className="flex flex-col gap-6 sm:gap-8 lg:gap-12 py-6 sm:py-8 lg:py-12">
       {/* User Profile Header */}
-      <AccountHeader name="Johnathan Smith" email="john.smith@email.com" />
+      <AccountHeader />
 
       {/* Divider */}
       <hr className="border-t border-[#DFE3E8]" />

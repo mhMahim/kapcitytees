@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+import { toast } from "sonner";
 import Container from "../shared/Container";
 import {
   Form,
@@ -38,6 +41,8 @@ const inputCls =
   "w-full border border-[#DFE3E8] rounded-lg px-5 py-3 text-base text-[#0F2A3C] placeholder:text-[#919EAB] outline-none focus:border-[#1E6FA8] transition-colors bg-white";
 
 const ContactFormSection = () => {
+  const [isPending, setIsPending] = useState(false);
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -49,9 +54,26 @@ const ContactFormSection = () => {
     },
   });
 
-  const onSubmit = (data: ContactFormValues) => {
-    console.log("Contact form submission:", data);
-    // TODO: wire up to API
+  const onSubmit = async (data: ContactFormValues) => {
+    try {
+      setIsPending(true);
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/contact/send`, {
+        name: data.fullName,
+        email: data.email,
+        phone: data.phoneNumber,
+        topic: data.topic,
+        message: data.message,
+      });
+      toast.success("Message sent successfully. We'll get back to you soon.");
+      form.reset();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to send message. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -188,9 +210,10 @@ const ContactFormSection = () => {
             <div className="flex justify-center pt-2">
               <button
                 type="submit"
-                className="bg-[#1E6FA8] hover:bg-[#1a5f91] transition-colors text-white font-semibold text-sm sm:text-base leading-6 px-10 sm:px-25 py-3 rounded-xl cursor-pointer w-full sm:w-auto"
+                disabled={isPending}
+                className="bg-[#1E6FA8] hover:bg-[#1a5f91] transition-colors text-white font-semibold text-sm sm:text-base leading-6 px-10 sm:px-25 py-3 rounded-xl cursor-pointer w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Send Message
+                {isPending ? "Sending..." : "Send Message"}
               </button>
             </div>
           </form>
@@ -201,4 +224,3 @@ const ContactFormSection = () => {
 };
 
 export default ContactFormSection;
-
