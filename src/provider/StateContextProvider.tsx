@@ -17,7 +17,9 @@ export const StateContext = createContext<StateContextType | null>(null);
 
 const StateContextProvider = ({ children }: { children: ReactNode }) => {
   const [tempMail, setTempMail] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [isLoggedIn, setIsLoggedIn] = useState(() =>
+    typeof window !== "undefined" ? !!localStorage.getItem("token") : false,
+  );
   const { data: siteInfoData } = useFetchData("/site-info");
   const { data: socialLinksData } = useFetchData("/social-links");
   const { data: userData } = useFetchData("/profile", true);
