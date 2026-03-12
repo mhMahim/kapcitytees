@@ -16,10 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { GoogleLoginBtn } from "@/assets/icons";
 import { useStateContext } from "@/hooks/useStateContext";
 import Logo from "@/components/shared/Logo";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface RegisterPageProps {
   searchParams: Promise<{ type?: string }>;
@@ -37,6 +39,7 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
   const { type } = React.use(searchParams);
   console.log(type);
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -46,11 +49,30 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    setIsLoggedIn(true);
-    router.push("/account");
-    // Handle login logic here
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      setIsPending(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/login`,
+        {
+          email: data.email,
+          password: data.password,
+        },
+      );
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.data.role);
+      setIsLoggedIn(true);
+      toast.success("Logged in successfully.");
+      router.push(
+        response.data.data.role === "barber" ? "/dashboard" : "/account",
+      );
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Login failed. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -122,9 +144,10 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
 
               <Button
                 type="submit"
+                disabled={isPending}
                 className="h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
               >
-                Login
+                {isPending ? "Logging in..." : "Login"}
               </Button>
             </form>
           </Form>

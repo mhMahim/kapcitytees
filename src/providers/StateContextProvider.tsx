@@ -13,7 +13,7 @@ export const StateContext = createContext<StateContextType | null>(null);
 
 const StateContextProvider = ({ children }: { children: ReactNode }) => {
   const [tempMail, setTempMail] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
   return (
     <StateContext.Provider

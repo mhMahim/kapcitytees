@@ -11,6 +11,8 @@ import {
 import ProfilePopoverMenu from "@/components/dashboard/ProfilePopoverMenu";
 import NotificationPopover from "@/components/dashboard/NotificationPopover";
 import { usePathname } from "next/navigation";
+import { logout } from "@/lib/auth";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const pageMeta: Record<string, { title: string; subtitle: string }> = {
   "/dashboard": {
@@ -53,6 +55,7 @@ interface DashboardTopbarProps {
 const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
   const pathname = usePathname();
   const meta = getPageMeta(pathname);
+  const { setIsLoggedIn } = useStateContext();
 
   return (
     <div className="flex justify-between items-center p-3 sm:p-4 lg:p-6 xl:p-8 gap-3">
@@ -102,7 +105,7 @@ const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto rounded-xl border-0 p-4 shadow-[0px_4px_16px_0px_rgba(145,158,171,0.16)]">
-            <ProfilePopoverMenu />
+            <ProfilePopoverMenu onLogout={() => logout(setIsLoggedIn)} />
           </PopoverContent>
         </Popover>
       </div>

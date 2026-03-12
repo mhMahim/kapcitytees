@@ -1,0 +1,24 @@
+import axios from "axios";
+import { toast } from "sonner";
+
+export async function logout(
+  setIsLoggedIn: (v: boolean) => void,
+): Promise<void> {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/logout`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    console.log("log out dfgih");
+  } catch {
+    // proceed with local logout even if the API call fails
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    toast.success("Logged out successfully.");
+    window.location.href = "/";
+  }
+}

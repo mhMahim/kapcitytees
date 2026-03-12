@@ -8,9 +8,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PasswordInput } from "@/components/auth-ui/password-input";
+import { logout } from "@/lib/auth";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const SecuritySection = () => {
+  const { setIsLoggedIn } = useStateContext();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await logout(setIsLoggedIn);
+    setIsLoggingOut(false);
+  };
   const [showChangePasswordDialog, setShowChangePasswordDialog] =
     useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -83,9 +93,11 @@ const SecuritySection = () => {
             </button>
             <button
               type="button"
-              className="flex-1 bg-[#FF4842] rounded py-4 px-8 text-[15px] font-bold text-white hover:bg-[#e63e38] transition-colors cursor-pointer"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="flex-1 bg-[#FF4842] rounded py-4 px-8 text-[15px] font-bold text-white hover:bg-[#e63e38] transition-colors cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Log Out
+              {isLoggingOut ? "Logging Out..." : "Log Out"}
             </button>
           </div>
         </DialogContent>
