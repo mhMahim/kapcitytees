@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PasswordInput } from "@/components/auth-ui/password-input";
 import { logout } from "@/lib/auth";
 import { useStateContext } from "@/hooks/useStateContext";
+import axios from "axios";
+import { toast } from "sonner";
 
 const SecuritySection = () => {
   const { setIsLoggedIn } = useStateContext();
@@ -25,6 +23,89 @@ const SecuritySection = () => {
     useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  const handleChangePassword = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Authentication required. Please log in again.");
+      return;
+    }
+
+    if (!currentPassword || !newPassword || !newPasswordConfirmation) {
+      toast.error("Please fill all password fields.");
+      return;
+    }
+
+    if (newPassword !== newPasswordConfirmation) {
+      toast.error("New password and confirm password do not match.");
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile/change-password`,
+        {
+          current_password: currentPassword,
+          new_password: newPassword,
+          new_password_confirmation: newPasswordConfirmation,
+        },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast.success("Password changed successfully.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setNewPasswordConfirmation("");
+      setShowChangePasswordDialog(false);
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to change password. Please try again.",
+      );
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Authentication required. Please log in again.");
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile/delete`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      setIsLoggedIn(false);
+      setDeleteConfirmText("");
+      setShowDeleteDialog(false);
+      toast.success("Account deleted successfully.");
+      window.location.href = "/";
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to delete account. Please try again.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
@@ -77,7 +158,9 @@ const SecuritySection = () => {
             <DialogTitle className="text-xl sm:text-2xl font-semibold leading-8 sm:leading-9">
               Log out
             </DialogTitle>
-            <p className="text-sm sm:text-base leading-5 sm:leading-6">Are you sure you want to Log out?</p>
+            <p className="text-sm sm:text-base leading-5 sm:leading-6">
+              Are you sure you want to Log out?
+            </p>
           </div>
           <div className="flex gap-2 w-full">
             <button
@@ -116,6 +199,8 @@ const SecuritySection = () => {
                   Current Password
                 </label>
                 <PasswordInput
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
                   className="h-12.5 bg-white"
                 />
@@ -125,6 +210,8 @@ const SecuritySection = () => {
                   New Password
                 </label>
                 <PasswordInput
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
                   className="h-12.5 bg-white"
                 />
@@ -134,6 +221,8 @@ const SecuritySection = () => {
                   Confirm Password
                 </label>
                 <PasswordInput
+                  value={newPasswordConfirmation}
+                  onChange={(e) => setNewPasswordConfirmation(e.target.value)}
                   placeholder="Confirm new password"
                   className="h-12.5 bg-white"
                 />
@@ -141,9 +230,17 @@ const SecuritySection = () => {
             </div>
             <button
               type="button"
-              className="bg-[#1E6FA8] text-white font-semibold text-base h-13 rounded-xl hover:bg-[#1a5f92] transition-colors cursor-pointer w-full"
+              onClick={handleChangePassword}
+              disabled={
+                isChangingPassword ||
+                !currentPassword ||
+                !newPassword ||
+                !newPasswordConfirmation ||
+                newPassword !== newPasswordConfirmation
+              }
+              className="bg-[#1E6FA8] text-white font-semibold text-base h-13 rounded-xl hover:bg-[#1a5f92] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-full"
             >
-              Update Password
+              {isChangingPassword ? "Updating..." : "Update Password"}
             </button>
           </div>
         </DialogContent>
@@ -173,10 +270,11 @@ const SecuritySection = () => {
               />
               <button
                 type="button"
-                disabled={deleteConfirmText !== "Delete"}
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmText !== "Delete" || isDeleting}
                 className="bg-[#FF4842] text-white text-[15px] font-medium h-10 px-6 rounded-xl hover:bg-[#e63e38] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
-                Delete Account
+                {isDeleting ? "Deleting..." : "Delete Account"}
               </button>
             </div>
           </div>
