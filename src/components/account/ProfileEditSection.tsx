@@ -27,6 +27,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useStateContext } from "@/hooks/useStateContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const profileSchema = z.object({
   fullName: z
@@ -107,6 +108,8 @@ const ProfileEditSection = () => {
     }
   }, [form, initialFormValues]);
 
+  const queryClient = useQueryClient();
+
   const onSubmit = async (formValues: ProfileFormValues) => {
     const token = localStorage.getItem("token");
 
@@ -117,27 +120,29 @@ const ProfileEditSection = () => {
 
     try {
       setIsPending(true);
+      const payload = {
+        name: formValues.fullName,
+        phone: formValues.phone,
+        shop_name: rawDefaults.shopName,
+        barber_license: rawDefaults.barberLicense,
+        gender: rawDefaults.gender,
+        dob: format(formValues.dateOfBirth, "yyyy-MM-dd"),
+        city: formValues.city,
+        state: formValues.state,
+        postal_code: formValues.postalCode,
+        address: formValues.address,
+        social_link: rawDefaults.socialLink,
+        website_link: rawDefaults.websiteLink,
+        other_link: rawDefaults.otherLink,
+      };
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
-        {
-          name: formValues.fullName,
-          phone: formValues.phone,
-          shop_name: rawDefaults.shopName,
-          barber_license: rawDefaults.barberLicense,
-          gender: rawDefaults.gender,
-          dob: format(formValues.dateOfBirth, "yyyy-MM-dd"),
-          city: formValues.city,
-          state: formValues.state,
-          postal_code: formValues.postalCode,
-          address: formValues.address,
-          social_link: rawDefaults.socialLink,
-          website_link: rawDefaults.websiteLink,
-          other_link: rawDefaults.otherLink,
-        },
+        payload,
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
       toast.success("Profile updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ["/profile"] });
       router.push("/account");
     } catch (error: any) {
       toast.error(
