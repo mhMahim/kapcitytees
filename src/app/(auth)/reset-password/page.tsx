@@ -17,6 +17,9 @@ import { ChevronLeftIcon } from "@/assets/icons";
 import { Label } from "@/components/auth-ui/label";
 import { PasswordInput } from "@/components/auth-ui/password-input";
 import Logo from "@/components/shared/Logo";
+import axios from "axios";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const verificationSchema = z
   .object({
@@ -33,6 +36,7 @@ type VerificationValues = z.infer<typeof verificationSchema>;
 
 const ForgotPasswordVerifyPage = () => {
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<VerificationValues>({
     resolver: zodResolver(verificationSchema),
@@ -42,9 +46,34 @@ const ForgotPasswordVerifyPage = () => {
     },
   });
 
-  const onSubmit = (data: VerificationValues) => {
-    console.log("Verification code:", data);
-    router.push("/password-updated");
+  const onSubmit = async (data: VerificationValues) => {
+    const resetToken = localStorage.getItem("reset_token");
+
+    if (!resetToken) {
+      toast.error("Reset token missing. Please verify OTP again.");
+      router.push("/forgot-password");
+      return;
+    }
+
+    try {
+      setIsPending(true);
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`, {
+        reset_token: resetToken,
+        password: data.password,
+        password_confirmation: data.confirmPassword,
+      });
+      localStorage.removeItem("reset_token");
+      toast.success("Password reset successful.");
+      form.reset();
+      router.push("/password-updated");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Password reset failed. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -115,9 +144,10 @@ const ForgotPasswordVerifyPage = () => {
             </div>
             <Button
               type="submit"
+              disabled={isPending}
               className="w-full h-11 sm:h-12 lg:h-13 bg-[#1E6FA8] hover:bg-[#1a5f8f] text-white font-semibold text-sm sm:text-base rounded-lg"
             >
-              Reset Password
+              {isPending ? "Resetting..." : "Reset Password"}
             </Button>
           </form>
         </Form>

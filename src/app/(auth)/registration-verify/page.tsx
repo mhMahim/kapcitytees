@@ -187,7 +187,7 @@ const RegistrationVerifyContent = () => {
         </Form>
       </div>
     </div>
-  );
+  ); 
 };
 
 const RegistrationVerify = () => (

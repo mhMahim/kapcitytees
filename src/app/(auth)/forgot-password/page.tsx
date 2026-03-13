@@ -17,6 +17,10 @@ import {
 import { useRouter } from "next/navigation";
 import { ChevronLeftIcon } from "@/assets/icons";
 import Logo from "@/components/shared/Logo";
+import axios from "axios";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -26,6 +30,8 @@ type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPasswordPage = () => {
   const router = useRouter();
+  const { setTempMail } = useStateContext();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -34,9 +40,24 @@ const ForgotPasswordPage = () => {
     },
   });
 
-  const onSubmit = (data: ForgotPasswordValues) => {
-    console.log("Forgot password data:", data);
-    router.push("/forgot-pass-verify");
+  const onSubmit = async (data: ForgotPasswordValues) => {
+    try {
+      setIsPending(true);
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/forgot-password`, {
+        email: data.email,
+      });
+      setTempMail(data.email);
+      toast.success("Verification code sent to your email.");
+      router.push("/forgot-pass-verify");
+      form.reset();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to send verification code. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -91,9 +112,10 @@ const ForgotPasswordPage = () => {
 
             <Button
               type="submit"
+              disabled={isPending}
               className="w-full h-11 sm:h-12 lg:h-13 bg-[#1E6FA8] hover:bg-[#1a5f8f] text-white font-semibold text-sm sm:text-base rounded-lg"
             >
-              Send
+              {isPending ? "Sending..." : "Send"}
             </Button>
           </form>
         </Form>

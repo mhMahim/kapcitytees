@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +21,9 @@ import {
 import { useRouter } from "next/navigation";
 import { ChevronLeftIcon } from "@/assets/icons";
 import Logo from "@/components/shared/Logo";
+import axios from "axios";
+import { toast } from "sonner";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const verificationSchema = z.object({
   code: z.string().min(6, "Please enter the 6-digit code"),
@@ -29,6 +33,10 @@ type VerificationValues = z.infer<typeof verificationSchema>;
 
 const ForgotPasswordVerifyPage = () => {
   const router = useRouter();
+  const { tempMail } = useStateContext();
+  const [isPending, setIsPending] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(60);
 
   const form = useForm<VerificationValues>({
     resolver: zodResolver(verificationSchema),
@@ -37,14 +45,68 @@ const ForgotPasswordVerifyPage = () => {
     },
   });
 
-  const onSubmit = (data: VerificationValues) => {
-    console.log("Verification code:", data);
-    router.push("/reset-password");
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  const onSubmit = async (data: VerificationValues) => {
+    if (!tempMail) {
+      toast.error("Email not found. Please request a new code.");
+      router.push("/forgot-password");
+      return;
+    }
+
+    try {
+      setIsPending(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/verify-otp`,
+        {
+        email: tempMail,
+        otp: data.code,
+        },
+      );
+      const resetToken =
+        response?.data?.reset_token || response?.data?.data?.reset_token;
+      if (resetToken) {
+        localStorage.setItem("reset_token", resetToken);
+      }
+      toast.success("OTP verified successfully.");
+      form.reset();
+      router.push("/reset-password");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Verification failed. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
-  const handleResendCode = () => {
-    console.log("Resending code...");
-    // Add resend logic here
+  const handleResendCode = async () => {
+    if (!tempMail) {
+      toast.error("Email not found. Please request a new code.");
+      router.push("/forgot-password");
+      return;
+    }
+
+    try {
+      setIsResending(true);
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/resend-otp`, {
+        email: tempMail,
+      });
+      toast.success("A new verification code has been sent to your email.");
+      setCountdown(60);
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to resend code. Please try again.",
+      );
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -109,9 +171,10 @@ const ForgotPasswordVerifyPage = () => {
             <div className="flex flex-col gap-4 sm:gap-5 items-center">
               <Button
                 type="submit"
+                disabled={isPending}
                 className="w-full h-11 sm:h-12 lg:h-13 bg-[#1E6FA8] hover:bg-[#1a5f8f] text-white font-semibold text-sm sm:text-base rounded-lg"
               >
-                Verify
+                {isPending ? "Verifying..." : "Verify"}
               </Button>
 
               <p className="text-base sm:text-lg text-[#637381] font-medium text-center">
@@ -119,9 +182,14 @@ const ForgotPasswordVerifyPage = () => {
                 <button
                   type="button"
                   onClick={handleResendCode}
-                  className="text-[#454F5B] font-semibold hover:text-textPrimary transition-colors cursor-pointer w-fit relative after:content-[''] after:block after:w-full after:h-px after:bg-textPrimary after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+                  disabled={isResending || countdown > 0}
+                  className="text-[#454F5B] font-semibold hover:text-textPrimary transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-fit relative after:content-[''] after:block after:w-full after:h-px after:bg-textPrimary after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
                 >
-                  Resend code
+                  {isResending
+                    ? "Sending..."
+                    : countdown > 0
+                      ? `Resend code (${countdown}s)`
+                      : "Resend code"}
                 </button>
               </p>
             </div>
