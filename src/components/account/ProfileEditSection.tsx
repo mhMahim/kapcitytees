@@ -1,11 +1,14 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import axios from "axios";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,6 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const profileSchema = z.object({
   fullName: z
@@ -46,52 +50,103 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-interface ProfileEditSectionProps {
-  defaultValues?: {
-    fullName: string;
-    phone: string;
-    email: string;
-    dateOfBirth: string;
-    address: string;
-    city: string;
-    state: string;
-    postalCode: string;
-  };
-}
-
-const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
+const ProfileEditSection = () => {
   const router = useRouter();
+  const { userData } = useStateContext();
+  const profileData = userData?.data;
+  const [isPending, setIsPending] = useState(false);
 
-  const rawDefaults = defaultValues ?? {
-    fullName: "Johnathan Smith",
-    phone: "+1 234 567 890",
-    email: "johnathansmith@mail.com",
-    dateOfBirth: "",
-    address: "245 Greenfield Avenue, Apartment 12B",
-    city: "New York",
-    state: "United States",
-    postalCode: "10001",
-  };
+  const rawDefaults = useMemo(
+    () => ({
+      fullName: profileData?.name ?? "",
+      phone: profileData?.phone ?? "",
+      email: profileData?.email ?? "",
+      dateOfBirth: profileData?.dob ?? "",
+      address: profileData?.address ?? "",
+      city: profileData?.city ?? "",
+      state: profileData?.state ?? "",
+      postalCode: profileData?.postal_code ?? "",
+      shopName: profileData?.shop_name ?? "",
+      barberLicense: profileData?.barber_license ?? "",
+      gender: profileData?.gender ?? "",
+      socialLink: profileData?.social_link ?? "",
+      websiteLink: profileData?.website_link ?? "",
+      otherLink: profileData?.other_link ?? "",
+    }),
+    [profileData],
+  );
 
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
+  const parsedDateOfBirth = useMemo(() => {
+    if (!rawDefaults.dateOfBirth) return undefined;
+    const parsedDate = new Date(rawDefaults.dateOfBirth);
+    return Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+  }, [rawDefaults.dateOfBirth]);
+
+  const initialFormValues = useMemo(
+    () => ({
       fullName: rawDefaults.fullName,
       phone: rawDefaults.phone,
       email: rawDefaults.email,
-      dateOfBirth: rawDefaults.dateOfBirth
-        ? new Date(rawDefaults.dateOfBirth)
-        : undefined,
+      dateOfBirth: parsedDateOfBirth,
       address: rawDefaults.address,
       city: rawDefaults.city,
       state: rawDefaults.state,
       postalCode: rawDefaults.postalCode,
-    },
+    }),
+    [parsedDateOfBirth, rawDefaults],
+  );
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: initialFormValues,
   });
 
-  const onSubmit = (data: ProfileFormValues) => {
-    console.log("Profile saved:", data);
-    // TODO: send data to API
+  useEffect(() => {
+    if (!form.formState.isDirty) {
+      form.reset(initialFormValues);
+    }
+  }, [form, initialFormValues]);
+
+  const onSubmit = async (formValues: ProfileFormValues) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Authentication required. Please log in again.");
+      return;
+    }
+
+    try {
+      setIsPending(true);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
+        {
+          name: formValues.fullName,
+          phone: formValues.phone,
+          shop_name: rawDefaults.shopName,
+          barber_license: rawDefaults.barberLicense,
+          gender: rawDefaults.gender,
+          dob: format(formValues.dateOfBirth, "yyyy-MM-dd"),
+          city: formValues.city,
+          state: formValues.state,
+          postal_code: formValues.postalCode,
+          address: formValues.address,
+          social_link: rawDefaults.socialLink,
+          website_link: rawDefaults.websiteLink,
+          other_link: rawDefaults.otherLink,
+        },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast.success("Profile updated successfully.");
+      router.push("/account");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to update profile. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -101,7 +156,7 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
         className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-8 flex flex-col gap-6 sm:gap-8 lg:gap-12 flex-1"
       >
         {/* Form Fields */}
-          <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
+        <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
           {/* Row 1: Full name + Phone */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <FormField
@@ -299,9 +354,10 @@ const ProfileEditSection = ({ defaultValues }: ProfileEditSectionProps) => {
           </button>
           <button
             type="submit"
-            className="w-full sm:w-60 h-13 rounded-xl bg-[#1E6FA8] text-base font-semibold text-white leading-6 hover:bg-[#1A5F91] transition-colors cursor-pointer"
+            disabled={isPending}
+            className="w-full sm:w-60 h-13 rounded-xl bg-[#1E6FA8] text-base font-semibold text-white leading-6 hover:bg-[#1A5F91] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Save Changes
+            {isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
