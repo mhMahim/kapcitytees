@@ -5,10 +5,8 @@ import { cn } from "@/lib/utils";
 import SectionHeaderWithLines from "../shared/SectionHeaderWithLines";
 import Container from "../shared/Container";
 
-const MIN_CLIENTS = 10;
-const MAX_CLIENTS = 300;
-const CONVERSION_RATE = 0.2; // 20%
-const UNITS_PER_CONVERSION = 2;
+const MIN_CLIENTS = 5;
+const MAX_CLIENTS = 100;
 const PRICE_PER_UNIT = 85;
 const COMMISSION_RATE = 0.2; // 20%
 
@@ -21,9 +19,9 @@ function formatCurrency(amount: number) {
 }
 
 const EarningPotentialSection = () => {
-  const [clients, setClients] = useState(60);
+  const [clients, setClients] = useState(40);
 
-  const units = Math.round(clients * CONVERSION_RATE * UNITS_PER_CONVERSION);
+  const units = clients;
   const grossRevenue = units * PRICE_PER_UNIT;
   const monthlyEarnings = grossRevenue * COMMISSION_RATE;
 
@@ -122,15 +120,15 @@ const EarningPotentialSection = () => {
           <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
             <div className="flex flex-col gap-1 sm:gap-2">
               <p className="text-[10px] sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
-                Conversion Rate
+                Average Order
               </p>
               <p className="text-lg sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
-                {(CONVERSION_RATE * 100).toFixed(0)}%
+                $85
               </p>
             </div>
             <div className="flex flex-col gap-1 sm:gap-2">
               <p className="text-[10px] sm:text-sm lg:text-base xl:text-lg font-medium text-[#5E707C] leading-5 sm:leading-7">
-                Units/Month
+                Order/Month
               </p>
               <p className="text-lg sm:text-2xl lg:text-[32px] font-semibold leading-tight lg:leading-12 text-[#1E6FA8]">
                 {units}
