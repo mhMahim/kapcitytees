@@ -18,7 +18,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/product/${product.id}`;
+    const link = `${window.location.origin}${product.id}`;
     navigator.clipboard.writeText(link);
   };
 

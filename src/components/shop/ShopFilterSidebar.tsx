@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import useFetchData from "@/hooks/useFetchData";
 
 // ── Checkbox row ──────────────────────────────────────────────────────────────
 interface CheckboxRowProps {
@@ -78,7 +79,11 @@ const FilterSection = ({
 };
 
 // ── Price range ───────────────────────────────────────────────────────────────
-const PriceRangeFilter = () => {
+interface PriceRangeFilterProps {
+  onPriceChange?: (min: number, max: number) => void;
+}
+
+const PriceRangeFilter = ({ onPriceChange }: PriceRangeFilterProps) => {
   const [min, setMin] = useState(10);
   const [max, setMax] = useState(500);
   const MIN = 0;
@@ -112,6 +117,7 @@ const PriceRangeFilter = () => {
           onChange={(e) => {
             const val = Math.min(Number(e.target.value), max - 10);
             setMin(val);
+            onPriceChange?.(val, max);
           }}
           className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#1E6FA8] [&::-webkit-slider-thumb]:shadow-sm"
         />
@@ -124,6 +130,7 @@ const PriceRangeFilter = () => {
           onChange={(e) => {
             const val = Math.max(Number(e.target.value), min + 10);
             setMax(val);
+            onPriceChange?.(min, val);
           }}
           className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#1E6FA8] [&::-webkit-slider-thumb]:shadow-sm"
         />
@@ -145,12 +152,19 @@ const PriceRangeFilter = () => {
 };
 
 // ── Main sidebar ──────────────────────────────────────────────────────────────
-const categories = [
-  { label: "Beard", count: 18 },
-  { label: "Hair", count: 18 },
-  { label: "Skin", count: 18 },
-  { label: "Shaving", count: 18 },
-];
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ShopFilterSidebarProps {
+  onCategoryChange?: (categoryIds: number[]) => void;
+  onPriceChange?: (min: number, max: number) => void;
+}
 
 const ratings = [
   { label: "5", count: 18 },
@@ -160,20 +174,33 @@ const ratings = [
   { label: "1+", count: 18 },
 ];
 
-const ShopFilterSidebar = () => {
-  const [activeCats, setActiveCats] = useState<string[]>(["Beard"]);
+const ShopFilterSidebar = ({ onCategoryChange, onPriceChange }: ShopFilterSidebarProps = {}) => {
+  const [activeCats, setActiveCats] = useState<number[]>([]);
   const [activeRatings, setActiveRatings] = useState<string[]>([]);
   const [barberCertified, setBarberCertified] = useState(true);
 
-  const toggleCat = (label: string) =>
-    setActiveCats((prev) =>
-      prev.includes(label) ? prev.filter((c) => c !== label) : [...prev, label]
-    );
+  const toggleCat = (id: number) =>
+    setActiveCats((prev) => {
+      const newCats = prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id];
+      onCategoryChange?.(newCats);
+      return newCats;
+    });
 
   const toggleRating = (label: string) =>
     setActiveRatings((prev) =>
       prev.includes(label) ? prev.filter((r) => r !== label) : [...prev, label]
     );
+
+  const [categoriesData, setCategoriesData] = useState<Category[]>([]);
+
+  const {data: categoriesApiData, isPending: categoriesApiPending} = useFetchData("/categories");
+
+  useEffect(()=>{
+    if(categoriesApiData){
+      setCategoriesData(categoriesApiData.data.data);
+    }
+  },[categoriesApiData])
+
 
   return (
     <aside className="flex flex-col gap-4 sm:gap-6 w-full">
@@ -181,7 +208,7 @@ const ShopFilterSidebar = () => {
 
       <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 w-full">
         {/* Price */}
-        <PriceRangeFilter />
+        <PriceRangeFilter onPriceChange={onPriceChange} />
 
         {/* Barber Certified */}
         <div className="flex flex-col gap-4 w-full">
@@ -196,15 +223,18 @@ const ShopFilterSidebar = () => {
 
         {/* Category */}
         <FilterSection title="Category">
-          {categories.map((cat) => (
-            <CheckboxRow
-              key={cat.label}
-              label={cat.label}
-              count={cat.count}
-              checked={activeCats.includes(cat.label)}
-              onChange={() => toggleCat(cat.label)}
-            />
-          ))}
+          {categoriesApiPending ? (
+            <div className="text-sm text-[#919DA5] py-2">Loading categories...</div>
+          ) : (
+            categoriesData?.map((cat) => (
+              <CheckboxRow
+                key={cat.id}
+                label={cat.name}
+                checked={activeCats.includes(cat.id)}
+                onChange={() => toggleCat(cat.id)}
+              />
+            ))
+          )}
         </FilterSection>
 
         {/* Rating */}

@@ -41,7 +41,7 @@ const ProductImageGallery = ({
       </div>
 
       {/* Thumbnail Strip */}
-      <div className="flex gap-3 w-full">
+      {/* <div className="flex gap-3 w-full">
         {images.map((image, index) => (
           <button
             key={index}
@@ -60,7 +60,7 @@ const ProductImageGallery = ({
             />
           </button>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -105,36 +105,109 @@ const relatedProducts: ShopProductCardProps[] = [
   },
 ];
 
-const ProductDetailPage = () => {
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface ProductDetailPageProps {
+  product?: any;
+  isPending?: boolean;
+}
+
+const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProps) => {
+  console.log(product);
+  if (isPending || !product) {
+    return (
+      <main className="min-h-screen">
+        <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+            <div className="w-full lg:w-[420px] xl:w-182.5 shrink-0 flex flex-col gap-6">
+              <Skeleton className="w-full aspect-730/585 rounded-3xl" />
+              <div className="flex gap-3">
+                <Skeleton className="flex-1 aspect-square rounded-xl" />
+                <Skeleton className="flex-1 aspect-square rounded-xl" />
+                <Skeleton className="flex-1 aspect-square rounded-xl" />
+                <Skeleton className="flex-1 aspect-square rounded-xl" />
+              </div>
+            </div>
+            <div className="flex flex-col gap-6 flex-1">
+              <Skeleton className="w-1/3 h-5 rounded" />
+              <div className="flex flex-col gap-8 sm:gap-14 lg:gap-18">
+                <div className="flex flex-col gap-5 sm:gap-8">
+                  <div className="flex flex-col gap-3">
+                    <Skeleton className="w-2/3 h-10 rounded" />
+                    <Skeleton className="w-1/4 h-5 rounded" />
+                  </div>
+                  <Skeleton className="w-full h-24 rounded" />
+                </div>
+                <Skeleton className="w-1/4 h-12 rounded" />
+              </div>
+            </div>
+          </div>
+          <Skeleton className="w-full h-96 rounded-3xl" />
+        </Container>
+      </main>
+    );
+  }
+
+  // Dynamic values mapping
+  const galleryImages = product?.thumbnail_url ? [product.thumbnail_url] : productImages;
+  
+  // Use regex to strip HTML for plain text fields, if needed. For descriptions you might want to render HTML instead, but for now we follow the existing format.
+  const stripHtml = (html: string) => html ? html.replace(/<[^>]+>/g, '') : "";
+
+  const dynamicSections = [
+    {
+      title: "Product Description",
+      paragraph: stripHtml(product?.description) || "No description provided.",
+    },
+    ...descriptionSections.slice(1) // Keep remaining mock tabs for visual completeness if needed
+  ];
+
+  const dynamicRelated = (product?.related_products || []).map((item: any) => ({
+    id: item.id,
+    name: item.title,
+    category: item.category?.name || "Uncategorized",
+    price: parseFloat(item.price || "0"),
+    image: item.thumbnail_url || PRODUCT_IMG,
+    slug: item.slug,
+    barberCertified: false,
+  }));
+
   return (
     <main className="min-h-screen">
       <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
         {/* Product Hero: Image Gallery + Info */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
           <ProductImageGallery
-            images={productImages}
-            productName="Beard Oil"
-            barberCertified
+            images={galleryImages}
+            productName={product?.title || "Product"}
+            barberCertified={false}
           />
           <ProductInfo
-            name="Beard Oil"
-            category="Beard"
-            breadcrumb="Home / Shop / Beard Oil"
-            rating={4}
-            reviewCount="100+ Review"
-            description="Stop the itch and start the growth. Our barber-certified formula uses organic Argan and Jojoba oils to soften coarse whiskers while hydrating the skin underneath. Design for daily use to leave your beard smelling like fresh cedar and looking shop-fresh."
-            price={49.99}
+            name={product?.title || "Product Title"}
+            category={product?.category?.name || "Uncategorized"}
+            breadcrumb={`Home / Shop / ${product?.title || ""}`}
+            rating={5}
+            reviewCount="No Reviews"
+            description={stripHtml(product?.sort_description)}
+            price={parseFloat(product?.price || "0")}
           />
         </div>
 
         {/* Description / Review Tabs */}
-        <ProductDescriptionTabs sections={descriptionSections} />
+        <ProductDescriptionTabs sections={dynamicSections} />
 
         {/* Related Products */}
-        <RelatedProducts
-          title="Barber Certified Product"
-          products={relatedProducts}
-        />
+        {dynamicRelated.length > 0 ? (
+          <RelatedProducts
+            title="Related Products"
+            products={dynamicRelated}
+          />
+        ) : (
+          <RelatedProducts
+            title="Barber Certified Product"
+            products={relatedProducts} // Fallback to mock if API returns empty array for demo purposes
+          />
+        )}
       </Container>
     </main>
   );
