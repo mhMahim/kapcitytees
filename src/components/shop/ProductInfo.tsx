@@ -4,8 +4,11 @@ import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { StarFilledIcon, StarEmptyIcon } from "@/assets/icons";
 import Link from "next/link";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface ProductInfoProps {
+  productId: number | string;
   name: string;
   category: string;
   breadcrumb: string;
@@ -16,6 +19,7 @@ interface ProductInfoProps {
 }
 
 const ProductInfo = ({
+  productId,
   name,
   category,
   breadcrumb,
@@ -32,6 +36,52 @@ const ProductInfo = ({
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
+  };
+
+  const [isPending, setIsPending] = useState(false);
+
+  const addOnCart = async () => {
+    const token = localStorage.getItem("token");
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+    if (!token) {
+      toast.error("Please login to add product to cart.");
+      return;
+    }
+
+    if (!baseUrl) {
+      toast.error("Base URL is not configured.");
+      return;
+    }
+
+    if (!productId) {
+      toast.error("Product is not available.");
+      return;
+    }
+
+    try {
+      setIsPending(true);
+      await axios.post(
+        `${baseUrl}/cart`,
+        {
+          product_id: productId,
+          quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Product added to cart.");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Failed to add product to cart."
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -104,8 +154,12 @@ const ProductInfo = ({
 
             {/* Action Buttons */}
             <div className="flex gap-2 sm:gap-4 items-center flex-wrap">
-              <button className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors cursor-pointer">
-                Add to Cart
+              <button
+                onClick={addOnCart}
+                disabled={isPending}
+                className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {isPending ? "Adding..." : "Add to Cart"}
               </button>
               <Link
                 href="/cart"

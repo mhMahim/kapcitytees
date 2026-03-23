@@ -183,6 +183,7 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
             barberCertified={false}
           />
           <ProductInfo
+            productId={product?.id || ""}
             name={product?.title || "Product Title"}
             category={product?.category?.name || "Uncategorized"}
             breadcrumb={`Home / Shop / ${product?.title || ""}`}
