@@ -30,10 +30,10 @@ const CartItem = ({
   onRemove,
 }: CartItemProps) => {
   return (
-    <div className="bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between pl-4 pr-5 sm:pr-6 py-4 rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] gap-3 sm:gap-0 w-full">
+    <div className="bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between pl-4 pr-5 sm:pr-6 py-4 rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] gap-3 sm:gap-5 w-full">
       {/* Product info */}
-      <div className="flex gap-3 sm:gap-5 items-center sm:w-65">
-        <div className="relative size-16 sm:size-20 shrink-0 rounded-xl overflow-hidden bg-[#F4F6F8]">
+      <div className="flex gap-3 sm:gap-5 items-center">
+        <div className="relative size-16 sm:size-20 shrink-0 rounded-xl overflow-hidden bg-[#F4F6F8] self-start">
           <Image
             src={image}
             alt={name}

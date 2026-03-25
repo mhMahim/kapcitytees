@@ -15,7 +15,7 @@ function useAxios() {
 const useFetchData = (
   url: string,
   token: boolean = false,
-  options?: UseQueryOptions<any, unknown, any, any>,
+  options?: Omit<UseQueryOptions<any, unknown, any, any>, "queryKey" | "queryFn">,
 ): UseQueryResult<any, unknown> => {
   const axiosInstance = useAxios();
 

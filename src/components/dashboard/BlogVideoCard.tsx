@@ -1,6 +1,7 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { PlayCircleIcon } from "@/assets/icons";
+import { isValidUrl } from "@/lib/utils";
 
 export interface BlogVideoCardProps {
   title: string;
@@ -24,7 +25,12 @@ const BlogVideoCard = ({
     <Link href={`${link}${slug}`} className={cardClassName}>
       {/* Thumbnail with play button */}
       <div className="relative w-full h-36 sm:h-40 lg:h-44 2xl:h-50 rounded-lg overflow-hidden">
-        <Image src={thumbnail} alt={title} fill className="object-cover" />
+        <Image
+          src={isValidUrl(thumbnail) ? thumbnail : "/default-thumbnail.png"}
+          alt={title}
+          fill
+          className="object-cover"
+        />
         {/* Play circle icon centered on the image */}
         <div className="absolute inset-0 flex items-center justify-center">
           <PlayCircleIcon className="size-10 sm:size-12 2xl:size-14" />

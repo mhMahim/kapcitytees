@@ -5,94 +5,29 @@ import BlogVideoCard from "@/components/dashboard/BlogVideoCard";
 import { TrainingIcon1 } from "@/assets/icons";
 import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import { cn } from "@/lib/utils";
+import useFetchData from "@/hooks/useFetchData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /* ────────────────────────── Data ────────────────────────── */
 
 interface Module {
   id: string;
   name: string;
-  category: string;
-  videos: {
-    id: number;
-    slug: string;
-    title: string;
-    description: string;
-  }[];
 }
 
-const modules: Module[] = [
-  {
-    id: "diagnosis",
-    name: "4-Step Diagnosis System",
-    category: "Diagnosis",
-    videos: [
-      {
-        id: 1,
-        slug: "barbers-guide-to-using-beard-oil",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-      {
-        id: 2,
-        slug: "barbers-guide-to-using-beard-oil-2",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-      {
-        id: 3,
-        slug: "barbers-guide-to-using-beard-oil-3",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-      {
-        id: 4,
-        slug: "barbers-guide-to-using-beard-oil-4",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-      {
-        id: 5,
-        slug: "barbers-guide-to-using-beard-oil-5",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-      {
-        id: 6,
-        slug: "barbers-guide-to-using-beard-oil-6",
-        title: "Barber's Guide to Using Beard Oil",
-        description:
-          "Learn the correct way to apply beard oil to reduce itch, soften your beard, and keep your skin healthy. Simple steps for better daily grooming.",
-      },
-    ],
-  },
-  {
-    id: "consultation",
-    name: "Consultation Framework",
-    category: "Consultation",
-    videos: [],
-  },
-  {
-    id: "conversion",
-    name: "Conversion Scripts",
-    category: "Conversion",
-    videos: [],
-  },
-  {
-    id: "product",
-    name: "Product Knowledge",
-    category: "Product",
-    videos: [],
-  },
-];
+interface ApiModule {
+  id: number;
+  name: string;
+  slug?: string;
+}
 
-const completedModules = 0;
-const totalModules = modules.length;
-const progressPercent = 70;
+interface Tutorial {
+  id: number;
+  title: string;
+  slug: string;
+  video_url?: string;
+  thumbnail?: string;
+}
 
 /* ────────────────── Circular Progress ────────────────── */
 
@@ -148,9 +83,40 @@ const CircularProgress = ({
 /* ────────────────── Page Component ────────────────── */
 
 const DashboardTrainingPage = () => {
-  const [activeModuleId, setActiveModuleId] = useState(modules[0].id);
-  const activeModule =
-    modules.find((m) => m.id === activeModuleId) ?? modules[0];
+  const [activeModuleId, setActiveModuleId] = useState("");
+  const {
+    data: modulesResponse,
+    isPending: isModulesPending,
+    isError: isModulesError,
+  } = useFetchData("/modules", true);
+
+  const modules: Module[] = (
+    (modulesResponse?.data?.data as ApiModule[] | undefined) ?? []
+  ).map((module) => ({
+    id: module.id.toString(),
+    name: module.name,
+  }));
+
+  const selectedModuleId = modules.some(
+    (module) => module.id === activeModuleId,
+  )
+    ? activeModuleId
+    : (modules[0]?.id ?? "");
+
+  const {
+    data: tutorialsResponse,
+    isPending: isTutorialsPending,
+    isError: isTutorialsError,
+  } = useFetchData(`/modules/tutorials/${selectedModuleId}`, true, {
+    enabled: Boolean(selectedModuleId),
+  });
+
+  const tutorials: Tutorial[] =
+    (tutorialsResponse?.data?.data as Tutorial[] | undefined) ?? [];
+
+  const completedModules = 0;
+  const totalModules = modules.length;
+  const progressPercent = 70;
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4 2xl:gap-5">
@@ -182,49 +148,78 @@ const DashboardTrainingPage = () => {
           <h2 className="font-semibold text-lg sm:text-xl 2xl:text-2xl leading-7 sm:leading-8 2xl:leading-9 text-[#0F2A3C]">
             Modules
           </h2>
-          <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
-            {modules.map((mod) => (
-              <button
-                key={mod.id}
-                onClick={() => setActiveModuleId(mod.id)}
-                className={cn(
-                  "flex flex-col items-start px-3 sm:px-4 py-2 sm:py-3 rounded-lg shrink-0 lg:shrink lg:w-full text-left transition-colors cursor-pointer",
-                  mod.id === activeModuleId
-                    ? "bg-[#E9F1F6]"
-                    : "hover:bg-[#F4F6F8]",
-                )}
-              >
-                <span className="font-semibold text-base leading-6 text-[#0F2A3C]">
-                  {mod.name}
-                </span>
-                <span className="font-normal text-sm leading-5.5 text-[#919EAB]">
-                  {mod.category}
-                </span>
-              </button>
-            ))}
-          </div>
+          {isModulesPending ? (
+            <div className="flex flex-col gap-2 sm:gap-3">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} className="h-16 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : isModulesError ? (
+            <div className="rounded-lg bg-[#FFF2F2] px-3 py-3">
+              <p className="text-sm leading-5 text-[#B42318]">
+                Failed to load modules. Please try again later.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
+              {modules.map((mod, idx) => (
+                <button
+                  key={mod.id}
+                  onClick={() => setActiveModuleId(mod.id)}
+                  className={cn(
+                    "flex flex-col items-start px-3 sm:px-4 py-2 sm:py-3 rounded-lg shrink-0 lg:shrink lg:w-full text-left transition-colors cursor-pointer",
+                    mod.id === selectedModuleId
+                      ? "bg-[#E9F1F6]"
+                      : "hover:bg-[#F4F6F8]",
+                  )}
+                >
+                  <span className="font-semibold text-base leading-6 text-[#0F2A3C]">
+                    {idx + 1}. {mod.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Video Cards Grid */}
         <div className="flex-1 min-w-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
-            {activeModule.videos.map((video) => (
-              <BlogVideoCard
-                key={video.id}
-                title={video.title}
-                description={video.description}
-                thumbnail={blogThumbnail}
-                slug={video.slug}
-              />
-            ))}
-          </div>
-
-          {activeModule.videos.length === 0 && (
+          {isTutorialsPending ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <Skeleton key={index} className="h-64 w-full rounded-2xl" />
+              ))}
+            </div>
+          ) : isTutorialsError ? (
             <div className="flex items-center justify-center h-64 bg-white rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
-              <p className="text-[#919EAB] text-base">
-                No videos available for this module yet.
+              <p className="text-[#B42318] text-base">
+                Unable to load training data right now.
               </p>
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
+                {tutorials.map((tutorial) => (
+                  <BlogVideoCard
+                    key={tutorial.id}
+                    title={tutorial.title}
+                    description="Watch this tutorial video."
+                    thumbnail={tutorial.thumbnail ? `https://kapcitytees.thewarriors.team/${tutorial.thumbnail}` : blogThumbnail}
+                    slug={tutorial.id.toString()}
+                  />
+                ))}
+              </div>
+
+              {!selectedModuleId || tutorials.length === 0 ? (
+                <div className="flex items-center justify-center h-64 bg-white rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
+                  <p className="text-[#919EAB] text-base">
+                    {selectedModuleId
+                      ? "No videos available for this module yet."
+                      : "No modules available right now."}
+                  </p>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       </div>

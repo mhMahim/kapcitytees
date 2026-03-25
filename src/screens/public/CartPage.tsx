@@ -8,6 +8,7 @@ import CartItem, { CartItemData } from "@/components/cart/CartItem";
 import BillingFormCard from "@/components/cart/BillingFormCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import useFetchData from "@/hooks/useFetchData";
+import Link from "next/link";
 
 // Placeholder product image
 const PRODUCT_IMG = "https://i.ibb.co.com/27rvh0W6/Rectangle-55.png";
@@ -260,9 +261,9 @@ const CartPage = () => {
                   <div className="bg-white rounded-[20px] p-10 text-center shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)]">
                     <p className="text-base font-normal text-[#919EAB]">
                       Your cart is empty.{" "}
-                      <a href="/shop" className="text-[#1E6FA8] underline">
+                      <Link href="/for-clients" className="text-[#1E6FA8] underline">
                         Continue shopping
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 ) : (
