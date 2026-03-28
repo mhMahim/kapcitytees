@@ -24,8 +24,6 @@ const StateContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: socialLinksData } = useFetchData("/social-links");
   const { data: userData } = useFetchData("/profile", true);
 
-  console.log("userData", userData);
-
   return (
     <StateContext.Provider
       value={{

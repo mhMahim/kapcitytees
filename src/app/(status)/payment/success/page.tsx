@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -150,11 +150,20 @@ const PaymentSuccessPage = () => {
           }`}
         >
           {status === "loading" ? (
-            <LoaderCircle color="#1E6FA8" className="size-12 sm:size-14 lg:size-16 animate-spin" />
+            <LoaderCircle
+              color="#1E6FA8"
+              className="size-12 sm:size-14 lg:size-16 animate-spin"
+            />
           ) : status === "success" ? (
-            <CheckCircle2 color="#1D9A5F"  className="size-12 sm:size-14 lg:size-16" />
+            <CheckCircle2
+              color="#1D9A5F"
+              className="size-12 sm:size-14 lg:size-16"
+            />
           ) : (
-            <XCircle color="#D14343" className="size-12 sm:size-14 lg:size-16" />
+            <XCircle
+              color="#D14343"
+              className="size-12 sm:size-14 lg:size-16"
+            />
           )}
         </div>
 
@@ -184,7 +193,7 @@ const PaymentSuccessPage = () => {
               asChild
               className="h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base"
             >
-              <Link href="/shop" className="px-8 sm:px-10">
+              <Link href="/for-clients" className="px-8 sm:px-10">
                 Continue Shopping
               </Link>
             </Button>
@@ -226,8 +235,45 @@ const PaymentSuccessPage = () => {
   );
 };
 
+const PaymentSuccessFallback = () => {
+  return (
+    <div className="bg-[#F9FAFB] min-h-screen flex items-center justify-center px-4 sm:px-6">
+      <div className="bg-white px-6 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-18 flex flex-col items-center rounded-4xl space-y-6 sm:space-y-7 lg:space-y-8 w-full max-w-150">
+        <Logo className="size-20 sm:size-24 lg:size-32" />
+
+        <div className="flex items-center justify-center rounded-full size-16 sm:size-18 lg:size-20 bg-[#E6F0F7]">
+          <LoaderCircle
+            color="#1E6FA8"
+            className="size-12 sm:size-14 lg:size-16 animate-spin"
+          />
+        </div>
+
+        <div className="space-y-3 sm:space-y-4 text-center">
+          <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold text-[#0F2A3C]">
+            Confirming Payment
+          </h1>
+          <p className="text-sm sm:text-base text-[#637381]">
+            Please wait while we confirm your payment.
+          </p>
+        </div>
+
+        <Button
+          disabled
+          className="h-11 sm:h-12 lg:h-14.5 text-sm sm:text-base w-full sm:w-80"
+        >
+          Verifying payment...
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const page = () => {
-  return <PaymentSuccessPage />;
+  return (
+    <Suspense fallback={<PaymentSuccessFallback />}>
+      <PaymentSuccessPage />
+    </Suspense>
+  );
 };
 
 export default page;
