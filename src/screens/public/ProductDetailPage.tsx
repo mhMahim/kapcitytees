@@ -119,7 +119,7 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
       <main className="min-h-screen">
         <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
-            <div className="w-full lg:w-[420px] xl:w-182.5 shrink-0 flex flex-col gap-6">
+            <div className="w-full lg:w-105 xl:w-182.5 shrink-0 flex flex-col gap-6">
               <Skeleton className="w-full aspect-730/585 rounded-3xl" />
               <div className="flex gap-3">
                 <Skeleton className="flex-1 aspect-square rounded-xl" />
@@ -195,7 +195,10 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
         </div>
 
         {/* Description / Review Tabs */}
-        <ProductDescriptionTabs sections={dynamicSections} />
+        <ProductDescriptionTabs
+          sections={dynamicSections}
+          productId={product?.id || ""}
+        />
 
         {/* Related Products */}
         {dynamicRelated.length > 0 ? (

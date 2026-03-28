@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import OrderSummary from "./OrderSummary";
+import axios from "axios";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const billingSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -50,8 +53,42 @@ const BillingFormCard = ({
     },
   });
 
-  const handleSubmit = (values: BillingFormValues) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (values: BillingFormValues) => {
     onSubmit?.(values);
+
+    localStorage.setItem(
+      "billingInfo",
+      JSON.stringify({
+        ...values,
+        tax,
+        shipping,
+        shippingCharge: shipping,
+        shipping_charge: shipping,
+      }),
+    );
+
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/stripe`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      window.location.href = response.data.url;
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message ||
+          "An error occurred while processing your payment. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClass =
@@ -66,7 +103,7 @@ const BillingFormCard = ({
           className="flex flex-col gap-6 sm:gap-8 lg:gap-10"
         >
           {/* ── Billing Information ──────────────────────────────── */}
-            <div className="flex flex-col gap-5 sm:gap-8">
+          <div className="flex flex-col gap-5 sm:gap-8">
             <h2 className="text-xl sm:text-2xl font-semibold leading-8 sm:leading-9 text-[#0F2A3C]">
               Billing Information
             </h2>
@@ -197,9 +234,10 @@ const BillingFormCard = ({
           {/* ── Pay Now ───────────────────────────────────────────── */}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="h-13 w-full bg-[#1E6FA8] rounded-xl text-white text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors flex items-center justify-center cursor-pointer"
           >
-            Pay Now
+            {isSubmitting ? "Processing..." : "Pay Now"}
           </button>
         </form>
       </Form>
