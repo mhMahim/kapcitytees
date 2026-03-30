@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { QrCode } from "lucide-react";
 import {
   Dialog,
@@ -11,9 +12,15 @@ interface QRCodeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   productName?: string;
+  qrCode?: string | null;
 }
 
-const QRCodeDialog = ({ open, onOpenChange, productName }: QRCodeDialogProps) => {
+const QRCodeDialog = ({
+  open,
+  onOpenChange,
+  productName,
+  qrCode,
+}: QRCodeDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -31,10 +38,20 @@ const QRCodeDialog = ({ open, onOpenChange, productName }: QRCodeDialogProps) =>
           </h3>
 
           {/* QR Code Placeholder */}
-          <div className="w-full sm:w-89.5 aspect-square bg-white rounded-xl flex items-center justify-center">
-            <div className="size-full flex items-center justify-center text-[#1E6FA8]">
-              <QrCode className="size-40 sm:size-52 2xl:size-64 stroke-[0.5]" />
-            </div>
+          <div className="w-full sm:w-89.5 aspect-square bg-white rounded-xl flex items-center justify-center overflow-hidden border border-[#E5E7EB] relative">
+            {qrCode ? (
+              <Image
+                src={qrCode}
+                alt={`QR Code for ${productName || "Product"}`}
+                fill
+                unoptimized
+                className="object-contain"
+              />
+            ) : (
+              <div className="size-full flex items-center justify-center text-[#1E6FA8]">
+                <QrCode className="size-40 sm:size-52 2xl:size-64 stroke-[0.5]" />
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

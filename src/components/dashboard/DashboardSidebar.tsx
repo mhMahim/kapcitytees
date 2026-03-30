@@ -28,7 +28,7 @@ const dashboardNavlinks: DashboardNavLink[] = [
   {
     name: "Products",
     icon: ProductIcon,
-    path: "/dashboard/product",
+    path: "/dashboard/products",
   },
   {
     name: "My Clients",

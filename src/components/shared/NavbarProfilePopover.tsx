@@ -8,14 +8,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ExitIcon } from "@/assets/icons";
 import { useStateContext } from "@/hooks/useStateContext";
-import { useRouter } from "next/navigation";
+import { logout } from "@/lib/auth";
 
 const UserProfileIcon = () => (
   <svg
@@ -39,17 +35,17 @@ const NavbarProfilePopover = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { setIsLoggedIn } = useStateContext();
-  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleOpenLogoutDialog = () => {
     setPopoverOpen(false);
     setLogoutDialogOpen(true);
   };
 
-  const handleConfirmLogout = () => {
-    setIsLoggedIn(false);
-    setLogoutDialogOpen(false);
-    router.push("/login");
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await logout(setIsLoggedIn);
+    setIsLoggingOut(false);
   };
 
   return (
@@ -118,10 +114,10 @@ const NavbarProfilePopover = () => {
             </button>
             <button
               type="button"
-              onClick={handleConfirmLogout}
+              onClick={handleLogout}
               className="flex-1 bg-[#FF4842] rounded py-4 px-8 text-[15px] font-bold text-white hover:bg-[#e63e38] transition-colors cursor-pointer"
             >
-              Log Out
+              {isLoggingOut ? "Logging Out..." : "Log Out"}
             </button>
           </div>
         </DialogContent>

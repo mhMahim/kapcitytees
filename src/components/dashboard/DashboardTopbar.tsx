@@ -23,7 +23,7 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
     title: "Training & Onboarding",
     subtitle: "Learn and understand your clients better",
   },
-  "/dashboard/product": {
+  "/dashboard/products": {
     title: "Products",
     subtitle: "Share links and Earn commission.",
   },

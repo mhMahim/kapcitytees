@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Copy, QrCode } from "lucide-react";
+import { Copy, Loader2, QrCode } from "lucide-react";
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   category: string;
   price: number;
@@ -13,14 +13,19 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
+  onCopyLinkClick: (product: Product) => void;
   onQrCodeClick: (product: Product) => void;
+  isCopyPending?: boolean;
+  isQrPending?: boolean;
 }
 
-const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
-  const handleCopyLink = () => {
-    const link = `${window.location.origin}${product.id}`;
-    navigator.clipboard.writeText(link);
-  };
+const ProductCard = ({
+  product,
+  onCopyLinkClick,
+  onQrCodeClick,
+  isCopyPending = false,
+  isQrPending = false,
+}: ProductCardProps) => {
 
   return (
     <div className="bg-white flex flex-col sm:flex-row gap-3 sm:gap-4 2xl:gap-6 sm:items-end p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] sm:h-44 lg:h-48 2xl:h-55.5">
@@ -53,19 +58,31 @@ const ProductCard = ({ product, onQrCodeClick }: ProductCardProps) => {
         {/* Actions */}
         <div className="flex gap-2.5 w-full">
           <button
-            onClick={handleCopyLink}
-            className="flex-1 bg-[#E9F1F6] rounded-lg sm:rounded-xl flex items-center justify-center gap-2 sm:gap-2.5 py-2.5 sm:py-3 px-3 sm:px-5 cursor-pointer hover:bg-[#dce8ef] transition-colors"
+            type="button"
+            onClick={() => onCopyLinkClick(product)}
+            disabled={isCopyPending}
+            className="flex-1 bg-[#E9F1F6] rounded-lg sm:rounded-xl flex items-center justify-center gap-2 sm:gap-2.5 py-2.5 sm:py-3 px-3 sm:px-5 cursor-pointer hover:bg-[#dce8ef] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <Copy className="size-5 text-[#1E6FA8]" />
+            {isCopyPending ? (
+              <Loader2 className="size-5 text-[#1E6FA8] animate-spin" />
+            ) : (
+              <Copy className="size-5 text-[#1E6FA8]" />
+            )}
             <span className="text-sm sm:text-base font-semibold text-[#1E6FA8] leading-5 sm:leading-6">
-              Copy Link
+              {isCopyPending ? "Copying..." : "Copy Link"}
             </span>
           </button>
           <button
+            type="button"
             onClick={() => onQrCodeClick(product)}
-            className="bg-[#E9F1F6] rounded-lg sm:rounded-xl size-10 sm:size-12 shrink-0 flex items-center justify-center p-1 cursor-pointer hover:bg-[#dce8ef] transition-colors"
+            disabled={isQrPending}
+            className="bg-[#E9F1F6] rounded-lg sm:rounded-xl size-10 sm:size-12 shrink-0 flex items-center justify-center p-1 cursor-pointer hover:bg-[#dce8ef] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <QrCode className="size-6 text-[#1E6FA8]" />
+            {isQrPending ? (
+              <Loader2 className="size-6 text-[#1E6FA8] animate-spin" />
+            ) : (
+              <QrCode className="size-6 text-[#1E6FA8]" />
+            )}
           </button>
         </div>
       </div>
