@@ -28,7 +28,8 @@ const ShopPage = () => {
     return `/products?${params.toString()}`;
   }, [selectedCategoryIds, minPrice, maxPrice, search, sort, size]);
 
-  const { data: productsApiData, isPending: productsLoading } = useFetchData(productsUrl);
+  const { data: productsApiData, isPending: productsLoading } =
+    useFetchData(productsUrl);
 
   // Map API response to ShopProductCardProps[]
   const [products, setProducts] = useState<ShopProductCardProps[]>([]);
@@ -74,7 +75,9 @@ const ShopPage = () => {
         {/* Right: Products */}
         <div className="flex-1 min-w-0">
           {productsLoading ? (
-            <div className="text-center py-10 text-[#919DA5]">Loading products...</div>
+            <div className="text-center py-10 text-[#919DA5]">
+              Loading products...
+            </div>
           ) : (
             <ShopProductGrid products={products} totalResults={totalResults} />
           )}
@@ -85,4 +88,3 @@ const ShopPage = () => {
 };
 
 export default ShopPage;
-

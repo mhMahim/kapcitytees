@@ -24,7 +24,7 @@ const ShopProductCard = ({
 }: ShopProductCardProps) => {
   return (
     <Link
-      href={`/product/${id}`}
+      href={`/products/${id}`}
       className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-3 flex flex-col gap-1 relative"
     >
       {/* Barber Certified Badge */}
