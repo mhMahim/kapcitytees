@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/auth-ui/input";
 import { Label } from "@/components/auth-ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/shared/Logo";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const barberApplicationSchema = z.object({
   shopName: z.string().min(2, "Shop name must be at least 2 characters"),
@@ -45,29 +50,59 @@ type BarberApplicationValues = z.infer<typeof barberApplicationSchema>;
 
 const BarberAfterRegisterPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { userData } = useStateContext();
+  const profileData = userData?.data;
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<BarberApplicationValues>({
     resolver: zodResolver(barberApplicationSchema),
-    defaultValues: {
-      shopName: "",
-      address: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      clientsPerMonth: "",
-      phoneNumber: "",
-      instagram: "",
-      website: "",
-      other: "",
-    },
   });
 
-  const onSubmit = (data: BarberApplicationValues) => {
-    console.log("Barber Application data:", {
-      ...data,
-      clientsPerMonth: Number(data.clientsPerMonth),
-    });
-    router.push("/application-received");
+  const onSubmit = async (data: BarberApplicationValues) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Authentication required. Please log in again.");
+      return;
+    }
+
+    try {
+      setIsPending(true);
+
+      const payload = new FormData();
+      payload.append("name", profileData?.name ?? "");
+      payload.append("phone", data.phoneNumber ?? "");
+      payload.append("shop_name", data.shopName);
+      payload.append("barber_license", profileData?.barber_license ?? "");
+      payload.append("gender", profileData?.gender ?? "");
+      payload.append("dob", profileData?.dob ?? "");
+      payload.append("city", data.city);
+      payload.append("state", data.state);
+      payload.append("postal_code", data.zipCode);
+      payload.append("address", data.address);
+      payload.append("social_link", data.instagram ?? "");
+      payload.append("website_link", data.website ?? "");
+      payload.append("other_link", data.other ?? "");
+      payload.append("clients_per_month", data.clientsPerMonth);
+
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast.success("Application submitted successfully.");
+      queryClient.invalidateQueries({ queryKey: ["/profile"] });
+      router.push("/application-received");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.errors ||
+          "Failed to submit application. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -297,9 +332,10 @@ const BarberAfterRegisterPage = () => {
 
             <Button
               type="submit"
+              disabled={isPending}
               className="h-11 sm:h-12 lg:h-13 text-sm sm:text-base"
             >
-              Submit Application
+              {isPending ? "Submitting..." : "Submit Application"}
             </Button>
           </form>
         </Form>

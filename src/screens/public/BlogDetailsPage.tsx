@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
 import { PlayCircleIcon } from "@/assets/icons";
 import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import useFetchData from "@/hooks/useFetchData";
@@ -11,40 +11,90 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface TutorialDetails {
   id: number;
+  module?: string;
   title: string;
   slug: string;
   video_url?: string;
   thumbnail?: string;
+  thumbnail_url?: string;
   description?: string;
+  views_count?: number;
+  is_active?: number;
 }
 
 const BlogDetailsPage = () => {
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
   const params = useParams<{ slug: string }>();
   const tutorialId = params?.slug;
 
-  const {
-    data,
-    isPending,
-    isError,
-  } = useFetchData(`/modules/tutorials/details/${tutorialId}`, true, {
-    enabled: Boolean(tutorialId),
-  });
+  const { data, isPending, isError } = useFetchData(
+    `/modules/tutorials/details/${tutorialId}`,
+    true,
+    {
+      enabled: Boolean(tutorialId),
+    },
+  );
 
   const tutorial = useMemo(() => {
     const detailsData = data?.data?.data;
+    const normalizedDetails = detailsData?.data ?? detailsData;
 
-    if (Array.isArray(detailsData)) {
-      return detailsData[0] as TutorialDetails | undefined;
+    if (Array.isArray(normalizedDetails)) {
+      return normalizedDetails[0] as TutorialDetails | undefined;
     }
 
-    return detailsData as TutorialDetails | undefined;
+    return normalizedDetails as TutorialDetails | undefined;
   }, [data]);
 
-  const thumbnailSrc = tutorial?.thumbnail
-    ? tutorial.thumbnail.startsWith("http") || tutorial.thumbnail.startsWith("/")
-      ? tutorial.thumbnail
-      : `/${tutorial.thumbnail}`
-    : blogThumbnail;
+  const resolveAssetUrl = (url?: string) => {
+    if (!url) return undefined;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+
+    const normalizedPath = url.startsWith("/") ? url.slice(1) : url;
+    return `https://kapcitytees.thewarriors.team/${normalizedPath}`;
+  };
+
+  const thumbnailSrc = resolveAssetUrl(
+    tutorial?.thumbnail_url ?? tutorial?.thumbnail,
+  );
+  const videoSrc = resolveAssetUrl(tutorial?.video_url);
+
+  const handleStartVideo = () => {
+    if (!videoSrc) {
+      return;
+    }
+
+    setIsVideoVisible(true);
+
+    requestAnimationFrame(() => {
+      const videoElement = videoRef.current;
+      if (!videoElement) {
+        return;
+      }
+
+      void videoElement.play();
+    });
+  };
+
+  const handleTogglePlayPause = () => {
+    const videoElement = videoRef.current;
+
+    if (!videoElement) {
+      return;
+    }
+
+    if (videoElement.paused) {
+      void videoElement.play();
+      return;
+    }
+
+    videoElement.pause();
+  };
 
   if (isPending) {
     return (
@@ -81,15 +131,45 @@ const BlogDetailsPage = () => {
       <div className="flex flex-col gap-6">
         {/* Video Thumbnail */}
         <div className="relative w-full max-w-307.5 aspect-video rounded-xl overflow-hidden">
-          <Image
-            src={thumbnailSrc ? `https://kapcitytees.thewarriors.team/${thumbnailSrc}` : blogThumbnail}
-            alt={tutorial?.title ?? "Tutorial thumbnail"}
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <PlayCircleIcon className="size-16" />
-          </div>
+          {isVideoVisible && videoSrc ? (
+            <>
+              <video
+                ref={videoRef}
+                className="h-full w-full object-cover"
+                src={videoSrc}
+                controls
+                playsInline
+                onPlay={() => setIsVideoPlaying(true)}
+                onPause={() => setIsVideoPlaying(false)}
+                onEnded={() => setIsVideoPlaying(false)}
+              />
+              <button
+                type="button"
+                onClick={handleTogglePlayPause}
+                className="absolute bottom-3 right-3 rounded-full bg-[#0F2A3C]/80 px-4 py-2 font-semibold text-xs text-white transition-colors hover:bg-[#0F2A3C]"
+              >
+                {isVideoPlaying ? "Pause" : "Play"}
+              </button>
+            </>
+          ) : (
+            <>
+              <Image
+                src={thumbnailSrc ?? blogThumbnail}
+                alt={tutorial?.title ?? "Tutorial thumbnail"}
+                fill
+                className="object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleStartVideo}
+                disabled={!videoSrc}
+                className="absolute inset-0 flex items-center justify-center disabled:cursor-not-allowed"
+                aria-label="Play tutorial video"
+              >
+                <PlayCircleIcon className="size-16" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Title & Metadata */}
@@ -99,7 +179,7 @@ const BlogDetailsPage = () => {
               {tutorial?.title ?? "Tutorial"}
             </h2>
             <p className="text-sm leading-5.5 text-[#919EAB]">
-              Tutorial details
+              {tutorial?.module ?? "Tutorial details"}
             </p>
           </div>
 
@@ -108,10 +188,12 @@ const BlogDetailsPage = () => {
             <h3 className="font-semibold text-base leading-6 text-[#0F2A3C]">
               Video Description
             </h3>
-            <p className="text-sm leading-5.5 text-[#3F5563]">
-              {parse(tutorial?.description ??
-                "Watch this training tutorial to improve your barbering skills.")}
-            </p>
+            <div className="text-sm leading-5.5 text-[#3F5563]">
+              {parse(
+                tutorial?.description ??
+                  "Watch this training tutorial to improve your barbering skills.",
+              )}
+            </div>
           </div>
         </div>
       </div>

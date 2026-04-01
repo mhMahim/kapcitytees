@@ -7,6 +7,7 @@ import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import { cn } from "@/lib/utils";
 import useFetchData from "@/hooks/useFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useStateContext } from "@/hooks/useStateContext";
 
 /* ────────────────────────── Data ────────────────────────── */
 
@@ -26,7 +27,7 @@ interface Tutorial {
   title: string;
   slug: string;
   video_url?: string;
-  thumbnail?: string;
+  thumbnail_url?: string;
 }
 
 /* ────────────────── Circular Progress ────────────────── */
@@ -114,32 +115,75 @@ const DashboardTrainingPage = () => {
   const tutorials: Tutorial[] =
     (tutorialsResponse?.data?.data as Tutorial[] | undefined) ?? [];
 
-  const completedModules = 0;
-  const totalModules = modules.length;
-  const progressPercent = 70;
+  const { userData } = useStateContext();
+
+  const {
+    data: tutorialsProgressResponse,
+    isPending: isTutorialsProgressPending,
+    isError: isTutorialsProgressError,
+  } = useFetchData("/tutorials/overall-progress", true);
+
+  const progressData = tutorialsProgressResponse?.data?.data ?? null;
+
+  const completedModules = progressData?.completed_modules ?? 0;
+  const totalModules = progressData?.total_modules ?? modules.length;
+  const progressPercent = Math.max(
+    0,
+    Math.min(100, progressData?.percentage ?? 0),
+  );
+
+  const isTutorialIncompleteBarber =
+    progressData?.is_tutorial_completed === false ||
+    (userData &&
+      userData?.data?.role === "barber" &&
+      userData?.data?.is_tutorial_completed === false);
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4 2xl:gap-5">
       {/* ── Warning Banner ── */}
-      <div className="bg-white flex items-center gap-2 sm:gap-3 px-3 sm:px-4 lg:px-5 2xl:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
-        <TrainingIcon1 />
-        <p className="font-semibold text-sm sm:text-base leading-5 sm:leading-6 text-[#637381]">
-          Please complete your training to get full access to the dashboard.
-        </p>
-      </div>
-
-      {/* ── Progress Section ── */}
-      <div className="bg-white flex items-center gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 sm:px-6 lg:px-8 2xl:pl-10 2xl:pr-20 py-4 sm:py-5 2xl:py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
-        <div className="flex flex-col gap-2 flex-1">
-          <p className="font-normal text-base leading-6 text-[#637381]">
-            Your Progress
-          </p>
-          <p className="font-semibold text-xl sm:text-2xl 2xl:text-[32px] leading-8 sm:leading-10 2xl:leading-12 text-[#1E6FA8]">
-            {completedModules}/{totalModules} Modules Completed
+      {isTutorialIncompleteBarber && (
+        <div className="bg-white flex items-center gap-2 sm:gap-3 px-3 sm:px-4 lg:px-5 2xl:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] overflow-hidden">
+          <TrainingIcon1 />
+          <p className="font-semibold text-sm sm:text-base leading-5 sm:leading-6 text-[#637381]">
+            Please complete your training to get full access to the dashboard.
           </p>
         </div>
-        <CircularProgress percent={progressPercent} />
-      </div>
+      )}
+
+      {/* ── Progress Section ── */}
+      {isTutorialsProgressPending ? (
+        <div className="bg-white flex items-center gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 sm:px-6 lg:px-8 2xl:pl-10 2xl:pr-20 py-4 sm:py-5 2xl:py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
+          <div className="flex flex-col gap-2 flex-1">
+            <Skeleton className="h-6 w-28" />
+            <Skeleton className="h-10 w-64 sm:w-80" />
+          </div>
+          <Skeleton className="h-30 w-30 rounded-full" />
+        </div>
+      ) : isTutorialsProgressError ? (
+        <div className="bg-white flex items-center gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 sm:px-6 lg:px-8 2xl:pl-10 2xl:pr-20 py-4 sm:py-5 2xl:py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
+          <div className="flex flex-col gap-2 flex-1">
+            <p className="font-normal text-base leading-6 text-[#637381]">
+              Your Progress
+            </p>
+            <p className="font-semibold text-xl sm:text-2xl 2xl:text-[32px] leading-8 sm:leading-10 2xl:leading-12 text-[#B42318]">
+              Unable to load progress right now.
+            </p>
+          </div>
+          <CircularProgress percent={0} />
+        </div>
+      ) : (
+        <div className="bg-white flex items-center gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 sm:px-6 lg:px-8 2xl:pl-10 2xl:pr-20 py-4 sm:py-5 2xl:py-6 shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
+          <div className="flex flex-col gap-2 flex-1">
+            <p className="font-normal text-base leading-6 text-[#637381]">
+              Your Progress
+            </p>
+            <p className="font-semibold text-xl sm:text-2xl 2xl:text-[32px] leading-8 sm:leading-10 2xl:leading-12 text-[#1E6FA8]">
+              {completedModules}/{totalModules} Modules Completed
+            </p>
+          </div>
+          <CircularProgress percent={progressPercent} />
+        </div>
+      )}
 
       {/* ── Modules + Videos ── */}
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 2xl:gap-5 lg:items-start">
@@ -204,7 +248,11 @@ const DashboardTrainingPage = () => {
                     key={tutorial.id}
                     title={tutorial.title}
                     description="Watch this tutorial video."
-                    thumbnail={tutorial.thumbnail ? `https://kapcitytees.thewarriors.team/${tutorial.thumbnail}` : blogThumbnail}
+                    thumbnail={
+                      tutorial.thumbnail_url
+                        ? tutorial.thumbnail_url
+                        : blogThumbnail
+                    }
                     slug={tutorial.id.toString()}
                   />
                 ))}

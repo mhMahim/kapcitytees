@@ -12,7 +12,7 @@ import { useStateContext } from "@/hooks/useStateContext";
 import NavbarProfilePopover from "../NavbarProfilePopover";
 import { Menu, X } from "lucide-react";
 
-const navLinks = [
+const publicNavLinks = [
   { label: "Home", href: "/" },
   { label: "For Barbers", href: "/for-barbers" },
   { label: "For Clients", href: "/for-clients" },
@@ -21,10 +21,18 @@ const navLinks = [
   // { label: "Contact Us", href: "/contact-us" },
 ];
 
+const barberNavLinks = [
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Products", href: "/dashboard/products" },
+  { label: "My Clients", href: "/dashboard/my-clients" },
+  { label: "Earning", href: "/dashboard/earning" },
+  { label: "Training", href: "/dashboard/training" },
+];
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isLoggedIn } = useStateContext();
+  const { isLoggedIn, userData } = useStateContext();
   const activePath = usePathname();
 
   useEffect(() => {
@@ -35,6 +43,16 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const role = isLoggedIn
+    ? typeof window !== "undefined"
+      ? localStorage.getItem("role")
+      : null
+    : null;
+
+  const resolvedRole = userData?.data?.role ?? role;
+  const isBarber = isLoggedIn && resolvedRole === "barber";
+  const activeNavLinks = isBarber ? barberNavLinks : publicNavLinks;
 
   const solidBg = isScrolled || mobileMenuOpen;
 
@@ -55,7 +73,7 @@ const Navbar = () => {
         {/* Right: auth controls + hamburger */}
         <div className="flex items-center gap-3 sm:gap-4">
           <nav className="hidden lg:flex flex-1 items-center justify-center gap-8 xl:gap-12 px-6">
-            {navLinks.map((link) => (
+            {activeNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -71,12 +89,14 @@ const Navbar = () => {
           </nav>
           {isLoggedIn ? (
             <div className="flex items-center gap-4 lg:gap-8">
-              <Link
-                href="/cart"
-                className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
-              >
-                <ShoppingCartIcon className="" />
-              </Link>
+              {role === "user" && (
+                <Link
+                  href="/cart"
+                  className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
+                >
+                  <ShoppingCartIcon className="" />
+                </Link>
+              )}
               <NavbarProfilePopover />
             </div>
           ) : (
@@ -115,7 +135,7 @@ const Navbar = () => {
         <div className="lg:hidden border-t border-[#E7EAEC]/60 bg-white fixed w-full shadow">
           <Container className="py-3 sm:py-4">
             <nav className="flex flex-col gap-1">
-              {navLinks.map((link) => (
+              {activeNavLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}

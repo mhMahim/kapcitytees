@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 import { toast } from "sonner";
+import { useDropzone } from "react-dropzone";
 
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Form,
   FormControl,
@@ -47,9 +49,92 @@ const profileSchema = z.object({
     .string()
     .min(3, "Postal code must be at least 3 characters")
     .max(10, "Postal code must be at most 10 characters"),
+  avatar: z.custom<File | string | null>().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
+
+interface AvatarDropzoneFieldProps {
+  value: File | string | null | undefined;
+  onChange: (value: File | string | null) => void;
+  disabled?: boolean;
+}
+
+const AvatarDropzoneField = ({
+  value,
+  onChange,
+  disabled,
+}: AvatarDropzoneFieldProps) => {
+  const previewUrl = useMemo(() => {
+    if (value instanceof File) {
+      return URL.createObjectURL(value);
+    }
+
+    return typeof value === "string" ? value : "";
+  }, [value]);
+
+  useEffect(() => {
+    if (value instanceof File && previewUrl) {
+      return () => URL.revokeObjectURL(previewUrl);
+    }
+  }, [previewUrl, value]);
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const selectedFile = acceptedFiles[0];
+      if (selectedFile) {
+        onChange(selectedFile);
+      }
+    },
+    [onChange],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    disabled,
+    multiple: false,
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024,
+    accept: {
+      "image/*": [],
+    },
+    onDropRejected: () => {
+      toast.error("Please upload an image up to 5MB.");
+    },
+  });
+
+  return (
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+      <Avatar className="size-18 sm:size-22 border border-[#DFE3E8] shrink-0">
+        <AvatarImage src={previewUrl || undefined} alt="Profile picture" />
+        <AvatarFallback className="bg-[#E7EAEC]">
+          <User className="size-7 text-[#637381]" />
+        </AvatarFallback>
+      </Avatar>
+
+      <div
+        {...getRootProps()}
+        className={cn(
+          "w-full rounded-xl border border-dashed px-4 py-4 transition-colors",
+          isDragActive
+            ? "border-[#1E6FA8] bg-[#ECF2F8]"
+            : "border-[#DFE3E8] hover:border-[#1E6FA8]/60",
+          disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+        )}
+      >
+        <input {...getInputProps()} />
+        <p className="text-sm sm:text-base font-medium text-[#454F5B] leading-6">
+          {isDragActive
+            ? "Drop image here"
+            : "Drag and drop profile image, or click to browse"}
+        </p>
+        <p className="text-xs sm:text-sm text-[#637381] leading-5 mt-1">
+          PNG, JPG, WEBP up to 5MB
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const ProfileEditSection = () => {
   const router = useRouter();
@@ -67,6 +152,7 @@ const ProfileEditSection = () => {
       city: profileData?.city ?? "",
       state: profileData?.state ?? "",
       postalCode: profileData?.postal_code ?? "",
+      avatar: profileData?.avatar ?? "",
       shopName: profileData?.shop_name ?? "",
       barberLicense: profileData?.barber_license ?? "",
       gender: profileData?.gender ?? "",
@@ -93,6 +179,7 @@ const ProfileEditSection = () => {
       city: rawDefaults.city,
       state: rawDefaults.state,
       postalCode: rawDefaults.postalCode,
+      avatar: rawDefaults.avatar,
     }),
     [parsedDateOfBirth, rawDefaults],
   );
@@ -120,21 +207,25 @@ const ProfileEditSection = () => {
 
     try {
       setIsPending(true);
-      const payload = {
-        name: formValues.fullName,
-        phone: formValues.phone,
-        shop_name: rawDefaults.shopName,
-        barber_license: rawDefaults.barberLicense,
-        gender: rawDefaults.gender,
-        dob: format(formValues.dateOfBirth, "yyyy-MM-dd"),
-        city: formValues.city,
-        state: formValues.state,
-        postal_code: formValues.postalCode,
-        address: formValues.address,
-        social_link: rawDefaults.socialLink,
-        website_link: rawDefaults.websiteLink,
-        other_link: rawDefaults.otherLink,
-      };
+      const payload = new FormData();
+      payload.append("name", formValues.fullName);
+      payload.append("phone", formValues.phone);
+      payload.append("shop_name", rawDefaults.shopName);
+      payload.append("barber_license", rawDefaults.barberLicense);
+      payload.append("gender", rawDefaults.gender);
+      payload.append("dob", format(formValues.dateOfBirth, "yyyy-MM-dd"));
+      payload.append("city", formValues.city);
+      payload.append("state", formValues.state);
+      payload.append("postal_code", formValues.postalCode);
+      payload.append("address", formValues.address);
+      payload.append("social_link", rawDefaults.socialLink);
+      payload.append("website_link", rawDefaults.websiteLink);
+      payload.append("other_link", rawDefaults.otherLink);
+
+      if (formValues.avatar instanceof File) {
+        payload.append("avatar", formValues.avatar);
+      }
+
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
         payload,
@@ -162,6 +253,26 @@ const ProfileEditSection = () => {
       >
         {/* Form Fields */}
         <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
+          <FormField
+            control={form.control}
+            name="avatar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-semibold leading-6 text-[#454F5B]">
+                  Profile picture
+                </FormLabel>
+                <FormControl>
+                  <AvatarDropzoneField
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Row 1: Full name + Phone */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <FormField

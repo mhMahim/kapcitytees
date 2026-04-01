@@ -21,6 +21,8 @@ const BlogVideoCard = ({
   const cardClassName =
     "bg-white flex flex-col gap-3 items-center p-3 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] cursor-pointer hover:shadow-md transition-shadow";
 
+  console.log(thumbnail);
+
   return (
     <Link href={`${link}${slug}`} className={cardClassName}>
       {/* Thumbnail with play button */}

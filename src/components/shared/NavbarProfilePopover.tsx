@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ExitIcon } from "@/assets/icons";
 import { useStateContext } from "@/hooks/useStateContext";
 import { logout } from "@/lib/auth";
@@ -34,7 +35,7 @@ const UserProfileIcon = () => (
 const NavbarProfilePopover = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const { setIsLoggedIn } = useStateContext();
+  const { setIsLoggedIn, userData } = useStateContext();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleOpenLogoutDialog = () => {
@@ -48,6 +49,9 @@ const NavbarProfilePopover = () => {
     setIsLoggingOut(false);
   };
 
+  const role = localStorage.getItem("role") ?? null;
+  const avatarUrl = userData?.data?.avatar ?? "";
+
   return (
     <>
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -56,7 +60,12 @@ const NavbarProfilePopover = () => {
             aria-label="Profile"
             className="size-12 rounded-full bg-[#E7EAEC] overflow-hidden flex items-center justify-center hover:bg-[#DFE3E8] transition-colors cursor-pointer"
           >
-            <User className="w-5 h-5 text-[#637381]" />
+            <Avatar className="size-12">
+              <AvatarImage src={avatarUrl || undefined} alt="User avatar" />
+              <AvatarFallback className="bg-[#E7EAEC]">
+                <User className="w-5 h-5 text-[#637381]" />
+              </AvatarFallback>
+            </Avatar>
           </button>
         </PopoverTrigger>
 
@@ -67,7 +76,7 @@ const NavbarProfilePopover = () => {
         >
           {/* View Profile */}
           <Link
-            href="/account"
+            href={role === "barber" ? "/dashboard/account" : "/account"}
             onClick={() => setPopoverOpen(false)}
             className="flex items-center gap-4 px-1 py-1 text-[#454F5B] hover:text-[#0F2A3C] hover:bg-[#F4F6F8] rounded-lg transition-colors cursor-pointer"
           >

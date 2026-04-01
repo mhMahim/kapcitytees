@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-const Logo = ({ className }: { className?: string }) => {
+const Logo = ({ className, path }: { className?: string; path?: string }) => {
   return (
-    <Link href="/" className={cn("size-22 inline-block", className)}>
+    <Link href={path || "/"} className={cn("size-22 inline-block", className)}>
       <Image
         src={LogoImg}
         alt="Logo"

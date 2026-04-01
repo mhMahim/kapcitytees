@@ -1,32 +1,43 @@
 "use client";
 
 import { EditIcon } from "@/assets/icons";
-import Image from "next/image";
+import { User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useStateContext } from "@/hooks/useStateContext";
 
 interface ProfileViewSectionProps {
   onEdit: () => void;
 }
 
 const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
+  const { userData } = useStateContext();
+  const data = userData?.data;
+
+  const fullName = data?.name ?? "Cameron Williamson";
+  const phone = data?.phone ?? "+1 234 567 890";
+  const email = data?.email ?? "cameronwilliamson@inimal.com";
+  const shopName = data?.shop_name ?? "Barber Shop";
+  const barberLicense = data?.barber_license ?? "0123456789";
+  const shopAddress =
+    data?.address ??
+    "245 Greenfield Avenue, Apartment 12B, New York, 10001, United States";
+  const avatarUrl = data?.avatar ?? "";
+
   return (
     <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8 lg:gap-10 w-full">
       {/* Avatar + Name */}
       <div className="flex gap-6 items-center">
-        <div className="size-18 sm:size-25 lg:size-30 rounded-full overflow-hidden shrink-0 relative">
-          <Image
-            src="https://github.com/shadcn.png"
-            alt="Profile"
-            fill
-            className="object-cover"
-          />
-        </div>
+        <Avatar className="size-18 sm:size-25 lg:size-30 rounded-full overflow-hidden shrink-0">
+          <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+          <AvatarFallback className="bg-[#E7EAEC]">
+            <User className="size-8 text-[#637381]" />
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold text-[#4E545B] leading-8 sm:leading-10 lg:leading-12">
-            Cameron Williamson
+            {fullName}
           </h2>
-          <p className="text-sm sm:text-base text-[#747B81]">
-            cameronwilliamson@email.com
-          </p>
+          <p className="text-sm sm:text-base text-[#747B81]">{email}</p>
         </div>
       </div>
 
@@ -51,25 +62,16 @@ const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
         <div className="flex flex-col gap-6 sm:gap-8">
           {/* Row 1 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-0">
-            <InfoField label="Full name" value="Cameron Williamson" />
-            <InfoField label="Phone number" value="+1 234 567 890" />
-            <InfoField label="Email" value="cameronwilliamson@inimal.com" />
+            <InfoField label="Full name" value={fullName} />
+            <InfoField label="Phone number" value={phone} />
+            <InfoField label="Email" value={email} />
           </div>
 
           {/* Row 2 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-0">
-            <InfoField label="Shop name" value="Barber Shop" />
-            <InfoField label="Barber license" value="0123456789" />
-            <InfoField
-              label="Shop address"
-              value={
-                <>
-                  245 Greenfield Avenue, Apartment 12B
-                  <br />
-                  New York, 10001, United States
-                </>
-              }
-            />
+            <InfoField label="Shop name" value={shopName} />
+            <InfoField label="Barber license" value={barberLicense} />
+            <InfoField label="Shop address" value={shopAddress} />
           </div>
         </div>
       </div>

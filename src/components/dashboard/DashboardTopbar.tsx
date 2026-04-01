@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import { BelowIcon, NotificationIcon } from "@/assets/icons";
 import {
   Popover,
@@ -55,7 +55,7 @@ interface DashboardTopbarProps {
 const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
   const pathname = usePathname();
   const meta = getPageMeta(pathname);
-  const { setIsLoggedIn } = useStateContext();
+  const { setIsLoggedIn, userData } = useStateContext();
 
   return (
     <div className="flex justify-between items-center p-3 sm:p-4 lg:p-6 xl:p-8 gap-3">
@@ -92,14 +92,18 @@ const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
           <PopoverTrigger asChild>
             <button className="flex items-center gap-1.5 lg:gap-3 bg-white p-1 lg:p-2 pr-3 lg:pr-5 rounded-full cursor-pointer">
               <Avatar className="aspect-square shrink-0 size-9 sm:size-12 lg:size-13 xl:size-14">
-                <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarImage src={userData?.data?.avatar || ""} alt="User" />
+                <AvatarFallback>
+                  <User className="w-5 h-5 text-[#637381]" />
+                </AvatarFallback>
               </Avatar>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-semibold text-[#454F5B]">
-                  Alexa Johnson
+                  {userData?.data?.name || "-----"}
                 </p>
-                <p className="text-xs text-[#637381]">alexajohnson@mail.com</p>
+                <p className="text-xs text-[#637381]">
+                  {userData?.data?.email || "---"}
+                </p>
               </div>
               <BelowIcon className="my-auto" />
             </button>

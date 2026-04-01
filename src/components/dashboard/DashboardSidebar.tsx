@@ -14,6 +14,7 @@ import Logo from "@/components/shared/Logo";
 import SidebarLink from "./SidebarLink";
 
 import { ComponentType, SVGProps } from "react";
+import { useStateContext } from "@/hooks/useStateContext";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -21,6 +22,7 @@ export interface DashboardNavLink {
   name: string;
   icon: IconType;
   path: string;
+  disabled?: boolean;
 }
 
 const dashboardNavlinks: DashboardNavLink[] = [
@@ -59,14 +61,26 @@ const DashboardSidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   //   setLogoutLoading(true);
   // };
 
+  const { userData } = useStateContext();
+  const isTutorialIncompleteBarber =
+    userData?.data?.role === "barber" &&
+    userData?.data?.is_tutorial_completed === false;
+
+  const navLinks = dashboardNavlinks.map((link) => ({
+    ...link,
+    disabled: isTutorialIncompleteBarber && link.path !== "/dashboard/training",
+  }));
+
   return (
     <div className="bg-white space-y-10 xl:space-y-14 flex flex-col overflow-y-auto min-w-60 xl:min-w-65 2xl:min-w-70 h-screen sticky top-0 px-6 py-12 shadow-[0_0_21px_0_rgba(98,101,120,0.04)]">
       <div className="flex items-center justify-center">
-        <Logo className="size-26" />
+        <Logo className="size-26" path="/dashboard" />
       </div>
       <div className="grow flex flex-col gap-2 xl:gap-2.5">
-        {dashboardNavlinks.map((link) => {
-          return <SidebarLink key={link.path} link={link} onNavigate={onNavigate} />;
+        {navLinks.map((link) => {
+          return (
+            <SidebarLink key={link.path} link={link} onNavigate={onNavigate} />
+          );
         })}
       </div>
       {/* <div className="">

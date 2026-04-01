@@ -5,15 +5,34 @@ import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
+import { useStateContext } from "@/hooks/useStateContext";
+import { toast } from "sonner";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { userData } = useStateContext();
+
+  if (userData && userData?.data?.role === "barber") {
+    if (userData?.data?.has_details === false) {
+      toast.error(
+        "Please complete your profile details to access the dashboard.",
+      );
+      window.location.replace("/barber-after-register");
+    }
+    if (userData?.data?.is_verified === false) {
+      window.location.replace("/application-received");
+    }
+    if (
+      userData?.data?.is_tutorial_completed === false &&
+      !pathname.startsWith("/dashboard/training")
+    ) {
+      window.location.replace("/dashboard/training");
+    }
+  }
+
+  console.log(userData);
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FA]">
@@ -23,11 +42,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Mobile Sidebar Drawer */}
-      <Drawer
-        open={mobileOpen}
-        onOpenChange={setMobileOpen}
-        direction="left"
-      >
+      <Drawer open={mobileOpen} onOpenChange={setMobileOpen} direction="left">
         <DrawerContent className="w-72 p-0 border-0 rounded-none">
           {/* Close button */}
           <DrawerClose asChild>
@@ -45,7 +60,9 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       {/* Main Content Area */}
       <div className="min-w-0 grow">
         <DashboardTopbar onMenuToggle={() => setMobileOpen((v) => !v)} />
-        <div className="p-4 pt-1 sm:p-5 sm:pt-1.5 lg:p-8 lg:pt-2">{children}</div>
+        <div className="p-4 pt-1 sm:p-5 sm:pt-1.5 lg:p-8 lg:pt-2">
+          {children}
+        </div>
       </div>
     </div>
   );

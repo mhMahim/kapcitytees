@@ -18,7 +18,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useRouter } from "next/navigation";
 import { ChevronLeftIcon } from "@/assets/icons";
 import Logo from "@/components/shared/Logo";
 import axios from "axios";
@@ -32,7 +31,6 @@ const verificationSchema = z.object({
 type VerificationValues = z.infer<typeof verificationSchema>;
 
 const RegistrationVerifyContent = () => {
-  const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const { tempMail } = useStateContext();
 
@@ -57,11 +55,10 @@ const RegistrationVerifyContent = () => {
       localStorage.setItem("role", response.data.data.role);
       toast.success("Email verified successfully. Please log in.");
       form.reset();
-      router.push(
+      window.location.href =
         response.data.data.role === "barber"
           ? "/barber-after-register"
-          : "/for-clients",
-      );
+          : "/for-clients";
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ||
@@ -187,7 +184,7 @@ const RegistrationVerifyContent = () => {
         </Form>
       </div>
     </div>
-  ); 
+  );
 };
 
 const RegistrationVerify = () => (
