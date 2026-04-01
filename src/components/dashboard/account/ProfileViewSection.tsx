@@ -13,14 +13,12 @@ const ProfileViewSection = ({ onEdit }: ProfileViewSectionProps) => {
   const { userData } = useStateContext();
   const data = userData?.data;
 
-  const fullName = data?.name ?? "Cameron Williamson";
-  const phone = data?.phone ?? "+1 234 567 890";
-  const email = data?.email ?? "cameronwilliamson@inimal.com";
-  const shopName = data?.shop_name ?? "Barber Shop";
-  const barberLicense = data?.barber_license ?? "0123456789";
-  const shopAddress =
-    data?.address ??
-    "245 Greenfield Avenue, Apartment 12B, New York, 10001, United States";
+  const fullName = data?.name ?? "—";
+  const phone = data?.phone ?? "—";
+  const email = data?.email ?? "—";
+  const shopName = data?.shop_name ?? "—";
+  const barberLicense = data?.barber_license ?? "—";
+  const shopAddress = data?.address ?? "—";
   const avatarUrl = data?.avatar ?? "";
 
   return (
@@ -88,8 +86,12 @@ function InfoField({
 }) {
   return (
     <div className="flex flex-col gap-1 sm:gap-2">
-      <p className="text-sm sm:text-base text-[#637381] leading-5 sm:leading-6">{label}</p>
-      <p className="text-base sm:text-lg font-medium text-[#454F5B] leading-6 sm:leading-7">{value}</p>
+      <p className="text-sm sm:text-base text-[#637381] leading-5 sm:leading-6">
+        {label}
+      </p>
+      <p className="text-base sm:text-lg font-medium text-[#454F5B] leading-6 sm:leading-7">
+        {value}
+      </p>
     </div>
   );
 }

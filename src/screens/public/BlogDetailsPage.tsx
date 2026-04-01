@@ -2,9 +2,9 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import parse from "html-react-parser";
-import { PlayCircleIcon } from "@/assets/icons";
+import { PlayCircleIcon, ChevronLeftIcon } from "@/assets/icons";
 import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import useFetchData from "@/hooks/useFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,7 +24,6 @@ interface TutorialDetails {
 
 const BlogDetailsPage = () => {
   const [isVideoVisible, setIsVideoVisible] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const params = useParams<{ slug: string }>();
@@ -48,6 +47,12 @@ const BlogDetailsPage = () => {
 
     return normalizedDetails as TutorialDetails | undefined;
   }, [data]);
+
+  const router = useRouter();
+
+  const handleBack = () => {
+    router.back();
+  };
 
   const resolveAssetUrl = (url?: string) => {
     if (!url) return undefined;
@@ -79,21 +84,6 @@ const BlogDetailsPage = () => {
 
       void videoElement.play();
     });
-  };
-
-  const handleTogglePlayPause = () => {
-    const videoElement = videoRef.current;
-
-    if (!videoElement) {
-      return;
-    }
-
-    if (videoElement.paused) {
-      void videoElement.play();
-      return;
-    }
-
-    videoElement.pause();
   };
 
   if (isPending) {
@@ -129,47 +119,48 @@ const BlogDetailsPage = () => {
   return (
     <div className="flex justify-center">
       <div className="flex flex-col gap-6">
-        {/* Video Thumbnail */}
-        <div className="relative w-full max-w-307.5 aspect-video rounded-xl overflow-hidden">
-          {isVideoVisible && videoSrc ? (
-            <>
-              <video
-                ref={videoRef}
-                className="h-full w-full object-cover"
-                src={videoSrc}
-                controls
-                playsInline
-                onPlay={() => setIsVideoPlaying(true)}
-                onPause={() => setIsVideoPlaying(false)}
-                onEnded={() => setIsVideoPlaying(false)}
-              />
-              <button
-                type="button"
-                onClick={handleTogglePlayPause}
-                className="absolute bottom-3 right-3 rounded-full bg-[#0F2A3C]/80 px-4 py-2 font-semibold text-xs text-white transition-colors hover:bg-[#0F2A3C]"
-              >
-                {isVideoPlaying ? "Pause" : "Play"}
-              </button>
-            </>
-          ) : (
-            <>
-              <Image
-                src={thumbnailSrc ?? blogThumbnail}
-                alt={tutorial?.title ?? "Tutorial thumbnail"}
-                fill
-                className="object-cover"
-              />
-              <button
-                type="button"
-                onClick={handleStartVideo}
-                disabled={!videoSrc}
-                className="absolute inset-0 flex items-center justify-center disabled:cursor-not-allowed"
-                aria-label="Play tutorial video"
-              >
-                <PlayCircleIcon className="size-16" />
-              </button>
-            </>
-          )}
+        <div className="space-y-2">
+          <div className="w-full max-w-307.5">
+            <button
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-[#0F2A3C] hover:bg-[#ebeeee] cursor-pointer"
+              aria-label="Go back"
+            >
+              <ChevronLeftIcon className="size-5" /> Back
+            </button>
+          </div>
+          {/* Video Thumbnail */}
+          <div className="relative w-full max-w-307.5 aspect-video rounded-xl overflow-hidden">
+            {isVideoVisible && videoSrc ? (
+              <>
+                <video
+                  ref={videoRef}
+                  className="h-full w-full object-cover"
+                  src={videoSrc}
+                  controls
+                  playsInline
+                />
+              </>
+            ) : (
+              <>
+                <Image
+                  src={thumbnailSrc ?? blogThumbnail}
+                  alt={tutorial?.title ?? "Tutorial thumbnail"}
+                  fill
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={handleStartVideo}
+                  disabled={!videoSrc}
+                  className="absolute inset-0 flex items-center justify-center disabled:cursor-not-allowed"
+                  aria-label="Play tutorial video"
+                >
+                  <PlayCircleIcon className="size-16" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Title & Metadata */}
