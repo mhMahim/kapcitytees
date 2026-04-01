@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import OrderStatusBadge from "./OrderStatusBadge";
+import useFetchData from "@/hooks/useFetchData";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type OrderStatus = "Delivered" | "Processing";
+type OrderStatus = "Delivered" | "Processing" | "Pending";
 
 interface OrderItem {
   orderId: string;
@@ -18,58 +22,72 @@ interface OrderGroup {
 }
 
 interface OrdersSectionProps {
-  orderGroups: OrderGroup[];
+  orderGroups?: OrderGroup[];
 }
 
 const PRODUCT_IMG = "https://i.ibb.co.com/27rvh0W6/Rectangle-55.png";
 
-// Sample data
-const sampleOrderGroups: OrderGroup[] = [
-  {
-    items: [
-      {
-        orderId: "#10234",
-        itemName: "Beard Oil",
-        itemImage: PRODUCT_IMG,
-        quantity: 1,
-        deliveryDate: "04-05-2025",
-        status: "Delivered",
-        price: "$ 49.99",
-      },
-      {
-        orderId: "#10234",
-        itemName: "Beard Oil",
-        itemImage: PRODUCT_IMG,
-        quantity: 1,
-        deliveryDate: "04-05-2025",
-        status: "Delivered",
-        price: "$ 49.99",
-      },
-      {
-        orderId: "#10234",
-        itemName: "Beard Oil",
-        itemImage: PRODUCT_IMG,
-        quantity: 1,
-        deliveryDate: "04-05-2025",
-        status: "Delivered",
-        price: "$ 49.99",
-      },
-    ],
-  },
-  {
-    items: [
-      {
-        orderId: "#10234",
-        itemName: "Beard Oil",
-        itemImage: PRODUCT_IMG,
-        quantity: 1,
-        deliveryDate: "04-05-2025",
-        status: "Processing",
-        price: "$ 49.99",
-      },
-    ],
-  },
-];
+interface ApiOrderItem {
+  product_id: number;
+  product_name: string | null;
+  product_image: string | null;
+  quantity: number;
+  price: string;
+}
+
+interface ApiOrderHistoryEntry {
+  order_id: string;
+  status: string;
+  total_price: string;
+  items: ApiOrderItem[];
+}
+
+interface ApiOrderHistoryResponse {
+  success?: boolean;
+  data?: {
+    data?: ApiOrderHistoryEntry[];
+  };
+}
+
+const resolveImageUrl = (imagePath?: string | null) => {
+  if (!imagePath) {
+    return PRODUCT_IMG;
+  }
+
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+
+  const normalizedPath = imagePath.startsWith("/")
+    ? imagePath.slice(1)
+    : imagePath;
+
+  return `https://kapcitytees.thewarriors.team/${normalizedPath}`;
+};
+
+const formatPrice = (value: string | number | undefined) => {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return "$ 0.00";
+  }
+
+  return `$ ${numericValue.toFixed(2)}`;
+};
+
+const normalizeOrderStatus = (status: string | undefined): OrderStatus => {
+  const normalizedStatus = status?.toLowerCase();
+
+  if (["delivered", "completed", "complete"].includes(normalizedStatus || "")) {
+    return "Delivered";
+  }
+
+  if (["processing", "in_progress", "in progress"].includes(normalizedStatus || "")) {
+    return "Processing";
+  }
+
+  return "Pending";
+};
 
 const OrderRow = ({ item }: { item: OrderItem }) => (
   <>
@@ -105,7 +123,9 @@ const OrderRow = ({ item }: { item: OrderItem }) => (
       </div>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-[#0F2A3C] leading-5">{item.deliveryDate}</p>
+          <p className="text-sm text-[#0F2A3C] leading-5">
+            {item.deliveryDate}
+          </p>
           <p className="text-xs text-[#5E707C] leading-4.5">expected</p>
         </div>
         <OrderStatusBadge status={item.status} />
@@ -163,9 +183,58 @@ const OrderRow = ({ item }: { item: OrderItem }) => (
   </>
 );
 
-const OrdersSection = ({
-  orderGroups = sampleOrderGroups,
-}: Partial<OrdersSectionProps>) => {
+const OrdersSection = ({ orderGroups }: OrdersSectionProps) => {
+  const hasCustomOrderGroups = Array.isArray(orderGroups);
+
+  const {
+    data: orderHistoryResponse,
+    isPending,
+    isError,
+  } = useFetchData("/profile/order-history", true, {
+    enabled: !hasCustomOrderGroups,
+  });
+
+  const apiOrderHistory =
+    ((orderHistoryResponse as ApiOrderHistoryResponse | undefined)?.data
+      ?.data as ApiOrderHistoryEntry[] | undefined) ?? [];
+
+  const fetchedOrderGroups: OrderGroup[] = apiOrderHistory.map((order) => {
+    const mappedItems = (order.items ?? []).map((item) => ({
+      orderId: order.order_id,
+      itemName: item.product_name?.trim() || "Product",
+      itemImage: resolveImageUrl(item.product_image),
+      quantity: item.quantity ?? 0,
+      deliveryDate: "-",
+      status: normalizeOrderStatus(order.status),
+      price: formatPrice(item.price ?? order.total_price),
+    }));
+
+    if (mappedItems.length > 0) {
+      return { items: mappedItems };
+    }
+
+    return {
+      items: [
+        {
+          orderId: order.order_id,
+          itemName: "Order",
+          itemImage: PRODUCT_IMG,
+          quantity: 0,
+          deliveryDate: "-",
+          status: normalizeOrderStatus(order.status),
+          price: formatPrice(order.total_price),
+        },
+      ],
+    };
+  });
+
+  const resolvedOrderGroups = hasCustomOrderGroups
+    ? (orderGroups ?? [])
+    : fetchedOrderGroups;
+
+  const isOrdersPending = !hasCustomOrderGroups && isPending;
+  const isOrdersError = !hasCustomOrderGroups && isError;
+
   return (
     <div className="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-8 flex flex-col flex-1">
       {/* Table Header */}
@@ -179,18 +248,73 @@ const OrdersSection = ({
       </div>
 
       {/* Order Groups */}
-      <div className="flex flex-col gap-4 mt-2">
-        {orderGroups.map((group, groupIndex) => (
-          <div
-            key={groupIndex}
-            className="border border-[#DFE3E8] rounded-xl px-3 py-3 sm:px-6 sm:py-4 flex flex-col gap-4 sm:gap-4.5"
-          >
-            {group.items.map((item, itemIndex) => (
-              <OrderRow key={itemIndex} item={item} />
-            ))}
-          </div>
-        ))}
-      </div>
+      {isOrdersPending ? (
+        <div className="flex flex-col gap-4 mt-2">
+          {Array.from({ length: 2 }).map((_, groupIndex) => (
+            <div
+              key={`order-group-skeleton-${groupIndex}`}
+              className="border border-[#DFE3E8] rounded-xl px-3 py-3 sm:px-6 sm:py-4 flex flex-col gap-4 sm:gap-4.5"
+            >
+              {Array.from({ length: groupIndex === 0 ? 2 : 1 }).map((__, rowIndex) => (
+                <div key={`order-row-skeleton-${groupIndex}-${rowIndex}`}>
+                  <div className="sm:hidden flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="size-13.5 rounded" />
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-5 w-16 ml-auto" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-10" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-5 w-16" />
+                      <Skeleton className="h-6 w-20 rounded-md" />
+                    </div>
+                  </div>
+
+                  <div className="hidden sm:flex items-center w-full">
+                    <Skeleton className="h-5 w-26" />
+                    <div className="flex-1 flex items-center gap-4 ml-10">
+                      <Skeleton className="size-13.5 rounded" />
+                      <Skeleton className="h-5 w-36" />
+                    </div>
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-5 w-20 ml-16" />
+                    <Skeleton className="h-6 w-20 rounded-md ml-14" />
+                    <Skeleton className="h-5 w-16 ml-auto" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : isOrdersError ? (
+        <div className="mt-2 rounded-xl bg-[#FFF2F2] px-4 py-3">
+          <p className="text-sm leading-5 text-[#B42318]">
+            Failed to load order history. Please try again later.
+          </p>
+        </div>
+      ) : resolvedOrderGroups.length === 0 ? (
+        <div className="mt-2 rounded-xl bg-[#F9FAFB] px-4 py-8 text-center">
+          <p className="text-sm sm:text-base leading-6 text-[#637381]">
+            No order history found yet.
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4 mt-2">
+          {resolvedOrderGroups.map((group, groupIndex) => (
+            <div
+              key={groupIndex}
+              className="border border-[#DFE3E8] rounded-xl px-3 py-3 sm:px-6 sm:py-4 flex flex-col gap-4 sm:gap-4.5"
+            >
+              {group.items.map((item, itemIndex) => (
+                <OrderRow key={itemIndex} item={item} />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

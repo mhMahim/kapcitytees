@@ -1,14 +1,14 @@
 "use client";
 
+import { Suspense, useEffect } from "react";
 import useFetchData from "@/hooks/useFetchData";
 import ProductDetailPage from "@/screens/public/ProductDetailPage";
 import axios from "axios";
-import { useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 
 const REFERRAL_SESSION_KEY = "referral-click-cache";
 
-const Page = () => {
+const ProductDetailsPageContent = () => {
   const params = useParams();
   const searchParams = useSearchParams();
   const slug = params?.slug as string;
@@ -64,4 +64,12 @@ const Page = () => {
   );
 };
 
-export default Page;
+const page = () => {
+  return (
+    <Suspense>
+      <ProductDetailsPageContent />
+    </Suspense>
+  );
+};
+
+export default page;

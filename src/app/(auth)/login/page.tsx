@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -31,7 +31,7 @@ const loginFormSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
-const LoginPage = () => {
+const LoginPageContent = () => {
   const { setIsLoggedIn } = useStateContext();
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -205,4 +205,12 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+const page = () => {
+  return (
+    <Suspense>
+      <LoginPageContent />
+    </Suspense>
+  );
+};
+
+export default page;
