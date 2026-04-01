@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
@@ -9,30 +9,40 @@ import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
 import { useStateContext } from "@/hooks/useStateContext";
 import { toast } from "sonner";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { userData } = useStateContext();
+  const router = useRouter();
 
-  if (userData && userData?.data?.role === "barber") {
+  useEffect(() => {
+    if (!userData || userData?.data?.role !== "barber") {
+      return;
+    }
+
     if (userData?.data?.has_details === false) {
       toast.error(
-        "Please complete your profile details to access the dashboard.",
+        "Please complete your account details to access the dashboard.",
+        {
+          id: "complete-account-details-error",
+        },
       );
-      window.location.replace("/barber-after-register");
+      router.replace("/barber-after-register");
+      return;
     }
+
     if (userData?.data?.is_verified === false) {
-      window.location.replace("/application-received");
+      router.replace("/application-received");
+      return;
     }
+
     if (
       userData?.data?.is_tutorial_completed === false &&
       !pathname.startsWith("/dashboard/training")
     ) {
-      window.location.replace("/dashboard/training");
+      router.replace("/dashboard/training");
     }
-  }
-
-  console.log(userData);
+  }, [pathname, router, userData]);
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FA]">
@@ -66,6 +76,10 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
+};
+
+const layout = ({ children }: { children: React.ReactNode }) => {
+  return <DashboardLayout>{children}</DashboardLayout>;
 };
 
 export default layout;
