@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Input } from "@/components/auth-ui/input";
 import { Label } from "@/components/auth-ui/label";
@@ -15,18 +19,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 import { GoogleLoginBtn } from "@/assets/icons";
 import { useStateContext } from "@/hooks/useStateContext";
 import Logo from "@/components/shared/Logo";
-import axios from "axios";
-import { toast } from "sonner";
 import { googleLogin } from "@/lib/auth";
-
-interface RegisterPageProps {
-  searchParams: Promise<{ type?: string }>;
-}
 
 const loginFormSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -35,11 +31,19 @@ const loginFormSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
-const LoginPage = ({ searchParams }: RegisterPageProps) => {
+const LoginPage = () => {
   const { setIsLoggedIn } = useStateContext();
-  const { type } = React.use(searchParams);
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+  const redirectParam = searchParams.get("redirect");
+  const safeRedirect =
+    redirectParam &&
+    redirectParam.startsWith("/") &&
+    !redirectParam.startsWith("//") &&
+    !redirectParam.startsWith("/login")
+      ? redirectParam
+      : null;
   console.log(type);
-  const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isGooglePending, setIsGooglePending] = useState(false);
 
@@ -65,9 +69,10 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
       localStorage.setItem("role", response.data.data.role);
       setIsLoggedIn(true);
       toast.success("Logged in successfully.");
-      router.push(
-        response.data.data.role === "barber" ? "/dashboard" : "/account",
-      );
+      const isBarber = response.data.data.role === "barber";
+      window.location.href = isBarber
+        ? "/dashboard"
+        : (safeRedirect ?? "/account");
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Login failed. Please try again.",
@@ -175,7 +180,8 @@ const LoginPage = ({ searchParams }: RegisterPageProps) => {
                 setIsGooglePending(false);
               }
             }}
-            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
+            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none"
+          >
             <GoogleLoginBtn />
             <p className="text-[#454F5B] text-base sm:text-lg font-medium">
               {isGooglePending ? "Signing in..." : "Log in with Google"}

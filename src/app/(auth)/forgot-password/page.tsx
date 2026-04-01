@@ -52,7 +52,7 @@ const ForgotPasswordPage = () => {
       form.reset();
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message ||
+        error?.response?.data?.error ||
           "Failed to send verification code. Please try again.",
       );
     } finally {

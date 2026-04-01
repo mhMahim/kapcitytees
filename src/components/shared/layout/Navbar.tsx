@@ -84,7 +84,14 @@ const Navbar = () => {
               asChild
               className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 lg:h-11"
             >
-              <Link href="/login">Sign In</Link>
+              <Link
+                href={{
+                  pathname: "/login",
+                  query: { redirect: activePath },
+                }}
+              >
+                Sign In
+              </Link>
             </Button>
           )}
 
