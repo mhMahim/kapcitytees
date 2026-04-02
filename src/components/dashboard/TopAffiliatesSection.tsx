@@ -1,11 +1,20 @@
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+"use client";
 
-type AffiliateStatus = "processing" | "delivered" | "cancelled";
+import { useMemo, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import QRCodeDialog from "@/components/dashboard/product/QRCodeDialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import useFetchData from "@/hooks/useFetchData";
+import { cn } from "@/lib/utils";
+
+type AffiliateStatus = "processing" | "delivered" | "cancelled" | "unknown";
 
 interface Affiliate {
-  id: number;
+  id: string;
   name: string;
   avatar: string;
   date: string;
@@ -15,75 +24,63 @@ interface Affiliate {
   revenue: string;
   status: AffiliateStatus;
   productLink: string;
+  qrCode: string | null;
+  productId: number | null;
 }
 
-const affiliatesData: Affiliate[] = [
-  {
-    id: 1,
-    name: "Alexa Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    date: "10 / 1 / 2026",
-    product: "Beard Oil",
-    quantity: 2,
-    click: 20,
-    revenue: "60$",
-    status: "delivered",
-    productLink: "barbercertified.com/ref/marcus10",
-  },
-  {
-    id: 2,
-    name: "Alexa Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    date: "10 / 1 / 2026",
-    product: "Beard Oil",
-    quantity: 2,
-    click: 20,
-    revenue: "60$",
-    status: "processing",
-    productLink: "barbercertified.com/ref/marcus10",
-  },
-  {
-    id: 3,
-    name: "Alexa Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    date: "10 / 1 / 2026",
-    product: "Beard Oil",
-    quantity: 2,
-    click: 20,
-    revenue: "60$",
-    status: "cancelled",
-    productLink: "barbercertified.com/ref/marcus10",
-  },
-  {
-    id: 4,
-    name: "Alexa Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    date: "10 / 1 / 2026",
-    product: "Beard Oil",
-    quantity: 2,
-    click: 20,
-    revenue: "60$",
-    status: "processing",
-    productLink: "barbercertified.com/ref/marcus10",
-  },
-  {
-    id: 5,
-    name: "Alexa Johnson",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    date: "10 / 1 / 2026",
-    product: "Beard Oil",
-    quantity: 2,
-    click: 20,
-    revenue: "60$",
-    status: "delivered",
-    productLink: "barbercertified.com/ref/marcus10",
-  },
-];
+interface ApiAffiliateProduct {
+  id?: number | string;
+  product_id?: number | string;
+  client_name?: string;
+  client_image?: string;
+  customer_name?: string;
+  avatar?: string;
+  date?: string;
+  created_at?: string;
+  product_name?: string;
+  product?: string;
+  title?: string;
+  quantity?: number | string;
+  order_quantity?: number | string;
+  clicks?: number | string;
+  click?: number | string;
+  total_clicks?: number | string;
+  revenue?: number | string;
+  total_revenue?: number | string;
+  commission?: number | string;
+  status?: string;
+  product_link?: string;
+  referral_link?: string;
+  qr_code?: string;
+  qrCode?: string;
+  link?: string;
+  client?: {
+    name?: string;
+    avatar?: string;
+  };
+}
+
+interface ApiAffiliateProductsResponse {
+  data?: {
+    data?: ApiAffiliateProduct[] | { data?: ApiAffiliateProduct[] };
+  };
+}
+
+interface ReferralLinkApiData {
+  referral_link?: string | null;
+  qr_code?: string | null;
+}
+
+interface ReferralLinkApiResponse {
+  message?: string;
+  data?: ReferralLinkApiData;
+}
 
 const statusStyles: Record<AffiliateStatus, string> = {
   processing: "bg-[#FEF3C7] border-[#F59E0B] text-[#F59E0B]",
   delivered: "bg-[#D1FAE5] border-[#10B981] text-[#10B981]",
   cancelled: "bg-[#FEE2E2] border-[#EF4444] text-[#EF4444]",
+  unknown: "bg-[#F4F6F8] border-[#DFE3E8] text-[#637381]",
 };
 
 const CopyIcon = ({ className = "" }: { className?: string }) => (
@@ -186,10 +183,275 @@ const columns = [
   { label: "Click", width: "w-[10vw] lg:w-[8vw]" },
   { label: "Revenue", width: "w-[10vw] lg:w-[8vw]" },
   { label: "Status", width: "w-[12vw] lg:w-[9vw]" },
-  { label: "Product Link", width: "w-79" },
+  { label: "Product Link", width: "w-40" },
 ];
 
+const safeNumber = (value: unknown) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const formatDate = (value: string) => {
+  if (!value) {
+    return "-";
+  }
+
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+
+  return `${parsed.getMonth() + 1} / ${parsed.getDate()} / ${parsed.getFullYear()}`;
+};
+
+const formatRevenue = (value: unknown) => {
+  if (value === null || value === undefined || value === "") {
+    return "$0";
+  }
+
+  if (typeof value === "number") {
+    return `$${value}`;
+  }
+
+  const normalized = String(value).trim();
+  return /^\d+(\.\d+)?$/.test(normalized) ? `$${normalized}` : normalized;
+};
+
+const normalizeStatus = (value: unknown): AffiliateStatus => {
+  const normalized = String(value ?? "")
+    .trim()
+    .toLowerCase();
+
+  if (["delivered", "completed", "success"].includes(normalized)) {
+    return "delivered";
+  }
+
+  if (
+    ["processing", "pending", "in_progress", "in progress"].includes(
+      normalized,
+    )
+  ) {
+    return "processing";
+  }
+
+  if (["cancelled", "canceled", "failed", "rejected"].includes(normalized)) {
+    return "cancelled";
+  }
+
+  return "unknown";
+};
+
+const extractAffiliateProducts = (
+  apiData: ApiAffiliateProductsResponse | undefined,
+) => {
+  const primaryData = apiData?.data?.data;
+
+  if (Array.isArray(primaryData)) {
+    return primaryData;
+  }
+
+  if (Array.isArray(primaryData?.data)) {
+    return primaryData.data;
+  }
+
+  return [];
+};
+
+const mapApiAffiliateToUi = (
+  item: ApiAffiliateProduct,
+  index: number,
+): Affiliate => {
+  const parsedProductId = Number(item.product_id);
+  const parsedId = Number(item.id);
+  const normalizedProductId = Number.isFinite(parsedProductId)
+    ? parsedProductId
+    : Number.isFinite(parsedId)
+      ? parsedId
+      : null;
+
+  const clientName =
+    item.client_name ??
+    item.client?.name ??
+    item.customer_name ??
+    "Unknown Client";
+
+  const productName =
+    item.product_name ?? item.product ?? item.title ?? "Product";
+  const productLink =
+    item.product_link ?? item.referral_link ?? item.link ?? "";
+  const rawDate = item.date ?? item.created_at ?? "";
+
+  return {
+    id: String(item.id ?? `affiliate-${index}`),
+    name: clientName,
+    avatar:
+      item.client_image ??
+      item.client?.avatar ??
+      item.avatar ??
+      "/images/avatar-placeholder.png",
+    date: formatDate(rawDate),
+    product: productName,
+    quantity: safeNumber(item.quantity ?? item.order_quantity),
+    click: safeNumber(item.clicks ?? item.click ?? item.total_clicks),
+    revenue: formatRevenue(item.revenue ?? item.total_revenue ?? item.commission),
+    status: normalizeStatus(item.status),
+    productLink,
+    qrCode: item.qr_code ?? item.qrCode ?? null,
+    productId: normalizedProductId,
+  };
+};
+
 const TopAffiliatesSection = () => {
+  const [qrDialogOpen, setQrDialogOpen] = useState(false);
+  const [selectedAffiliate, setSelectedAffiliate] =
+    useState<Affiliate | null>(null);
+  const [selectedQrCode, setSelectedQrCode] = useState<string | null>(null);
+  const [copyPendingAffiliateId, setCopyPendingAffiliateId] = useState<
+    string | null
+  >(null);
+  const [qrPendingAffiliateId, setQrPendingAffiliateId] = useState<
+    string | null
+  >(null);
+
+  const { data, isPending, isError, error, refetch } = useFetchData(
+    "/barber/affiliate-products",
+    true,
+  );
+
+  const affiliates = useMemo(() => {
+    const apiAffiliates = extractAffiliateProducts(
+      data as ApiAffiliateProductsResponse | undefined,
+    );
+
+    return apiAffiliates
+      .map((item, index) => mapApiAffiliateToUi(item, index))
+      .slice(0, 5);
+  }, [data]);
+
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : "Unable to load affiliate products.";
+
+  const fetchReferralData = async (productId: number) => {
+    const token = localStorage.getItem("token");
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+    if (!token || !baseUrl) {
+      return null;
+    }
+
+    try {
+      const response = await axios.get<ReferralLinkApiResponse>(
+        `${baseUrl}/barber/referral-link/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      return response.data?.data ?? null;
+    } catch (apiError: unknown) {
+      if (axios.isAxiosError(apiError)) {
+        const apiErrorMessage = (
+          apiError.response?.data as { message?: string } | undefined
+        )?.message;
+
+        toast.error(apiErrorMessage || "Failed to load referral link.");
+      } else {
+        toast.error("Failed to load referral link.");
+      }
+
+      return null;
+    }
+  };
+
+  const copyReferralLink = async (link: string) => {
+    if (!link) {
+      return false;
+    }
+
+    try {
+      await navigator.clipboard.writeText(link);
+      return true;
+    } catch {
+      toast.error("Unable to copy this product link.");
+      return false;
+    }
+  };
+
+  const resolveReferralData = async (affiliate: Affiliate) => {
+    const fallbackReferralLink = affiliate.productLink || null;
+    const fallbackQrCode = affiliate.qrCode;
+
+    if (affiliate.productId === null) {
+      return {
+        referral_link: fallbackReferralLink,
+        qr_code: fallbackQrCode,
+      };
+    }
+
+    const referralData = await fetchReferralData(affiliate.productId);
+
+    return {
+      referral_link: referralData?.referral_link ?? fallbackReferralLink,
+      qr_code: referralData?.qr_code ?? fallbackQrCode,
+    };
+  };
+
+  const handleCopyLinkClick = async (affiliate: Affiliate) => {
+    setCopyPendingAffiliateId(affiliate.id);
+
+    try {
+      const referralData = await resolveReferralData(affiliate);
+
+      if (!referralData.referral_link) {
+        toast.error("Product link is not available right now.");
+        return;
+      }
+
+      const copied = await copyReferralLink(referralData.referral_link);
+
+      if (copied) {
+        toast.success("Product link copied.");
+      }
+    } finally {
+      setCopyPendingAffiliateId(null);
+    }
+  };
+
+  const handleQrCodeClick = async (affiliate: Affiliate) => {
+    setQrPendingAffiliateId(affiliate.id);
+
+    try {
+      const referralData = await resolveReferralData(affiliate);
+
+      if (!referralData.referral_link) {
+        toast.error("Product link is not available right now.");
+        return;
+      }
+
+      const copied = await copyReferralLink(referralData.referral_link);
+
+      if (copied) {
+        toast.success("Product link copied.");
+      }
+
+      if (!referralData.qr_code) {
+        toast.error("QR code is not available right now.");
+        return;
+      }
+
+      setSelectedAffiliate(affiliate);
+      setSelectedQrCode(referralData.qr_code);
+      setQrDialogOpen(true);
+    } finally {
+      setQrPendingAffiliateId(null);
+    }
+  };
+
   return (
     <div className="bg-white flex flex-col overflow-clip p-4 sm:p-5 lg:p-6 2xl:p-8 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] w-full">
       <div className="flex items-center justify-between pb-2 sm:pb-3 h-12 sm:h-14">
@@ -197,7 +459,7 @@ const TopAffiliatesSection = () => {
           Top Affiliates
         </h3>
         <Link
-          href="#"
+          href="/dashboard/my-clients"
           className="text-sm font-normal leading-normal text-[#637381] underline"
         >
           View all
@@ -225,135 +487,275 @@ const TopAffiliatesSection = () => {
             ))}
           </div>
 
-          {affiliatesData.map((affiliate) => (
-            <div
-              key={affiliate.id}
-              className="flex items-center py-1 border-b border-[#F9FAFB]"
-            >
-              {/* Client */}
+          {isPending ? (
+            Array.from({ length: 5 }).map((_, index) => (
               <div
+                key={`top-affiliate-skeleton-${index}`}
                 className={cn(
-                  "flex items-center gap-3 h-16 px-4 py-3 overflow-hidden",
-                  columns[0].width,
+                  "flex items-center py-1",
+                  index < 4 && "border-b border-[#F9FAFB]",
                 )}
               >
-                <div className="relative shrink-0 size-12 rounded-full overflow-hidden">
-                  <Image
-                    src={affiliate.avatar}
-                    alt={affiliate.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <p className="text-base font-semibold leading-6 text-textPrimary">
-                  {affiliate.name}
-                </p>
-              </div>
-
-              {/* Date */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[1].width,
-                )}
-              >
-                <p className="text-base font-normal leading-6 text-textPrimary">
-                  {affiliate.date}
-                </p>
-              </div>
-
-              {/* Product */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[2].width,
-                )}
-              >
-                <p className="text-base font-semibold leading-6 text-textPrimary">
-                  {affiliate.product}
-                </p>
-              </div>
-
-              {/* Quantity */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[3].width,
-                )}
-              >
-                <p className="text-base font-normal leading-6 text-textPrimary truncate w-full">
-                  {affiliate.quantity}
-                </p>
-              </div>
-
-              {/* Click */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[4].width,
-                )}
-              >
-                <p className="text-base font-normal leading-6 text-textPrimary">
-                  {affiliate.click}
-                </p>
-              </div>
-
-              {/* Revenue */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[5].width,
-                )}
-              >
-                <p className="text-base font-normal leading-6 text-textPrimary">
-                  {affiliate.revenue}
-                </p>
-              </div>
-
-              {/* Status */}
-              <div
-                className={cn(
-                  "h-16 flex items-center px-4 py-3 overflow-hidden",
-                  columns[6].width,
-                )}
-              >
-                <span
+                <div
                   className={cn(
-                    "inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal capitalize",
-                    statusStyles[affiliate.status],
+                    "flex items-center gap-3 h-16 px-4 py-3 overflow-hidden",
+                    columns[0].width,
                   )}
                 >
-                  {affiliate.status}
-                </span>
+                  <Skeleton className="size-12 rounded-full shrink-0" />
+                  <Skeleton className="h-5 w-28" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[1].width,
+                  )}
+                >
+                  <Skeleton className="h-5 w-20" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[2].width,
+                  )}
+                >
+                  <Skeleton className="h-5 w-24" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[3].width,
+                  )}
+                >
+                  <Skeleton className="h-5 w-10" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[4].width,
+                  )}
+                >
+                  <Skeleton className="h-5 w-10" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[5].width,
+                  )}
+                >
+                  <Skeleton className="h-5 w-14" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[6].width,
+                  )}
+                >
+                  <Skeleton className="h-7 w-20 rounded-md" />
+                </div>
+                <div
+                  className={cn(
+                    "h-16 flex items-center gap-2.5 px-4 py-3 overflow-hidden",
+                    columns[7].width,
+                  )}
+                >
+                  <Skeleton className="h-5 flex-1" />
+                  <Skeleton className="size-10 rounded-md" />
+                  <Skeleton className="size-10 rounded-md" />
+                </div>
               </div>
-
-              {/* Product Link */}
-              <div
-                className={cn(
-                  "h-16 flex items-center gap-2.5 px-4 py-3 overflow-hidden",
-                  columns[7].width,
-                )}
-              >
-                <p className="flex-1 min-w-0 text-base font-normal leading-6 text-textPrimary truncate">
-                  {affiliate.productLink}
+            ))
+          ) : isError ? (
+            <div className="px-2 py-4 sm:py-6 min-w-225 lg:min-w-0">
+              <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
+                <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
+                  Failed to load affiliate products.
+                </p>
+                <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
+                  {errorMessage}
                 </p>
                 <button
-                  className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors"
-                  title="Copy link"
+                  type="button"
+                  onClick={() => refetch()}
+                  className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
                 >
-                  <CopyIcon />
-                </button>
-                <button
-                  className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors"
-                  title="QR Code"
-                >
-                  <QRIcon />
+                  Retry
                 </button>
               </div>
             </div>
-          ))}
+          ) : affiliates.length === 0 ? (
+            <div className="px-2 py-8 sm:py-10 min-w-225 lg:min-w-0">
+              <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
+                <p className="text-sm sm:text-base text-[#637381] leading-6">
+                  No affiliate products found.
+                </p>
+              </div>
+            </div>
+          ) : (
+            affiliates.map((affiliate, index) => (
+              <div
+                key={affiliate.id}
+                className={cn(
+                  "flex items-center py-1",
+                  index < affiliates.length - 1 && "border-b border-[#F9FAFB]",
+                )}
+              >
+                {/* Client */}
+                <div
+                  className={cn(
+                    "flex items-center gap-3 h-16 px-4 py-3 overflow-hidden",
+                    columns[0].width,
+                  )}
+                >
+                  <div className="relative shrink-0 size-12 rounded-full overflow-hidden bg-gray-200">
+                    <Image
+                      src={affiliate.avatar}
+                      alt={affiliate.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <p className="text-base font-semibold leading-6 text-textPrimary truncate">
+                    {affiliate.name}
+                  </p>
+                </div>
+
+                {/* Date */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[1].width,
+                  )}
+                >
+                  <p className="text-base font-normal leading-6 text-textPrimary truncate">
+                    {affiliate.date}
+                  </p>
+                </div>
+
+                {/* Product */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[2].width,
+                  )}
+                >
+                  <p className="text-base font-semibold leading-6 text-textPrimary truncate">
+                    {affiliate.product}
+                  </p>
+                </div>
+
+                {/* Quantity */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[3].width,
+                  )}
+                >
+                  <p className="text-base font-normal leading-6 text-textPrimary truncate w-full">
+                    {affiliate.quantity}
+                  </p>
+                </div>
+
+                {/* Click */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[4].width,
+                  )}
+                >
+                  <p className="text-base font-normal leading-6 text-textPrimary">
+                    {affiliate.click}
+                  </p>
+                </div>
+
+                {/* Revenue */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[5].width,
+                  )}
+                >
+                  <p className="text-base font-normal leading-6 text-textPrimary">
+                    {affiliate.revenue}
+                  </p>
+                </div>
+
+                {/* Status */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center px-4 py-3 overflow-hidden",
+                    columns[6].width,
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal capitalize",
+                      statusStyles[affiliate.status],
+                    )}
+                  >
+                    {affiliate.status}
+                  </span>
+                </div>
+
+                {/* Product Link */}
+                <div
+                  className={cn(
+                    "h-16 flex items-center gap-2.5 px-4 py-3 overflow-hidden",
+                    columns[7].width,
+                  )}
+                >
+                  <button
+                    type="button"
+                    title="Copy link"
+                    disabled={
+                      copyPendingAffiliateId === affiliate.id ||
+                      (!affiliate.productLink && affiliate.productId === null)
+                    }
+                    onClick={() => handleCopyLinkClick(affiliate)}
+                    className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {copyPendingAffiliateId === affiliate.id ? (
+                      <Loader2 className="size-5 text-[#637381] animate-spin" />
+                    ) : (
+                      <CopyIcon />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    title="QR Code"
+                    disabled={
+                      qrPendingAffiliateId === affiliate.id ||
+                      (affiliate.productId === null && !affiliate.qrCode)
+                    }
+                    onClick={() => handleQrCodeClick(affiliate)}
+                    className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {qrPendingAffiliateId === affiliate.id ? (
+                      <Loader2 className="size-5 text-[#637381] animate-spin" />
+                    ) : (
+                      <QRIcon />
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
+
+      <QRCodeDialog
+        open={qrDialogOpen}
+        onOpenChange={(open) => {
+          setQrDialogOpen(open);
+
+          if (!open) {
+            setSelectedQrCode(null);
+            setSelectedAffiliate(null);
+          }
+        }}
+        productName={selectedAffiliate?.product}
+        qrCode={selectedQrCode}
+      />
     </div>
   );
 };

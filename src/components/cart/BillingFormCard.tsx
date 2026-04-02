@@ -63,9 +63,15 @@ const BillingFormCard = ({
     onSubmit?.(values);
 
     const checkoutDetails = getLocalCheckoutDetails();
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (checkoutDetails.items.length === 0) {
       toast.error("Your cart is empty. Add products before checkout.");
+      return;
+    }
+
+    if (!baseUrl) {
+      toast.error("Base URL is not configured.");
       return;
     }
 
@@ -96,24 +102,44 @@ const BillingFormCard = ({
     try {
       setIsSubmitting(true);
       const token = localStorage.getItem("token");
+      const authHeaders = token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : undefined;
+
+      const cartPayload = new URLSearchParams();
+      checkoutDetails.items.forEach((item, index) => {
+        cartPayload.append(`items[${index}][product_id]`, String(item.product_id));
+        cartPayload.append(`items[${index}][quantity]`, String(item.quantity));
+      });
+
+      await axios.post(`${baseUrl}/cart`, cartPayload, {
+        headers: {
+          ...(authHeaders ?? {}),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/stripe`,
+        `${baseUrl}/checkout/stripe`,
         checkoutPayload,
         {
-          headers: token
-            ? {
-                Authorization: `Bearer ${token}`,
-              }
-            : undefined,
+          headers: authHeaders,
         },
       );
       window.location.href = response.data.url;
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message ||
-          "An error occurred while processing your payment. Please try again.",
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          (error.response?.data as { message?: string } | undefined)?.message ||
+            "An error occurred while processing your payment. Please try again.",
+        );
+
+        return;
+      }
+
+      toast.error("An error occurred while processing your payment. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

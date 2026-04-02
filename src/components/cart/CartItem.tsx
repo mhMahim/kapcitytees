@@ -32,7 +32,7 @@ const CartItem = ({
   return (
     <div className="bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between pl-4 pr-5 sm:pr-6 py-4 rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] gap-3 sm:gap-5 w-full">
       {/* Product info */}
-      <div className="flex gap-3 sm:gap-5 items-center">
+      <div className="flex gap-3 sm:gap-5 items-center flex-1">
         <div className="relative size-16 sm:size-20 shrink-0 rounded-xl overflow-hidden bg-[#F4F6F8] self-start">
           <Image
             src={image}
@@ -55,7 +55,7 @@ const CartItem = ({
       {/* Quantity controls + Price + Remove
           Mobile: single justify-between row (qty left, price+remove right)
           sm+: inline continuation of the main flex row */}
-      <div className="flex items-center justify-between sm:justify-normal sm:flex-1 sm:pl-2">
+      <div className="flex items-center sm:flex-1 sm:pl-2 gap-4">
         {/* Quantity controls */}
         <div className="flex gap-3 sm:gap-6 items-center">
           <button
@@ -78,8 +78,8 @@ const CartItem = ({
         </div>
 
         {/* Price + Remove */}
-        <div className="flex gap-3 sm:gap-8 items-center sm:ml-auto">
-          <p className="text-base sm:text-2xl font-semibold leading-6 sm:leading-9 text-[#1E6FA8]">
+        <div className="flex gap-3 sm:gap-4 items-center sm:ml-auto">
+          <p className="text-base sm:text-2xl font-semibold leading-6 sm:leading-9 text-[#1E6FA8] text-nowrap">
             $ {price.toFixed(2)}
           </p>
           <button

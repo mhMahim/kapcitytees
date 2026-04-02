@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { Copy, QrCode } from "lucide-react";
+import axios from "axios";
+import { Copy, Loader2, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { BelowIcon } from "@/assets/icons";
+import QRCodeDialog from "@/components/dashboard/product/QRCodeDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import useFetchData from "@/hooks/useFetchData";
 import {
@@ -40,10 +42,13 @@ interface ClientOrder {
   revenue: string;
   status: OrderStatus;
   productLink: string;
+  qrCode: string | null;
+  productId: number | null;
 }
 
 interface ApiAffiliateProduct {
   id?: number | string;
+  product_id?: number | string;
   client_name?: string;
   client_image?: string;
   customer_name?: string;
@@ -64,6 +69,8 @@ interface ApiAffiliateProduct {
   status?: string;
   product_link?: string;
   referral_link?: string;
+  qr_code?: string;
+  qrCode?: string;
   link?: string;
   client?: {
     name?: string;
@@ -75,6 +82,16 @@ interface ApiAffiliateProductsResponse {
   data?: {
     data?: ApiAffiliateProduct[] | { data?: ApiAffiliateProduct[] };
   };
+}
+
+interface ReferralLinkApiData {
+  referral_link?: string | null;
+  qr_code?: string | null;
+}
+
+interface ReferralLinkApiResponse {
+  message?: string;
+  data?: ReferralLinkApiData;
 }
 
 const statusStyles: Record<OrderStatus, string> = {
@@ -165,6 +182,14 @@ const mapApiOrderToUiOrder = (
   item: ApiAffiliateProduct,
   index: number,
 ): ClientOrder => {
+  const parsedProductId = Number(item.product_id);
+  const parsedId = Number(item.id);
+  const normalizedProductId = Number.isFinite(parsedProductId)
+    ? parsedProductId
+    : Number.isFinite(parsedId)
+      ? parsedId
+      : null;
+
   const clientName =
     item.client_name ??
     item.client?.name ??
@@ -194,12 +219,19 @@ const mapApiOrderToUiOrder = (
     ),
     status: normalizeStatus(item.status),
     productLink,
+    qrCode: item.qr_code ?? item.qrCode ?? null,
+    productId: normalizedProductId,
   };
 };
 
 const MyClientsPage = () => {
   const [filter, setFilter] = useState<FilterValue>("recent");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [qrDialogOpen, setQrDialogOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<ClientOrder | null>(null);
+  const [selectedQrCode, setSelectedQrCode] = useState<string | null>(null);
+  const [copyPendingOrderId, setCopyPendingOrderId] = useState<string | null>(null);
+  const [qrPendingOrderId, setQrPendingOrderId] = useState<string | null>(null);
 
   const {
     data: affiliateProductsResponse,
@@ -225,16 +257,121 @@ const MyClientsPage = () => {
       ? affiliateProductsApiErrorData.message
       : "Failed to load affiliate products.";
 
-  const handleCopyLink = async (link: string) => {
+  const fetchReferralData = async (productId: number) => {
+    const token = localStorage.getItem("token");
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+    if (!token || !baseUrl) {
+      return null;
+    }
+
+    try {
+      const response = await axios.get<ReferralLinkApiResponse>(
+        `${baseUrl}/barber/referral-link/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      return response.data?.data ?? null;
+    } catch (apiError: unknown) {
+      if (axios.isAxiosError(apiError)) {
+        const apiErrorMessage = (
+          apiError.response?.data as { message?: string } | undefined
+        )?.message;
+
+        toast.error(apiErrorMessage || "Failed to load referral link.");
+      } else {
+        toast.error("Failed to load referral link.");
+      }
+
+      return null;
+    }
+  };
+
+  const copyReferralLink = async (link: string) => {
     if (!link) {
-      return;
+      return false;
     }
 
     try {
       await navigator.clipboard.writeText(link);
-      toast.success("Product link copied.");
+      return true;
     } catch {
       toast.error("Unable to copy this product link.");
+      return false;
+    }
+  };
+
+  const resolveReferralData = async (order: ClientOrder) => {
+    const fallbackReferralLink = order.productLink || null;
+    const fallbackQrCode = order.qrCode;
+
+    if (order.productId === null) {
+      return {
+        referral_link: fallbackReferralLink,
+        qr_code: fallbackQrCode,
+      };
+    }
+
+    const referralData = await fetchReferralData(order.productId);
+
+    return {
+      referral_link: referralData?.referral_link ?? fallbackReferralLink,
+      qr_code: referralData?.qr_code ?? fallbackQrCode,
+    };
+  };
+
+  const handleCopyLinkClick = async (order: ClientOrder) => {
+    setCopyPendingOrderId(order.id);
+
+    try {
+      const referralData = await resolveReferralData(order);
+
+      if (!referralData.referral_link) {
+        toast.error("Product link is not available right now.");
+        return;
+      }
+
+      const copied = await copyReferralLink(referralData.referral_link);
+
+      if (copied) {
+        toast.success("Product link copied.");
+      }
+    } finally {
+      setCopyPendingOrderId(null);
+    }
+  };
+
+  const handleQrCodeClick = async (order: ClientOrder) => {
+    setQrPendingOrderId(order.id);
+
+    try {
+      const referralData = await resolveReferralData(order);
+
+      if (!referralData.referral_link) {
+        toast.error("Product link is not available right now.");
+        return;
+      }
+
+      const copied = await copyReferralLink(referralData.referral_link);
+
+      if (copied) {
+        toast.success("Product link copied.");
+      }
+
+      if (!referralData.qr_code) {
+        toast.error("QR code is not available right now.");
+        return;
+      }
+
+      setSelectedOrder(order);
+      setSelectedQrCode(referralData.qr_code);
+      setQrDialogOpen(true);
+    } finally {
+      setQrPendingOrderId(null);
     }
   };
 
@@ -449,17 +586,33 @@ const MyClientsPage = () => {
                 <div className="w-40 h-16 flex items-center gap-2.5 px-4 overflow-hidden">
                   <button
                     type="button"
-                    disabled={!order.productLink}
-                    onClick={() => handleCopyLink(order.productLink)}
+                    disabled={
+                      copyPendingOrderId === order.id ||
+                      (!order.productLink && order.productId === null)
+                    }
+                    onClick={() => handleCopyLinkClick(order)}
                     className="size-10 shrink-0 flex items-center justify-center border border-[#F4F6F8] rounded-md cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Copy className="size-5 text-[#637381]" />
+                    {copyPendingOrderId === order.id ? (
+                      <Loader2 className="size-5 text-[#637381] animate-spin" />
+                    ) : (
+                      <Copy className="size-5 text-[#637381]" />
+                    )}
                   </button>
                   <button
                     type="button"
-                    className="size-10 shrink-0 flex items-center justify-center border border-[#F4F6F8] rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+                    disabled={
+                      qrPendingOrderId === order.id ||
+                      (order.productId === null && !order.qrCode)
+                    }
+                    onClick={() => handleQrCodeClick(order)}
+                    className="size-10 shrink-0 flex items-center justify-center border border-[#F4F6F8] rounded-md cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <QrCode className="size-5.5 text-[#637381]" />
+                    {qrPendingOrderId === order.id ? (
+                      <Loader2 className="size-5.5 text-[#637381] animate-spin" />
+                    ) : (
+                      <QrCode className="size-5.5 text-[#637381]" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -467,6 +620,20 @@ const MyClientsPage = () => {
           )}
         </div>
       </div>
+
+      <QRCodeDialog
+        open={qrDialogOpen}
+        onOpenChange={(open) => {
+          setQrDialogOpen(open);
+
+          if (!open) {
+            setSelectedQrCode(null);
+            setSelectedOrder(null);
+          }
+        }}
+        productName={selectedOrder?.product}
+        qrCode={selectedQrCode}
+      />
     </div>
   );
 };
