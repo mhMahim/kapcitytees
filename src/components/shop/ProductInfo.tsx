@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { StarFilledIcon, StarEmptyIcon } from "@/assets/icons";
-import Link from "next/link";
-import axios from "axios";
 import { toast } from "sonner";
+import { addToLocalCart } from "@/lib/cart";
 
 interface ProductInfoProps {
   productId: number | string;
   name: string;
   category: string;
+  image: string;
+  slug?: string;
   breadcrumb: string;
   rating: number;
   reviewCount: string;
@@ -22,6 +24,8 @@ const ProductInfo = ({
   productId,
   name,
   category,
+  image,
+  slug,
   breadcrumb,
   rating,
   reviewCount,
@@ -31,57 +35,32 @@ const ProductInfo = ({
   const [quantity, setQuantity] = useState(1);
 
   const handleDecrement = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
   };
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
 
-  const [isPending, setIsPending] = useState(false);
-
-  const addOnCart = async () => {
-    const token = localStorage.getItem("token");
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-    if (!token) {
-      toast.error("Please login to add product to cart.");
-      return;
-    }
-
-    if (!baseUrl) {
-      toast.error("Base URL is not configured.");
-      return;
-    }
-
+  const addOnCart = () => {
     if (!productId) {
       toast.error("Product is not available.");
       return;
     }
 
-    try {
-      setIsPending(true);
-      await axios.post(
-        `${baseUrl}/cart`,
-        {
-          product_id: productId,
-          quantity,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    addToLocalCart({
+      id: productId,
+      name,
+      category,
+      price,
+      image,
+      slug,
+      quantity,
+    });
 
-      toast.success("Product added to cart.");
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Failed to add product to cart."
-      );
-    } finally {
-      setIsPending(false);
-    }
+    toast.success("Product added to cart.");
   };
 
   return (
@@ -93,7 +72,7 @@ const ProductInfo = ({
 
       <div className="flex flex-col gap-8 sm:gap-14 lg:gap-18">
         {/* Product Details */}
-          <div className="flex flex-col gap-5 sm:gap-8">
+        <div className="flex flex-col gap-5 sm:gap-8">
           <div className="flex flex-col gap-3">
             <h1 className="text-2xl sm:text-3xl lg:text-[40px] font-semibold text-[#0F2A3C] tracking-[-0.8px]">
               {name}
@@ -110,7 +89,7 @@ const ProductInfo = ({
                       <StarFilledIcon key={i} className="w-4.5 h-4.5" />
                     ) : (
                       <StarEmptyIcon key={i} className="w-4.5 h-4.5" />
-                    )
+                    ),
                   )}
                 </div>
                 <p className="text-sm sm:text-base font-normal leading-6 text-[#5E707C]">
@@ -156,10 +135,9 @@ const ProductInfo = ({
             <div className="flex gap-2 sm:gap-4 items-center flex-wrap">
               <button
                 onClick={addOnCart}
-                disabled={isPending}
-                className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors cursor-pointer"
               >
-                {isPending ? "Adding..." : "Add to Cart"}
+                Add to Cart
               </button>
               <Link
                 href="/cart"

@@ -1,11 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import Logo from "../Logo";
 import Container from "../Container";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const companyLinks = [
   { label: "About Us", href: "/about-us" },
   { label: "Become a Partner", href: "/register?type=barber" },
-  { label: "products", href: "/shop" },
+  { label: "products", href: "/for-clients" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
@@ -15,10 +18,11 @@ const customerLinks = [
   { label: "Shipping & Returns", href: "#" },
 ];
 
-const socialLinks = [
+// fallback labels used when API is not available
+const socialLinksFallback = [
   { label: "Facebook", href: "#" },
-  { label: "X", href: "#" },
-  { label: "Instagram", href: "#" },
+  { label: "Twitter", href: "#" },
+  { label: "LinkedIn", href: "#" },
 ];
 
 interface FooterLinkColumnProps {
@@ -47,6 +51,27 @@ const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
 );
 
 const Footer = () => {
+  const { siteInfoData, socialLinksData } = useStateContext();
+
+  const siteInfo = siteInfoData?.data?.data;
+  const siteEmail = siteInfo?.email?.trim() || "";
+  const sitePhone = siteInfo?.phone?.trim() || "";
+  const copyrightText =
+    siteInfo?.copyright_text?.trim() || "Copyright Barber Certified 2025";
+
+  // Normalize API shape: socialLinksData?.data?.data is expected per API
+  const fetchedLinks =
+    socialLinksData?.data?.data && socialLinksData.data.data.length
+      ? socialLinksData.data.data[0]
+      : null;
+
+  const socialLinks = fetchedLinks
+    ? [
+        { label: "Facebook", href: fetchedLinks.facebook_link || "#" },
+        { label: "Twitter", href: fetchedLinks.twitter_link || "#" },
+        { label: "LinkedIn", href: fetchedLinks.linkedin_link || "#" },
+      ]
+    : socialLinksFallback;
   return (
     <footer className="bg-[#0F2A3C] w-full">
       <Container className="pt-10 sm:pt-14 lg:pt-20 pb-6 sm:pb-8 flex flex-col gap-10 sm:gap-14 lg:gap-20">
@@ -60,6 +85,26 @@ const Footer = () => {
               skin-safe ingredients to help you look sharp, feel confident, and
               take control of your style every single day.
             </p>
+            {(siteEmail || sitePhone) && (
+              <div className="flex flex-col gap-1">
+                {siteEmail && (
+                  <a
+                    href={`mailto:${siteEmail}`}
+                    className="text-sm sm:text-base text-[#E7EAEC] hover:text-white transition-colors"
+                  >
+                    {siteEmail}
+                  </a>
+                )}
+                {sitePhone && (
+                  <a
+                    href={`tel:${sitePhone.replace(/[^+\d]/g, "")}`}
+                    className="text-sm sm:text-base text-[#E7EAEC] hover:text-white transition-colors"
+                  >
+                    {sitePhone}
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Link columns */}
@@ -73,7 +118,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="border-t border-[#3F5563] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-sm sm:text-base text-[#E7EAEC]">
-            Copyright &copy; 2025
+            {copyrightText}
           </p>
           <div className="flex items-center gap-4 sm:gap-6">
             <Link

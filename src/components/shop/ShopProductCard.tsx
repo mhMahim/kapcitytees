@@ -2,6 +2,9 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import type { MouseEvent } from "react";
+import { toast } from "sonner";
+import { addToLocalCart } from "@/lib/cart";
 
 export interface ShopProductCardProps {
   id: string | number;
@@ -22,9 +25,26 @@ const ShopProductCard = ({
   slug,
   barberCertified = false,
 }: ShopProductCardProps) => {
+  const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addToLocalCart({
+      id,
+      name,
+      category,
+      price,
+      image,
+      slug,
+      quantity: 1,
+    });
+
+    toast.success(`${name} added to cart.`);
+  };
+
   return (
     <Link
-      href={`/products/${id}`}
+      href={`/products/${slug || id}`}
       className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-3 flex flex-col gap-1 relative"
     >
       {/* Barber Certified Badge */}
@@ -61,9 +81,7 @@ const ShopProductCard = ({
           </span>
           <button
             aria-label={`Add ${name} to cart`}
-            onClick={(e) => {
-              e.preventDefault(); // Prevent default button behavior
-            }}
+            onClick={handleAddToCart}
             className="w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-[#1E6FA8] rounded-full flex items-center justify-center hover:bg-[#1A5F92] transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />

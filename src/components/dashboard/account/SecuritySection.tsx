@@ -153,7 +153,7 @@ const SecuritySection = () => {
 
       {/* Sign Out Dialog */}
       <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="sm:max-w-100 rounded-lg p-5 sm:p-8 gap-4 sm:gap-5">
+        <DialogContent className="sm:max-w-120 rounded-lg p-5 sm:p-8 gap-4 sm:gap-5">
           <div className="flex flex-col items-center gap-2 text-center text-textPrimary">
             <DialogTitle className="text-xl sm:text-2xl font-semibold leading-8 sm:leading-9">
               Log out

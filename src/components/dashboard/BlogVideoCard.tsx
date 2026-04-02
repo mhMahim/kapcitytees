@@ -9,6 +9,7 @@ export interface BlogVideoCardProps {
   thumbnail: string | StaticImageData;
   slug?: string;
   link?: string;
+  isCompleted?: boolean;
 }
 
 const BlogVideoCard = ({
@@ -17,9 +18,16 @@ const BlogVideoCard = ({
   thumbnail,
   slug,
   link = "/dashboard/training/",
+  isCompleted,
 }: BlogVideoCardProps) => {
   const cardClassName =
     "bg-white flex flex-col gap-3 items-center p-3 rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] cursor-pointer hover:shadow-md transition-shadow";
+
+  const hasStatus = typeof isCompleted === "boolean";
+  const statusLabel = isCompleted ? "Watched" : "Not Watched";
+  const statusClassName = isCompleted
+    ? "bg-[#E8F7EF] text-[#1D9A5F]"
+    : "bg-[#FFF2F2] text-[#B42318]";
 
   return (
     <Link href={`${link}${slug}`} className={cardClassName}>
@@ -39,6 +47,13 @@ const BlogVideoCard = ({
 
       {/* Text content */}
       <div className="flex flex-col items-start px-2 py-3 w-full">
+        {hasStatus && (
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold leading-4 mb-2 ${statusClassName}`}
+          >
+            {statusLabel}
+          </span>
+        )}
         <div className="flex flex-col gap-2 w-full">
           <h3 className="font-semibold text-base sm:text-lg 2xl:text-xl leading-6 sm:leading-7 2xl:leading-7.5 text-[#0F2A3C]">
             {title}

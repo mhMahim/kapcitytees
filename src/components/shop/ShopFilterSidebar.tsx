@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import useFetchData from "@/hooks/useFetchData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // ── Checkbox row ──────────────────────────────────────────────────────────────
 interface CheckboxRowProps {
@@ -21,9 +22,7 @@ const CheckboxRow = ({
   <label className="flex items-center gap-3 cursor-pointer w-full">
     <div
       className={`w-5 h-5 rounded shrink-0 border-2 flex items-center justify-center transition-colors ${
-        checked
-          ? "bg-[#1E6FA8] border-[#1E6FA8]"
-          : "bg-white border-[#C4CDD5]"
+        checked ? "bg-[#1E6FA8] border-[#1E6FA8]" : "bg-white border-[#C4CDD5]"
       }`}
       onClick={() => onChange?.(!checked)}
     >
@@ -39,7 +38,9 @@ const CheckboxRow = ({
         </svg>
       )}
     </div>
-    <span className="flex-1 font-semibold text-sm sm:text-base text-[#3F5563]">{label}</span>
+    <span className="flex-1 font-semibold text-sm sm:text-base text-[#3F5563]">
+      {label}
+    </span>
     {count !== undefined && (
       <span className="text-sm text-[#919DA5]">({count})</span>
     )}
@@ -65,7 +66,9 @@ const FilterSection = ({
         className="flex items-center justify-between w-full"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="text-base sm:text-xl font-medium text-[#3F5563]">{title}</span>
+        <span className="text-base sm:text-xl font-medium text-[#3F5563]">
+          {title}
+        </span>
         {open ? (
           <ChevronUp className="w-4 h-4 text-[#3F5563]" />
         ) : (
@@ -95,7 +98,9 @@ const PriceRangeFilter = ({ onPriceChange }: PriceRangeFilterProps) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       <button className="flex items-center justify-between w-full">
-        <span className="text-base sm:text-xl font-medium text-[#3F5563]">Price</span>
+        <span className="text-base sm:text-xl font-medium text-[#3F5563]">
+          Price
+        </span>
         <ChevronUp className="w-4 h-4 text-[#3F5563]" />
       </button>
 
@@ -161,57 +166,71 @@ interface Category {
   updated_at: string;
 }
 
+interface CategoriesApiResponse {
+  data?: {
+    data?: Category[];
+  };
+}
+
 interface ShopFilterSidebarProps {
   onCategoryChange?: (categoryIds: number[]) => void;
   onPriceChange?: (min: number, max: number) => void;
 }
 
-const ratings = [
-  { label: "5", count: 18 },
-  { label: "4+", count: 18 },
-  { label: "3+", count: 18 },
-  { label: "2+", count: 18 },
-  { label: "1+", count: 18 },
-];
+// const ratings = [
+//   { label: "5", count: 18 },
+//   { label: "4+", count: 18 },
+//   { label: "3+", count: 18 },
+//   { label: "2+", count: 18 },
+//   { label: "1+", count: 18 },
+// ];
 
-const ShopFilterSidebar = ({ onCategoryChange, onPriceChange }: ShopFilterSidebarProps = {}) => {
+const ShopFilterSidebar = ({
+  onCategoryChange,
+  onPriceChange,
+}: ShopFilterSidebarProps = {}) => {
   const [activeCats, setActiveCats] = useState<number[]>([]);
-  const [activeRatings, setActiveRatings] = useState<string[]>([]);
-  const [barberCertified, setBarberCertified] = useState(true);
+  // const [activeRatings, setActiveRatings] = useState<string[]>([]);
+  // const [barberCertified, setBarberCertified] = useState(true);
 
   const toggleCat = (id: number) =>
     setActiveCats((prev) => {
-      const newCats = prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id];
+      const newCats = prev.includes(id)
+        ? prev.filter((c) => c !== id)
+        : [...prev, id];
       onCategoryChange?.(newCats);
       return newCats;
     });
 
-  const toggleRating = (label: string) =>
-    setActiveRatings((prev) =>
-      prev.includes(label) ? prev.filter((r) => r !== label) : [...prev, label]
-    );
+  // const toggleRating = (label: string) =>
+  //   setActiveRatings((prev) =>
+  //     prev.includes(label) ? prev.filter((r) => r !== label) : [...prev, label],
+  //   );
 
-  const [categoriesData, setCategoriesData] = useState<Category[]>([]);
+  const {
+    data: categoriesApiData,
+    isPending: categoriesApiPending,
+    isError: categoriesApiError,
+    refetch: refetchCategories,
+  } = useFetchData("/categories");
 
-  const {data: categoriesApiData, isPending: categoriesApiPending} = useFetchData("/categories");
-
-  useEffect(()=>{
-    if(categoriesApiData){
-      setCategoriesData(categoriesApiData.data.data);
-    }
-  },[categoriesApiData])
-
+  const categoriesData = (
+    categoriesApiData as CategoriesApiResponse | undefined
+  )?.data?.data;
+  const safeCategories = Array.isArray(categoriesData) ? categoriesData : [];
 
   return (
     <aside className="flex flex-col gap-4 sm:gap-6 w-full">
-      <h2 className="text-xl sm:text-2xl font-semibold text-[#0F2A3C]">Filters</h2>
+      <h2 className="text-xl sm:text-2xl font-semibold text-[#0F2A3C] lg:h-11.5">
+        Filters
+      </h2>
 
       <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 w-full">
         {/* Price */}
         <PriceRangeFilter onPriceChange={onPriceChange} />
 
         {/* Barber Certified */}
-        <div className="flex flex-col gap-4 w-full">
+        {/* <div className="flex flex-col gap-4 w-full">
           <CheckboxRow
             label="Barber Certified Product"
             count={18}
@@ -219,14 +238,37 @@ const ShopFilterSidebar = ({ onCategoryChange, onPriceChange }: ShopFilterSideba
             onChange={setBarberCertified}
           />
           <div className="h-px w-full bg-[#E7EAEC]" />
-        </div>
+        </div> */}
 
         {/* Category */}
         <FilterSection title="Category">
           {categoriesApiPending ? (
-            <div className="text-sm text-[#919DA5] py-2">Loading categories...</div>
-          ) : (
-            categoriesData?.map((cat) => (
+            <div className="flex flex-col gap-3 py-1">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={`category-skeleton-${index}`}
+                  className="flex items-center gap-3"
+                >
+                  <Skeleton className="h-5 w-5 rounded-sm" />
+                  <Skeleton className="h-5 w-2/3" />
+                </div>
+              ))}
+            </div>
+          ) : categoriesApiError ? (
+            <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-3 flex flex-col gap-2">
+              <p className="text-sm text-[#B42318] leading-5">
+                Failed to load categories. Please try again.
+              </p>
+              <button
+                type="button"
+                onClick={() => refetchCategories()}
+                className="w-fit text-sm font-medium text-[#B42318] hover:text-[#7A271A] transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          ) : safeCategories.length > 0 ? (
+            safeCategories.map((cat) => (
               <CheckboxRow
                 key={cat.id}
                 label={cat.name}
@@ -234,11 +276,15 @@ const ShopFilterSidebar = ({ onCategoryChange, onPriceChange }: ShopFilterSideba
                 onChange={() => toggleCat(cat.id)}
               />
             ))
+          ) : (
+            <p className="text-sm text-[#919DA5] py-1">
+              No categories available.
+            </p>
           )}
         </FilterSection>
 
         {/* Rating */}
-        <FilterSection title="Rating">
+        {/* <FilterSection title="Rating">
           {ratings.map((r) => (
             <CheckboxRow
               key={r.label}
@@ -248,7 +294,7 @@ const ShopFilterSidebar = ({ onCategoryChange, onPriceChange }: ShopFilterSideba
               onChange={() => toggleRating(r.label)}
             />
           ))}
-        </FilterSection>
+        </FilterSection> */}
       </div>
     </aside>
   );

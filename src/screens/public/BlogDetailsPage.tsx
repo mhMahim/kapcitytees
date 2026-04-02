@@ -2,12 +2,15 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import parse from "html-react-parser";
+import axios from "axios";
+import { toast } from "sonner";
 import { PlayCircleIcon, ChevronLeftIcon } from "@/assets/icons";
 import blogThumbnail from "@/assets/images/blog-thumbnail-img.png";
 import useFetchData from "@/hooks/useFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TutorialDetails {
   id: number;
@@ -20,14 +23,17 @@ interface TutorialDetails {
   description?: string;
   views_count?: number;
   is_active?: number;
+  is_completed?: boolean;
 }
 
 const BlogDetailsPage = () => {
   const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const params = useParams<{ slug: string }>();
   const tutorialId = params?.slug;
+  const pathname = usePathname();
 
   const { data, isPending, isError } = useFetchData(
     `/modules/tutorials/details/${tutorialId}`,
@@ -36,6 +42,8 @@ const BlogDetailsPage = () => {
       enabled: Boolean(tutorialId),
     },
   );
+
+  const queryClient = useQueryClient();
 
   const tutorial = useMemo(() => {
     const detailsData = data?.data?.data;
@@ -49,6 +57,7 @@ const BlogDetailsPage = () => {
   }, [data]);
 
   const router = useRouter();
+  const isDashboardTrainingRoute = pathname.startsWith("/dashboard/training/");
 
   const handleBack = () => {
     router.back();
@@ -86,6 +95,52 @@ const BlogDetailsPage = () => {
     });
   };
 
+  const handleContinue = async () => {
+    if (!tutorialId) {
+      toast.error("Tutorial id is missing.");
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_BASE_URL) {
+      toast.error("Base URL is not configured.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Please login first.");
+      return;
+    }
+
+    try {
+      setIsMarkingComplete(true);
+
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/modules/tutorials/mark-complete/${tutorialId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ["/profile"] });
+
+      router.push("/dashboard/training");
+    } catch (error) {
+      const apiErrorMessage =
+        axios.isAxiosError(error) &&
+        typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : "Failed to mark tutorial as complete. Please try again.";
+
+      toast.error(apiErrorMessage);
+    } finally {
+      setIsMarkingComplete(false);
+    }
+  };
+
   if (isPending) {
     return (
       <div className="flex justify-center">
@@ -118,9 +173,9 @@ const BlogDetailsPage = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 w-full max-w-307.5 mx-auto">
         <div className="space-y-2">
-          <div className="w-full max-w-307.5">
+          <div className="w-full">
             <button
               onClick={handleBack}
               className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-[#0F2A3C] hover:bg-[#ebeeee] cursor-pointer"
@@ -130,7 +185,7 @@ const BlogDetailsPage = () => {
             </button>
           </div>
           {/* Video Thumbnail */}
-          <div className="relative w-full max-w-307.5 aspect-video rounded-xl overflow-hidden">
+          <div className="relative aspect-video rounded-xl overflow-hidden">
             {isVideoVisible && videoSrc ? (
               <>
                 <video
@@ -185,6 +240,17 @@ const BlogDetailsPage = () => {
                   "Watch this training tutorial to improve your barbering skills.",
               )}
             </div>
+
+            {isDashboardTrainingRoute && tutorial?.is_completed === false && (
+              <button
+                type="button"
+                onClick={handleContinue}
+                disabled={isMarkingComplete || !isVideoVisible}
+                className="mt-2 h-11 sm:h-12 px-5 sm:px-6 rounded-xl bg-[#1E6FA8] text-white text-sm sm:text-base font-semibold hover:bg-[#1A5F92] disabled:opacity-60 disabled:cursor-auto transition-colors w-full sm:w-fit cursor-pointer"
+              >
+                {isMarkingComplete ? "Processing..." : "Continue"}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -104,7 +104,7 @@ const NavbarProfilePopover = () => {
 
       {/* Logout Confirmation Dialog */}
       <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
-        <DialogContent className="sm:max-w-100 rounded-2xl p-8 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
+        <DialogContent className="sm:max-w-120 rounded-2xl p-8 gap-5 shadow-[0px_8px_16px_0px_rgba(145,158,171,0.16)]">
           <div className="flex flex-col items-center gap-2 text-center text-textPrimary">
             <DialogTitle className="text-2xl font-semibold leading-9">
               Log out

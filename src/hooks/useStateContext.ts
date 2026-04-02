@@ -1,3 +1,5 @@
+"use client";
+
 import { StateContext } from "@/provider/StateContextProvider";
 import { useContext } from "react";
 

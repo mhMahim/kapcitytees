@@ -7,11 +7,19 @@ import axios from "axios";
 import { CheckCircle2, LoaderCircle, XCircle } from "lucide-react";
 import Logo from "@/components/shared/Logo";
 import { Button } from "@/components/ui/button";
+import {
+  CHECKOUT_CONTEXT_STORAGE_KEY,
+  clearLocalCart,
+  getLocalCheckoutDetails,
+} from "@/lib/cart";
 
 interface StoredBillingInfo {
+  full_name?: string;
   fullName?: string;
+  phone?: string;
   phoneNumber?: string;
   email?: string;
+  address?: string;
   deliveryAddress?: string;
   city?: string;
   state?: string;
@@ -19,6 +27,10 @@ interface StoredBillingInfo {
   shipping?: number | string;
   shippingCharge?: number | string;
   shipping_charge?: number | string;
+  subtotal?: number | string;
+  total?: number | string;
+  total_items?: number | string;
+  items?: unknown[];
 }
 
 type PaymentStatus = "loading" | "success" | "error";
@@ -53,7 +65,9 @@ const PaymentSuccessPage = () => {
     }
 
     try {
-      const storedBillingData = localStorage.getItem("billingInfo");
+      const storedBillingData =
+        localStorage.getItem(CHECKOUT_CONTEXT_STORAGE_KEY) ||
+        localStorage.getItem("billingInfo");
 
       if (!storedBillingData) {
         setStatus("error");
@@ -64,6 +78,28 @@ const PaymentSuccessPage = () => {
       }
 
       const billingData = JSON.parse(storedBillingData) as StoredBillingInfo;
+      const fallbackCheckoutDetails = getLocalCheckoutDetails();
+      const checkoutItems = Array.isArray(billingData.items)
+        ? billingData.items
+        : fallbackCheckoutDetails.items;
+      const subtotal =
+        parseNumber(billingData.subtotal) || fallbackCheckoutDetails.subtotal;
+      const totalItems =
+        parseNumber(billingData.total_items) || fallbackCheckoutDetails.total_items;
+      const totalAmount =
+        parseNumber(billingData.total) ||
+        Number(
+          (
+            subtotal +
+            parseNumber(billingData.tax) +
+            parseNumber(
+              billingData.shipping_charge ??
+                billingData.shippingCharge ??
+                billingData.shipping,
+            )
+          ).toFixed(2),
+        );
+
       const payload = {
         session_id: sessionId,
         tax: parseNumber(billingData.tax),
@@ -72,12 +108,16 @@ const PaymentSuccessPage = () => {
             billingData.shippingCharge ??
             billingData.shipping,
         ),
-        full_name: billingData.fullName ?? "",
-        phone: billingData.phoneNumber ?? "",
+        full_name: billingData.full_name ?? billingData.fullName ?? "",
+        phone: billingData.phone ?? billingData.phoneNumber ?? "",
         email: billingData.email ?? "",
         city: billingData.city ?? "",
         state: billingData.state ?? "",
-        address: billingData.deliveryAddress ?? "",
+        address: billingData.address ?? billingData.deliveryAddress ?? "",
+        subtotal,
+        total: totalAmount,
+        total_items: totalItems,
+        items: checkoutItems,
       };
 
       const token = localStorage.getItem("token");
@@ -95,6 +135,8 @@ const PaymentSuccessPage = () => {
       );
 
       localStorage.removeItem("billingInfo");
+      localStorage.removeItem(CHECKOUT_CONTEXT_STORAGE_KEY);
+      clearLocalCart();
 
       setStatus("success");
       setMessage(

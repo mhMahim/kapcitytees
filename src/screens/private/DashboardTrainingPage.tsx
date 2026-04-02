@@ -28,6 +28,7 @@ interface Tutorial {
   slug: string;
   video_url?: string;
   thumbnail_url?: string;
+  is_completed?: boolean;
 }
 
 /* ────────────────── Circular Progress ────────────────── */
@@ -123,7 +124,7 @@ const DashboardTrainingPage = () => {
     isError: isTutorialsProgressError,
   } = useFetchData("/tutorials/overall-progress", true);
 
-  const progressData = tutorialsProgressResponse?.data?.data ?? null;
+  const progressData = tutorialsProgressResponse?.data ?? null;
 
   const completedModules = progressData?.completed_modules ?? 0;
   const totalModules = progressData?.total_modules ?? modules.length;
@@ -254,6 +255,7 @@ const DashboardTrainingPage = () => {
                         : blogThumbnail
                     }
                     slug={tutorial.id.toString()}
+                    isCompleted={Boolean(tutorial.is_completed)}
                   />
                 ))}
               </div>

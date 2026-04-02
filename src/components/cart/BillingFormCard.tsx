@@ -16,6 +16,10 @@ import OrderSummary from "./OrderSummary";
 import axios from "axios";
 import { toast } from "sonner";
 import { useState } from "react";
+import {
+  CHECKOUT_CONTEXT_STORAGE_KEY,
+  getLocalCheckoutDetails,
+} from "@/lib/cart";
 
 const billingSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -58,26 +62,50 @@ const BillingFormCard = ({
   const handleSubmit = async (values: BillingFormValues) => {
     onSubmit?.(values);
 
+    const checkoutDetails = getLocalCheckoutDetails();
+
+    if (checkoutDetails.items.length === 0) {
+      toast.error("Your cart is empty. Add products before checkout.");
+      return;
+    }
+
+    const checkoutPayload = {
+      full_name: values.fullName,
+      phone: values.phoneNumber,
+      email: values.email,
+      city: values.city,
+      state: values.state,
+      address: values.deliveryAddress,
+      tax,
+      shipping_charge: shipping,
+      subtotal: checkoutDetails.subtotal,
+      total: Number((checkoutDetails.subtotal + tax + shipping).toFixed(2)),
+      total_items: checkoutDetails.total_items,
+      items: checkoutDetails.items,
+    };
+
     localStorage.setItem(
       "billingInfo",
-      JSON.stringify({
-        ...values,
-        tax,
-        shipping,
-        shippingCharge: shipping,
-        shipping_charge: shipping,
-      }),
+      JSON.stringify(checkoutPayload),
+    );
+    localStorage.setItem(
+      CHECKOUT_CONTEXT_STORAGE_KEY,
+      JSON.stringify(checkoutPayload),
     );
 
     try {
       setIsSubmitting(true);
+      const token = localStorage.getItem("token");
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/stripe`,
-        {},
+        checkoutPayload,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: token
+            ? {
+                Authorization: `Bearer ${token}`,
+              }
+            : undefined,
         },
       );
       window.location.href = response.data.url;

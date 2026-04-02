@@ -186,6 +186,8 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
             productId={product?.id || ""}
             name={product?.title || "Product Title"}
             category={product?.category?.name || "Uncategorized"}
+            image={product?.thumbnail_url || PRODUCT_IMG}
+            slug={product?.slug || ""}
             breadcrumb={`Home / Shop / ${product?.title || ""}`}
             rating={5}
             reviewCount="No Reviews"

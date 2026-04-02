@@ -4,13 +4,18 @@ import Link from "next/link";
 import { ShoppingCartIcon } from "@/assets/icons";
 import Container from "../Container";
 import Logo from "../Logo";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useStateContext } from "@/hooks/useStateContext";
 import NavbarProfilePopover from "../NavbarProfilePopover";
 import { Menu, X } from "lucide-react";
+import {
+  getLocalCartItems,
+  getLocalCartSnapshot,
+  subscribeToLocalCart,
+} from "@/lib/cart";
 
 const publicNavLinks = [
   { label: "Home", href: "/" },
@@ -34,6 +39,22 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isLoggedIn, userData } = useStateContext();
   const activePath = usePathname();
+
+  const localCartSnapshot = useSyncExternalStore(
+    subscribeToLocalCart,
+    getLocalCartSnapshot,
+    () => "[]",
+  );
+
+  const cartItemsCount = useMemo(
+    () =>
+      getLocalCartItems().reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      ),
+    [localCartSnapshot],
+  );
+  const cartCountLabel = cartItemsCount > 99 ? "99+" : String(cartItemsCount);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,9 +113,14 @@ const Navbar = () => {
               {role === "user" && (
                 <Link
                   href="/cart"
-                  className="text-[#637381] hover:text-[#0F2A3C] transition-colors"
+                  className="relative text-[#637381] hover:text-[#0F2A3C] transition-colors"
                 >
                   <ShoppingCartIcon className="" />
+                  {cartItemsCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-[#DE5D56] text-white text-[10px] font-semibold leading-5 text-center">
+                      {cartCountLabel}
+                    </span>
+                  )}
                 </Link>
               )}
               <NavbarProfilePopover />
