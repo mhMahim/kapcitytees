@@ -109,7 +109,7 @@ const ProductInfo = ({
             $ {price.toFixed(2)}
           </p>
 
-          <div className="flex gap-4 sm:gap-8 lg:gap-16 items-center flex-wrap">
+          <div className="flex gap-4 sm:gap-8 lg:gap-16 items-center flex-col">
             {/* Quantity Selector */}
             <div className="flex gap-3 sm:gap-4 lg:gap-6 items-center">
               <button
