@@ -15,11 +15,14 @@ import { Input } from "@/components/ui/input";
 import OrderSummary from "./OrderSummary";
 import axios from "axios";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CHECKOUT_CONTEXT_STORAGE_KEY,
   getLocalCheckoutDetails,
 } from "@/lib/cart";
+import { useRouter } from "next/navigation";
+
+const BILLING_DRAFT_SESSION_STORAGE_KEY = "kapcitytees-billing-draft";
 
 const billingSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -58,6 +61,37 @@ const BillingFormCard = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const savedDraft = sessionStorage.getItem(BILLING_DRAFT_SESSION_STORAGE_KEY);
+
+    if (!savedDraft) {
+      return;
+    }
+
+    try {
+      const parsedDraft = JSON.parse(savedDraft) as Partial<BillingFormValues>;
+
+      form.reset({
+        fullName:
+          typeof parsedDraft.fullName === "string" ? parsedDraft.fullName : "",
+        phoneNumber:
+          typeof parsedDraft.phoneNumber === "string"
+            ? parsedDraft.phoneNumber
+            : "",
+        email: typeof parsedDraft.email === "string" ? parsedDraft.email : "",
+        deliveryAddress:
+          typeof parsedDraft.deliveryAddress === "string"
+            ? parsedDraft.deliveryAddress
+            : "",
+        city: typeof parsedDraft.city === "string" ? parsedDraft.city : "",
+        state: typeof parsedDraft.state === "string" ? parsedDraft.state : "",
+      });
+    } catch {
+      sessionStorage.removeItem(BILLING_DRAFT_SESSION_STORAGE_KEY);
+    }
+  }, [form]);
 
   const handleSubmit = async (values: BillingFormValues) => {
     onSubmit?.(values);
@@ -90,10 +124,7 @@ const BillingFormCard = ({
       items: checkoutDetails.items,
     };
 
-    localStorage.setItem(
-      "billingInfo",
-      JSON.stringify(checkoutPayload),
-    );
+    localStorage.setItem("billingInfo", JSON.stringify(checkoutPayload));
     localStorage.setItem(
       CHECKOUT_CONTEXT_STORAGE_KEY,
       JSON.stringify(checkoutPayload),
@@ -102,6 +133,22 @@ const BillingFormCard = ({
     try {
       setIsSubmitting(true);
       const token = localStorage.getItem("token");
+      if (!token) {
+        sessionStorage.setItem(
+          BILLING_DRAFT_SESSION_STORAGE_KEY,
+          JSON.stringify(values),
+        );
+        sessionStorage.setItem(
+          CHECKOUT_CONTEXT_STORAGE_KEY,
+          JSON.stringify(checkoutPayload),
+        );
+        router.push("/login?redirect=/cart");
+        toast.error("You need to be logged in to proceed with checkout.");
+        return;
+      }
+
+      sessionStorage.removeItem(BILLING_DRAFT_SESSION_STORAGE_KEY);
+
       const authHeaders = token
         ? {
             Authorization: `Bearer ${token}`,
@@ -110,7 +157,10 @@ const BillingFormCard = ({
 
       const cartPayload = new URLSearchParams();
       checkoutDetails.items.forEach((item, index) => {
-        cartPayload.append(`items[${index}][product_id]`, String(item.product_id));
+        cartPayload.append(
+          `items[${index}][product_id]`,
+          String(item.product_id),
+        );
         cartPayload.append(`items[${index}][quantity]`, String(item.quantity));
       });
 
@@ -139,7 +189,9 @@ const BillingFormCard = ({
         return;
       }
 
-      toast.error("An error occurred while processing your payment. Please try again.");
+      toast.error(
+        "An error occurred while processing your payment. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }

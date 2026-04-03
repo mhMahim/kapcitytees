@@ -47,11 +47,7 @@ const Navbar = () => {
   );
 
   const cartItemsCount = useMemo(
-    () =>
-      getLocalCartItems().reduce(
-        (sum, item) => sum + item.quantity,
-        0,
-      ),
+    () => getLocalCartItems().reduce((sum, item) => sum + item.quantity, 0),
     [localCartSnapshot],
   );
   const cartCountLabel = cartItemsCount > 99 ? "99+" : String(cartItemsCount);
@@ -108,38 +104,36 @@ const Navbar = () => {
               </Link>
             ))}
           </nav>
-          {isLoggedIn ? (
-            <div className="flex items-center gap-4 lg:gap-8">
-              {role === "user" && (
-                <Link
-                  href="/cart"
-                  className="relative text-[#637381] hover:text-[#0F2A3C] transition-colors"
-                >
-                  <ShoppingCartIcon className="" />
-                  {cartItemsCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-[#DE5D56] text-white text-[10px] font-semibold leading-5 text-center">
-                      {cartCountLabel}
-                    </span>
-                  )}
-                </Link>
-              )}
-              <NavbarProfilePopover />
-            </div>
-          ) : (
-            <Button
-              asChild
-              className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 lg:h-11"
+          <div className="flex items-center gap-4 lg:gap-8">
+            <Link
+              href="/cart"
+              className="relative text-[#637381] hover:text-[#0F2A3C] transition-colors"
             >
-              <Link
-                href={{
-                  pathname: "/login",
-                  query: { redirect: activePath },
-                }}
+              <ShoppingCartIcon className="" />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-[#DE5D56] text-white text-[10px] font-semibold leading-5 text-center">
+                  {cartCountLabel}
+                </span>
+              )}
+            </Link>
+            {isLoggedIn ? (
+              <NavbarProfilePopover />
+            ) : (
+              <Button
+                asChild
+                className="text-sm sm:text-base px-4 sm:px-5 h-9 sm:h-10 lg:h-11"
               >
-                Sign In
-              </Link>
-            </Button>
-          )}
+                <Link
+                  href={{
+                    pathname: "/login",
+                    query: { redirect: activePath },
+                  }}
+                >
+                  Sign In
+                </Link>
+              </Button>
+            )}
+          </div>
 
           {/* Hamburger — hidden on lg+ */}
           <button
