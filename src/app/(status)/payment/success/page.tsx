@@ -214,12 +214,6 @@ const PaymentSuccessPage = () => {
             {title}
           </h1>
           <p className="text-sm sm:text-base text-[#637381]">{message}</p>
-
-          {sessionId && (
-            <p className="text-xs sm:text-sm text-[#919EAB] break-all">
-              Session ID: {sessionId}
-            </p>
-          )}
         </div>
 
         {status === "loading" ? (
