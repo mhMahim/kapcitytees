@@ -1,25 +1,63 @@
 import axios from "axios";
 import { toast } from "sonner";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+
+interface GoogleLoginResponse {
+  token?: string;
+  role?: string;
+  data?: {
+    token?: string;
+    role?: string;
+  };
+  user?: {
+    role?: string;
+  };
+  message?: string;
+}
 
 export async function googleLogin(
   setIsLoggedIn: (v: boolean) => void,
   redirectPath: string,
+  givenRole?: string,
 ): Promise<void> {
   const result = await signInWithPopup(auth, googleProvider);
-  const idToken = await result.user.getIdToken();
-  const response = await axios.post(
+
+  // ✅ Get OAuth Access Token
+  const credential = GoogleAuthProvider.credentialFromResult(result);
+  const oauthAccessToken = credential?.accessToken;
+
+  if (!oauthAccessToken) {
+    throw new Error("Failed to get OAuth access token");
+  }
+
+  const response = await axios.post<GoogleLoginResponse>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/google-login`,
     {
-      token: idToken,
+      token: oauthAccessToken,
       provider: "google",
+      ...(givenRole && { role: givenRole }),
     },
   );
-  localStorage.setItem("token", response.data.token);
-  localStorage.setItem("role", response.data.data.role);
+
+  const token = response.data.token ?? response.data.data?.token;
+  const role =
+    response.data.role ?? response.data.data?.role ?? response.data.user?.role;
+
+  if (!token || !role) {
+    throw new Error(
+      response.data.message ||
+        "Google login response is missing token or role.",
+    );
+  }
+
+  localStorage.setItem("token", token);
+  localStorage.setItem("role", role);
   setIsLoggedIn(true);
   toast.success("Logged in with Google successfully.");
+  if (role === "barber" && !givenRole) {
+    redirectPath = "/dashboard";
+  }
   window.location.href = redirectPath;
 }
 

@@ -205,18 +205,21 @@ const RegisterPageContent = () => {
               try {
                 await googleLogin(
                   setIsLoggedIn,
-                  type === "barber" ? "/barber-after-register" : "/dashboard",
+                  type === "barber" ? "/barber-after-register" : "/for-clients",
+                  type === "barber" ? "barber" : "user",
                 );
               } catch (error: any) {
                 toast.error(
                   error?.response?.data?.message ||
+                    error?.message ||
                     "Google sign-up failed. Please try again.",
                 );
               } finally {
                 setIsGooglePending(false);
               }
             }}
-            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none">
+            className="border border-[#EAECEF] flex items-center justify-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-[#EAECEF] hover:scale-102 active:scale-98 transition-transform cursor-pointer select-none"
+          >
             <GoogleLoginBtn />
             <p className="text-[#454F5B] text-base sm:text-lg font-medium">
               {isGooglePending ? "Signing up..." : "Sign up with Google"}

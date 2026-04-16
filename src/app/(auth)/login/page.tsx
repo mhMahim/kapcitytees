@@ -174,6 +174,7 @@ const LoginPageContent = () => {
               } catch (error: any) {
                 toast.error(
                   error?.response?.data?.message ||
+                    error?.message ||
                     "Google login failed. Please try again.",
                 );
               } finally {
