@@ -1,4 +1,5 @@
 const DEFAULT_SITE_ORIGIN = "https://kapcitytees.thewarriors.team";
+const DEFAULT_API_PATH = "/api";
 
 export const SITE_NAME = "Barber Certified";
 export const DEFAULT_SITE_DESCRIPTION =
@@ -43,11 +44,20 @@ export const getSiteOrigin = (): string => {
   }
 };
 
+const getApiBase = (): string => {
+  const rawApiBase =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    new URL(DEFAULT_API_PATH, getSiteOrigin()).toString();
+
+  return rawApiBase.endsWith("/") ? rawApiBase : `${rawApiBase}/`;
+};
+
 export const getSiteInfo = async (): Promise<SiteInfo> => {
-  const apiBase = process.env.NEXT_PUBLIC_BASE_URL || getSiteOrigin();
+  const apiBase = getApiBase();
 
   try {
-    const endpoint = new URL("/site-info", apiBase).toString();
+    // Use a relative path so configured base paths like /api are preserved.
+    const endpoint = new URL("site-info", apiBase).toString();
     const response = await fetch(endpoint, {
       headers: {
         Accept: "application/json",

@@ -24,6 +24,7 @@ const licorice = Licorice({
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const siteInfo = await getSiteInfo();
+
   const siteOrigin = getSiteOrigin();
   const socialImage = siteInfo.logo || undefined;
 
@@ -56,7 +57,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
       siteName: SITE_NAME,
       title: `${SITE_NAME} | Premium Grooming Essentials`,
       description: DEFAULT_SITE_DESCRIPTION,
-      images: socialImage ? [{ url: socialImage, alt: `${SITE_NAME} logo` }] : [],
+      images: socialImage
+        ? [{ url: socialImage, alt: `${SITE_NAME} logo` }]
+        : [],
     },
     twitter: {
       card: socialImage ? "summary_large_image" : "summary",
@@ -117,7 +120,9 @@ export default async function RootLayout({
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
         />
         <MainProvider>
           {children}

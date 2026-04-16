@@ -2,14 +2,17 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, User } from "lucide-react";
-import { BelowIcon, NotificationIcon } from "@/assets/icons";
+import {
+  BelowIcon,
+  //  NotificationIcon
+} from "@/assets/icons";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import ProfilePopoverMenu from "@/components/dashboard/ProfilePopoverMenu";
-import NotificationPopover from "@/components/dashboard/NotificationPopover";
+// import NotificationPopover from "@/components/dashboard/NotificationPopover";
 import { usePathname } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { useStateContext } from "@/hooks/useStateContext";
@@ -82,11 +85,11 @@ const DashboardTopbar = ({ onMenuToggle }: DashboardTopbarProps) => {
 
       {/* Right section with notifications and avatar */}
       <div className="right flex gap-2 sm:gap-3 lg:gap-4 xl:gap-6">
-        <NotificationPopover>
+        {/* <NotificationPopover>
           <div className="bg-white aspect-square rounded-full size-11 sm:size-14 lg:size-17 flex items-center justify-center cursor-pointer relative select-none shadow-[0_0_21px_0_rgba(26,29,49,0.04)]">
             <NotificationIcon className="size-5 sm:size-6 lg:size-7" />
           </div>
-        </NotificationPopover>
+        </NotificationPopover> */}
 
         <Popover>
           <PopoverTrigger asChild>
