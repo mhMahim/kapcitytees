@@ -73,7 +73,7 @@ const Footer = () => {
       ]
     : socialLinksFallback;
   return (
-    <footer className="bg-[#F4F6F8] w-full">
+    <footer className="bg-[#F4F6F8] w-full border-t">
       <Container className="pt-10 sm:pt-14 lg:pt-20 pb-6 sm:pb-8 flex flex-col gap-10 sm:gap-14 lg:gap-20">
         {/* Top section */}
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8 sm:gap-10 lg:gap-12">

@@ -11,7 +11,7 @@ const TermsAndConditionPage = () => {
     data?.data?.data?.content || data?.data?.content || data?.content || "";
 
   return (
-    <main className="bg-[#F4F8FB] min-h-screen pb-8 sm:pb-10 lg:pb-14">
+    <main className="min-h-screen pb-8 sm:pb-10 lg:pb-14">
       <Container>
         <section className="rounded-2xl sm:rounded-3xl overflow-hidden bg-linear-to-r from-[#0F2A3C] via-[#164768] to-[#1E6FA8] p-6 sm:p-8 lg:p-10 text-white shadow-[0_16px_40px_rgba(15,42,60,0.22)]">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold leading-tight">
