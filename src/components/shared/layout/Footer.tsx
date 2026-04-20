@@ -23,6 +23,8 @@ const socialLinksFallback = [
   { label: "Facebook", href: "#" },
   { label: "Twitter", href: "#" },
   { label: "LinkedIn", href: "#" },
+  { label: "Instagram", href: "#" },
+  { label: "YouTube", href: "#" },
 ];
 
 interface FooterLinkColumnProps {
@@ -70,6 +72,8 @@ const Footer = () => {
         { label: "Facebook", href: fetchedLinks.facebook_link || "#" },
         { label: "Twitter", href: fetchedLinks.twitter_link || "#" },
         { label: "LinkedIn", href: fetchedLinks.linkedin_link || "#" },
+        { label: "Instagram", href: fetchedLinks.instagram_link || "#" },
+        { label: "YouTube", href: fetchedLinks.youtube_link || "#" },
       ]
     : socialLinksFallback;
   return (
