@@ -1,11 +1,15 @@
+"use client";
 import Link from "next/link";
 import Container from "../shared/Container";
 import DashboardPreview from "@/assets/images/dashboard.png";
 import DashboardPreviewOverlay from "@/assets/images/overlays/overlay2.png";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const LandingHeroSection = () => {
+  const { isLoggedIn, userData } = useStateContext();
+
   return (
     <section className="px-4 sm:px-6 lg:px-8">
       <div className="bg-[#ECF2F8] rounded-2xl sm:rounded-3xl relative overflow-hidden">
@@ -23,14 +27,22 @@ const LandingHeroSection = () => {
               </div>
               <div className="flex gap-3 sm:gap-4 flex-wrap">
                 <Link
-                  href="/register"
+                  href={
+                    isLoggedIn && userData?.data?.role === "barber"
+                      ? "/dashboard"
+                      : "/register?role=barber"
+                  }
                   className="bg-[#1E6FA8] text-white font-semibold text-sm sm:text-base leading-6 px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl hover:bg-[#1a6091] transition-colors inline-flex items-center gap-2 group"
                 >
                   Start Earning Today
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200 -mr-1 sm:-mr-2" />
                 </Link>
                 <Link
-                  href="/register"
+                  href={
+                    isLoggedIn && userData?.data?.role === "user"
+                      ? "/for-clients"
+                      : "/register"
+                  }
                   className="border-2 border-[#689FC5] text-[#1E6FA8] font-semibold text-sm sm:text-base leading-6 px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl hover:bg-[#1E6FA8]/5 transition-colors"
                 >
                   I&apos;m a Client

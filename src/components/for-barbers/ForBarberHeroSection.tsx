@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Container from "@/components/shared/Container";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const ForBarberHeroSection = () => {
+  const { isLoggedIn, userData } = useStateContext();
+
   return (
     <section className="px-4 sm:px-5 lg:px-6 xl:px-7 2xl:px-8">
       <div className="bg-[#ECF2F8] rounded-2xl sm:rounded-3xl overflow-hidden">
@@ -17,10 +22,16 @@ const ForBarberHeroSection = () => {
               </p>
             </div>
             <Link
-              href="/register?type=barber"
+              href={
+                isLoggedIn && userData?.data?.role === "barber"
+                  ? "/dashboard"
+                  : "/register?type=barber"
+              }
               className="bg-[#1E6FA8] text-white font-semibold text-sm sm:text-base leading-6 px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl hover:bg-[#1B6599] transition-colors"
             >
-              Apply Now
+              {isLoggedIn && userData?.data?.role === "barber"
+                ? "Manage Your Profile"
+                : "Apply Now"}
             </Link>
           </div>
         </Container>

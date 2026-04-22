@@ -1,10 +1,14 @@
+"use client";
 import Link from "next/link";
 import Container from "../shared/Container";
 import Image from "next/image";
 import Gradient1 from "@/assets/images/gradient1.png";
 import Gradient2 from "@/assets/images/gradient2.png";
+import { useStateContext } from "@/hooks/useStateContext";
 
 const LandingCTASection = () => {
+  const { isLoggedIn, userData } = useStateContext();
+
   return (
     <section className="mb-10 sm:mb-16 lg:mb-30">
       <Container>
@@ -33,10 +37,16 @@ const LandingCTASection = () => {
           </div>
 
           <Link
-            href="/register?type=barber"
+            href={
+              isLoggedIn && userData?.data?.role === "barber"
+                ? "/dashboard"
+                : "/register?type=barber"
+            }
             className="relative z-10 bg-white text-[#1E6FA8] font-semibold text-sm sm:text-base leading-6 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl hover:bg-[#F4F6F8] hover:scale-102 transition-all duration-100"
           >
-            Apply Now
+            {isLoggedIn && userData?.data?.role === "barber"
+              ? "Manage Your Profile"
+              : "Apply Now"}
           </Link>
         </div>
       </Container>
