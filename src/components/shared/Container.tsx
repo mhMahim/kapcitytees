@@ -22,7 +22,9 @@ const Container: React.FC<ContainerProps> = ({
   return (
     <Component
       className={cn(
-        fluid ? "w-full px-4" : "max-w-382 mx-auto px-4 sm:px-5 lg:px-6 xl:px-7 2xl:px-8 w-full", // max-w-[calc(1200px+64px)]
+        fluid
+          ? "w-full px-4"
+          : "max-w-382 mx-auto px-4 sm:px-5 lg:px-6 xl:px-7 2xl:px-8 w-full", // max-w-[calc(1200px+64px)]
         center && "flex justify-center",
         className,
       )}

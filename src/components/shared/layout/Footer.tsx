@@ -4,6 +4,7 @@ import Link from "next/link";
 import Logo from "../Logo";
 import Container from "../Container";
 import { useStateContext } from "@/hooks/useStateContext";
+import { cn } from "@/lib/utils";
 
 const companyLinks = [
   { label: "About Us", href: "/about-us" },
@@ -42,7 +43,10 @@ const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
         <li key={link.label}>
           <Link
             href={link.href}
-            className="text-sm sm:text-base text-[#454F5B] hover:text-primary transition-colors leading-5 sm:leading-6"
+            className={cn(
+              "text-sm sm:text-base text-[#454F5B] hover:text-primary transition-colors leading-5 sm:leading-6",
+              { "pointer-events-none cursor-auto": link.href === "#" },
+            )}
           >
             {link.label}
           </Link>

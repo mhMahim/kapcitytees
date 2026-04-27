@@ -1,4 +1,4 @@
-const DEFAULT_SITE_ORIGIN = "https://kapcitytees.thewarriors.team";
+const DEFAULT_SITE_ORIGIN = "https://barbercertified.io";
 const DEFAULT_API_PATH = "/api";
 
 export const SITE_NAME = "Barber Certified";
@@ -33,9 +33,7 @@ const SITE_INFO_FALLBACK: SiteInfo = {
 
 export const getSiteOrigin = (): string => {
   const rawSiteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    DEFAULT_SITE_ORIGIN;
+    process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN;
 
   try {
     return new URL(rawSiteUrl).origin;
@@ -44,7 +42,7 @@ export const getSiteOrigin = (): string => {
   }
 };
 
-const getApiBase = (): string => {
+export const getApiBase = (): string => {
   const rawApiBase =
     process.env.NEXT_PUBLIC_BASE_URL ||
     new URL(DEFAULT_API_PATH, getSiteOrigin()).toString();
