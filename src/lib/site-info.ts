@@ -32,8 +32,7 @@ const SITE_INFO_FALLBACK: SiteInfo = {
 };
 
 export const getSiteOrigin = (): string => {
-  const rawSiteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN;
+  const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN;
 
   try {
     return new URL(rawSiteUrl).origin;

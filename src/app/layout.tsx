@@ -55,11 +55,14 @@ export const generateMetadata = async (): Promise<Metadata> => {
       type: "website",
       url: siteOrigin,
       siteName: SITE_NAME,
-      title: `${SITE_NAME} | Premium Grooming Essentials`,
+      title: `Premium Grooming Essentials | ${SITE_NAME}`,
       description: DEFAULT_SITE_DESCRIPTION,
-      images: socialImage
-        ? [{ url: socialImage, alt: `${SITE_NAME} logo` }]
-        : [],
+      images: [
+        {
+          url: socialImage || `${siteOrigin}/og-image.jpg`,
+          alt: `${SITE_NAME} logo`,
+        },
+      ],
     },
     twitter: {
       card: socialImage ? "summary_large_image" : "summary",

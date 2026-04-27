@@ -1,75 +1,56 @@
-"use client";
+import { Metadata, ResolvingMetadata } from "next";
+import { getApiBase } from "@/lib/site-info";
+import ProductDetailsPageContent from "./ProductDetailsPageContent";
+import { Suspense } from "react";
 
-import { Suspense, useEffect } from "react";
-import useFetchData from "@/hooks/useFetchData";
-import ProductDetailPage from "@/screens/public/ProductDetailPage";
-import axios from "axios";
-import { useParams, useSearchParams } from "next/navigation";
-
-const REFERRAL_SESSION_KEY = "referral-click-cache";
-
-const ProductDetailsPageContent = () => {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const slug = params?.slug as string;
-  const refCode = searchParams.get("ref");
-
-  const { data: productDetailsApiData, isPending: productDetailsApiPending } =
-    useFetchData(`/products/${slug}`);
-
-  const productDetailsData = productDetailsApiData?.data?.data?.product ?? null;
-
-  useEffect(() => {
-    if (!slug || !refCode) return;
-
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) return;
-
-    const cachedReferral = sessionStorage.getItem(REFERRAL_SESSION_KEY);
-
-    if (cachedReferral) {
-      try {
-        const parsedReferral = JSON.parse(cachedReferral) as {
-          productId?: string;
-          ref?: string;
-        };
-
-        if (
-          parsedReferral.productId === slug &&
-          parsedReferral.ref === refCode
-        ) {
-          return;
-        }
-      } catch {
-        sessionStorage.removeItem(REFERRAL_SESSION_KEY);
-      }
-    }
-
-    sessionStorage.setItem(
-      REFERRAL_SESSION_KEY,
-      JSON.stringify({ productId: slug, ref: refCode }),
-    );
-
-    void axios.post(`${baseUrl}/referral-click`, {
-      product_id: slug,
-      ref: refCode,
-    });
-  }, [slug, refCode]);
-
-  return (
-    <ProductDetailPage
-      product={productDetailsData}
-      isPending={productDetailsApiPending}
-    />
-  );
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const page = () => {
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+  const apiBase = getApiBase();
+
+  try {
+    const response = await fetch(`${apiBase}products/${slug}`, {
+      headers: {
+        Accept: "application/json",
+      },
+      next: { revalidate: 3600 },
+    });
+    const json = await response.json();
+    const product = json?.data?.data?.product;
+
+    if (!product) return { title: "Product Not Found" };
+
+    const previousImages = (await parent).openGraph?.images || [];
+
+    return {
+      title: product.title,
+      description: product.sort_description || `Buy ${product.title} at Barber Certified.`,
+      openGraph: {
+        title: product.title,
+        description: product.sort_description,
+        url: `https://barbercertified.io/products/${slug}`,
+        images: product.thumbnail_url 
+          ? [product.thumbnail_url, ...previousImages] 
+          : previousImages,
+      },
+    };
+  } catch (error) {
+    console.error("Metadata generation error:", error);
+    return { title: "Product" };
+  }
+}
+
+export default async function page({ params, searchParams }: Props) {
   return (
     <Suspense>
       <ProductDetailsPageContent />
     </Suspense>
   );
-};
-
-export default page;
+}
