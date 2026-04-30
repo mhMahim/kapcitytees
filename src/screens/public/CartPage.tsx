@@ -88,7 +88,10 @@ const CartPage = () => {
               <div className="bg-white rounded-[20px] p-10 text-center shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)]">
                 <p className="text-base font-normal text-[#919EAB]">
                   Your cart is empty.{" "}
-                  <Link href="/for-clients" className="text-[#1E6FA8] underline">
+                  <Link
+                    href="/for-clients"
+                    className="text-[#1E6FA8] underline"
+                  >
                     Continue shopping
                   </Link>
                 </p>

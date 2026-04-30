@@ -64,7 +64,9 @@ const BillingFormCard = ({
   const router = useRouter();
 
   useEffect(() => {
-    const savedDraft = sessionStorage.getItem(BILLING_DRAFT_SESSION_STORAGE_KEY);
+    const savedDraft = sessionStorage.getItem(
+      BILLING_DRAFT_SESSION_STORAGE_KEY,
+    );
 
     if (!savedDraft) {
       return;
@@ -109,7 +111,12 @@ const BillingFormCard = ({
       return;
     }
 
+    const referralCache = JSON.parse(
+      sessionStorage.getItem("referral-click-cache") || "{}",
+    );
+
     const checkoutPayload = {
+      referral_code: referralCache?.ref || null,
       full_name: values.fullName,
       phone: values.phoneNumber,
       email: values.email,
