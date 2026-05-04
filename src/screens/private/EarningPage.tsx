@@ -6,6 +6,9 @@ import useFetchData from "@/hooks/useFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
 import DashboardWithdrawalHistorySection from "@/components/dashboard/DashboardWithdrawalHistorySection";
 import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EarningsData {
   available_for_withdrawal: number;
@@ -30,9 +33,35 @@ const EarningPage = () => {
 
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
-  const handleWithdrawal = () => {
+  const queryClient = useQueryClient();
 
-  }
+  const handleWithdrawal = async () => {
+    try {
+      setIsWithdrawing(true);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/barber/withdraw`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      setIsWithdrawing(false);
+      toast.success("Withdrawal request submitted successfully!");
+      // Invalidate the earnings query to fetch updated data
+      queryClient.invalidateQueries({
+        queryKey: ["/barber/withdrawal-history?page=1"],
+      });
+    } catch (error: any) {
+      console.error("Withdrawal failed:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to process withdrawal. Please try again.",
+      );
+      setIsWithdrawing(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -84,7 +113,11 @@ const EarningPage = () => {
               <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight sm:leading-16 bg-linear-to-r from-white/80 to-white bg-clip-text text-transparent">
                 ${formatAmount(availableForWithdrawal)}
               </p>
-              <button onClick={handleWithdrawal} className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shrink-0 disabled:cursor-auto disabled:bg-gray-200 disabled:text-gray-400 active:scale-95">
+              <button
+                onClick={handleWithdrawal}
+                disabled={availableForWithdrawal === 0 || isWithdrawing}
+                className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 shrink-0 disabled:cursor-auto disabled:bg-gray-200 disabled:text-gray-400 active:scale-97 hover:scale-103 transition-transform"
+              >
                 <span className="text-sm sm:text-base font-semibold text-[#1E6FA8] leading-5 sm:leading-6">
                   Withdraw
                 </span>

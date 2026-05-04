@@ -58,8 +58,9 @@ const DashboardWithdrawalHistorySection = () => {
     isError: isHistoryError,
   } = useFetchData(`/barber/withdrawal-history?page=${currentPage}`, true);
 
-  const historyData = (historyResponse as WithdrawalHistoryApiResponse | undefined)
-    ?.data;
+  const historyData = (
+    historyResponse as WithdrawalHistoryApiResponse | undefined
+  )?.data;
 
   const historyRecords = historyData?.data ?? [];
   const currentApiPage = historyData?.current_page ?? currentPage;
@@ -188,50 +189,53 @@ const DashboardWithdrawalHistorySection = () => {
           </div>
         ) : (
           <>
-            {historyRecords.map((record, index) => (
-              <div
-                key={`${record.id}-${index}`}
-                className={`${
-                  index < historyRecords.length - 1
-                    ? "border-b border-[#F9FAFB]"
-                    : ""
-                }`}
-              >
-                {/* Mobile row */}
-                <div className="sm:hidden flex items-center justify-between gap-3 py-3 px-2">
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <p className="text-xs text-[#637381] leading-4">Date</p>
-                    <p className="text-sm font-medium text-textPrimary leading-5 whitespace-nowrap">
-                      {record.date}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <p className="text-xs text-[#637381] leading-4">Amount</p>
-                    <p className="text-sm font-medium text-textPrimary leading-5">
-                      {formatAmount(record.amount)}
-                    </p>
-                  </div>
-                  <StatusChip status={record.status} />
-                </div>
-
-                {/* Desktop row */}
-                <div className="hidden sm:flex items-center py-1">
-                  <div className="w-64 h-16 flex items-center px-4">
-                    <p className="text-base text-textPrimary leading-6">
-                      {record.date}
-                    </p>
-                  </div>
-                  <div className="flex-1 h-16 flex items-center px-4">
-                    <p className="text-base text-textPrimary leading-6">
-                      {formatAmount(record.amount)}
-                    </p>
-                  </div>
-                  <div className="w-54 h-16 flex items-center justify-center px-4">
+            {historyRecords.map((record, index) => {
+              console.log(record);
+              return (
+                <div
+                  key={`${record.id}-${index}`}
+                  className={`${
+                    index < historyRecords.length - 1
+                      ? "border-b border-[#F9FAFB]"
+                      : ""
+                  }`}
+                >
+                  {/* Mobile row */}
+                  <div className="sm:hidden flex items-center justify-between gap-3 py-3 px-2">
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <p className="text-xs text-[#637381] leading-4">Date</p>
+                      <p className="text-sm font-medium text-textPrimary leading-5 whitespace-nowrap">
+                        {record.date}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <p className="text-xs text-[#637381] leading-4">Amount</p>
+                      <p className="text-sm font-medium text-textPrimary leading-5">
+                        {formatAmount(record.amount)}
+                      </p>
+                    </div>
                     <StatusChip status={record.status} />
                   </div>
+
+                  {/* Desktop row */}
+                  <div className="hidden sm:flex items-center py-1">
+                    <div className="w-64 h-16 flex items-center px-4">
+                      <p className="text-base text-textPrimary leading-6">
+                        {record.date}
+                      </p>
+                    </div>
+                    <div className="flex-1 h-16 flex items-center px-4">
+                      <p className="text-base text-textPrimary leading-6">
+                        {formatAmount(record.amount)}
+                      </p>
+                    </div>
+                    <div className="w-54 h-16 flex items-center justify-center px-4">
+                      <StatusChip status={record.status} />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {totalPages > 1 ? (
               <div className="pt-4 px-2 sm:px-3">
@@ -285,7 +289,9 @@ const DashboardWithdrawalHistorySection = () => {
                             : "text-textPrimary hover:bg-[rgba(145,158,171,0.08)]"
                         }`}
                         aria-label={`Go to page ${page}`}
-                        aria-current={currentApiPage === page ? "page" : undefined}
+                        aria-current={
+                          currentApiPage === page ? "page" : undefined
+                        }
                       >
                         {page}
                       </button>
