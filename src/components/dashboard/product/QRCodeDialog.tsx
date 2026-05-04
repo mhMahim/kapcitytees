@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { QrCode } from "lucide-react";
+import { CircleX, QrCode } from "lucide-react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -33,12 +34,17 @@ const QRCodeDialog = ({
 
         <div className="flex flex-col items-center gap-6 sm:gap-8 2xl:gap-9.5 py-2 sm:py-3">
           {/* Title */}
-          <h3 className="text-lg sm:text-xl font-medium text-[#0F2A3C] leading-7 sm:leading-7.5 text-center">
-            Scan The QR Code
-          </h3>
+          <div className="flex justify-between items-center w-full">
+            <h3 className="text-lg sm:text-xl font-medium text-[#0F2A3C] leading-7 sm:leading-7.5 text-center">
+              Scan The QR Code
+            </h3>
+            <DialogClose className="p-1 hover:bg-[#F3F4F6] rounded-full transition-colors cursor-pointer">
+              <CircleX className="size-4" />
+            </DialogClose>
+          </div>
 
           {/* QR Code Placeholder */}
-          <div className="w-full sm:w-89.5 aspect-square bg-white rounded-xl flex items-center justify-center overflow-hidden border border-[#E5E7EB] relative">
+          <div className="w-full sm:w-89.5 aspect-square bg-white rounded-xl flex items-center justify-center overflow-hidden  relative">
             {qrCode ? (
               <Image
                 src={qrCode}

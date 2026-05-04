@@ -5,6 +5,7 @@ import { Wallet } from "lucide-react";
 import useFetchData from "@/hooks/useFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
 import DashboardWithdrawalHistorySection from "@/components/dashboard/DashboardWithdrawalHistorySection";
+import { useState } from "react";
 
 interface EarningsData {
   available_for_withdrawal: number;
@@ -26,6 +27,12 @@ const EarningPage = () => {
     new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
+
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const handleWithdrawal = () => {
+
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -77,7 +84,7 @@ const EarningPage = () => {
               <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight sm:leading-16 bg-linear-to-r from-white/80 to-white bg-clip-text text-transparent">
                 ${formatAmount(availableForWithdrawal)}
               </p>
-              <button className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shrink-0">
+              <button onClick={handleWithdrawal} className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shrink-0 disabled:cursor-auto disabled:bg-gray-200 disabled:text-gray-400 active:scale-95">
                 <span className="text-sm sm:text-base font-semibold text-[#1E6FA8] leading-5 sm:leading-6">
                   Withdraw
                 </span>
@@ -96,7 +103,7 @@ const EarningPage = () => {
               </div>
             </div>
             <p className="text-2xl sm:text-[32px] font-semibold text-[#3F5563] leading-tight sm:leading-12">
-              {formatAmount(lifetimeIncome)}$
+              ${formatAmount(lifetimeIncome)}
             </p>
           </div>
         </div>

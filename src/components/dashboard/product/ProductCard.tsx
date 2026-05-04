@@ -51,7 +51,7 @@ const ProductCard = ({
             </p>
           </div>
           <p className="text-xl sm:text-2xl 2xl:text-[32px] font-semibold text-[#1E6FA8] leading-8 sm:leading-10 2xl:leading-12">
-            {product.price}$
+            ${product.price}
           </p>
         </div>
 

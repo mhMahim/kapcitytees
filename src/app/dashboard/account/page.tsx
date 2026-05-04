@@ -8,6 +8,12 @@ import ProfileViewSection from "@/components/dashboard/account/ProfileViewSectio
 import ProfileEditSection from "@/components/dashboard/account/ProfileEditSection";
 import NotificationSection from "@/components/dashboard/account/NotificationSection";
 import SecuritySection from "@/components/dashboard/account/SecuritySection";
+import StripeConnectSection from "@/components/dashboard/account/StripeConnectSection";
+
+interface StripeConnectStatus {
+  has_account: boolean;
+  is_active: boolean;
+}
 
 const AccountPage = () => {
   const [activeTab, setActiveTab] = useState<AccountTab>("profile");
@@ -33,16 +39,7 @@ const AccountPage = () => {
           <ProfileEditSection onCancel={() => setIsEditing(false)} />
         )}
         {activeTab === "notification" && <NotificationSection />}
-        {activeTab === "payment" && (
-          <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8">
-            <h3 className="text-base sm:text-lg font-medium text-[#454F5B]">
-              Payment
-            </h3>
-            <p className="text-sm sm:text-base text-[#637381] mt-2">
-              Payment settings coming soon.
-            </p>
-          </div>
-        )}
+        {activeTab === "payment" && <StripeConnectSection />}
         {activeTab === "security" && <SecuritySection />}
       </div>
     </div>
