@@ -10,11 +10,6 @@ import NotificationSection from "@/components/dashboard/account/NotificationSect
 import SecuritySection from "@/components/dashboard/account/SecuritySection";
 import StripeConnectSection from "@/components/dashboard/account/StripeConnectSection";
 
-interface StripeConnectStatus {
-  has_account: boolean;
-  is_active: boolean;
-}
-
 const AccountPage = () => {
   const [activeTab, setActiveTab] = useState<AccountTab>("profile");
   const [isEditing, setIsEditing] = useState(false);

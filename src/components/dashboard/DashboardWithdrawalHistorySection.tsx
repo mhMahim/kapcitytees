@@ -7,9 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface WithdrawalHistoryRecord {
   id: number;
-  date: string;
+  date?: string;
+  withdrawal_date?: string;
   amount: number | string;
   status: string;
+  transaction_id?: string | number | null;
 }
 
 interface WithdrawalHistoryPaginationData {
@@ -73,7 +75,7 @@ const DashboardWithdrawalHistorySection = () => {
     const numericValue = Number(value);
 
     if (Number.isNaN(numericValue)) {
-      return `${value}$`;
+      return `$${value}`;
     }
 
     return `${new Intl.NumberFormat("en-US", {
@@ -138,6 +140,11 @@ const DashboardWithdrawalHistorySection = () => {
           <div className="flex-1 bg-[#F9FAFB] px-3 py-2 rounded-lg">
             <p className="text-sm font-semibold text-[#637381]">Amount</p>
           </div>
+          <div className="flex-1 bg-[#F9FAFB] px-3 py-2 rounded-lg">
+            <p className="text-sm font-semibold text-[#637381]">
+              Transaction ID
+            </p>
+          </div>
           <div className="w-54 bg-[#F9FAFB] px-3 py-2 rounded-r-lg text-center">
             <p className="text-sm font-semibold text-[#637381]">Status</p>
           </div>
@@ -190,7 +197,14 @@ const DashboardWithdrawalHistorySection = () => {
         ) : (
           <>
             {historyRecords.map((record, index) => {
-              console.log(record);
+              const recordDate =
+                record.withdrawal_date ?? record.date ?? "Unavailable";
+              const transactionId =
+                record.transaction_id !== null &&
+                record.transaction_id !== undefined
+                  ? String(record.transaction_id)
+                  : "-";
+
               return (
                 <div
                   key={`${record.id}-${index}`}
@@ -205,13 +219,21 @@ const DashboardWithdrawalHistorySection = () => {
                     <div className="flex flex-col gap-0.5 min-w-0">
                       <p className="text-xs text-[#637381] leading-4">Date</p>
                       <p className="text-sm font-medium text-textPrimary leading-5 whitespace-nowrap">
-                        {record.date}
+                        {recordDate}
                       </p>
                     </div>
                     <div className="flex flex-col gap-0.5">
                       <p className="text-xs text-[#637381] leading-4">Amount</p>
                       <p className="text-sm font-medium text-textPrimary leading-5">
                         {formatAmount(record.amount)}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <p className="text-xs text-[#637381] leading-4">
+                        Transaction ID
+                      </p>
+                      <p className="text-sm font-medium text-textPrimary leading-5">
+                        {transactionId}
                       </p>
                     </div>
                     <StatusChip status={record.status} />
@@ -221,12 +243,17 @@ const DashboardWithdrawalHistorySection = () => {
                   <div className="hidden sm:flex items-center py-1">
                     <div className="w-64 h-16 flex items-center px-4">
                       <p className="text-base text-textPrimary leading-6">
-                        {record.date}
+                        {recordDate}
                       </p>
                     </div>
                     <div className="flex-1 h-16 flex items-center px-4">
                       <p className="text-base text-textPrimary leading-6">
                         {formatAmount(record.amount)}
+                      </p>
+                    </div>
+                    <div className="flex-1 h-16 flex items-center px-4">
+                      <p className="text-base text-textPrimary leading-6">
+                        {transactionId}
                       </p>
                     </div>
                     <div className="w-54 h-16 flex items-center justify-center px-4">
