@@ -81,7 +81,7 @@ const CartPage = () => {
         </div>
 
         {/* Two-column layout: cart items left, billing right */}
-        <div className="flex flex-col lg:flex-row gap-5">
+        <div className="grid lg:grid-cols-2 gap-5">
           {/* Cart items */}
           <div className="flex flex-col gap-5 flex-1 min-w-0 w-full">
             {items.length === 0 ? (
