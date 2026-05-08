@@ -10,7 +10,7 @@ type Props = {
 
 export async function generateMetadata(
   { params }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
   const apiBase = getApiBase();
@@ -31,13 +31,14 @@ export async function generateMetadata(
 
     return {
       title: product.title,
-      description: product.sort_description || `Buy ${product.title} at Barber Certified.`,
+      description:
+        product.sort_description || `Buy ${product.title} at Barber Certified.`,
       openGraph: {
         title: product.title,
         description: product.sort_description,
         url: `https://barbercertified.io/products/${slug}`,
-        images: product.thumbnail_url 
-          ? [product.thumbnail_url, ...previousImages] 
+        images: product.thumbnail_url
+          ? [product.thumbnail_url, ...previousImages]
           : previousImages,
       },
     };
@@ -47,7 +48,7 @@ export async function generateMetadata(
   }
 }
 
-export default async function page({ params, searchParams }: Props) {
+export default async function page() {
   return (
     <Suspense>
       <ProductDetailsPageContent />

@@ -108,10 +108,11 @@ const BarberAfterRegisterPage = () => {
   return (
     <div className="bg-[#F9FAFB] min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-16 relative">
       {/* Logo */}
-      <Logo className="lg:fixed top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 size-16 sm:size-18 lg:size-22 " />
+      <Logo className="hidden lg:block lg:fixed top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 size-16 sm:size-18 lg:size-22" />
 
       {/* Form Container */}
       <div className="w-full max-w-141 flex flex-col gap-6 sm:gap-7 lg:gap-8">
+        <Logo className="lg:hidden size-18 sm:size-20  mx-auto" />
         {/* Header */}
         <div className="flex flex-col gap-2 text-center">
           <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-semibold leading-8 sm:leading-10 lg:leading-12 text-textPrimary">

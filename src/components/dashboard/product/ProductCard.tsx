@@ -26,9 +26,8 @@ const ProductCard = ({
   isCopyPending = false,
   isQrPending = false,
 }: ProductCardProps) => {
-
   return (
-    <div className="bg-white flex flex-col sm:flex-row gap-3 sm:gap-4 2xl:gap-6 sm:items-end p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] sm:h-44 lg:h-48 2xl:h-55.5">
+    <div className="bg-white flex flex-col sm:flex-row gap-3 sm:gap-4 2xl:gap-6 sm:items-end p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)]">
       {/* Product Image */}
       <div className="h-44 sm:h-full w-full sm:w-auto aspect-video sm:aspect-square rounded-lg overflow-hidden shrink-0 bg-[#ededed] relative">
         <Image
@@ -56,7 +55,7 @@ const ProductCard = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2.5 w-full">
+        <div className="flex gap-2.5 ">
           <button
             type="button"
             onClick={() => onCopyLinkClick(product)}

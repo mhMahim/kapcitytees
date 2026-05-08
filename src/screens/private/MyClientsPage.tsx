@@ -3,11 +3,19 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { Copy, Loader2, QrCode } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { BelowIcon } from "@/assets/icons";
 import QRCodeDialog from "@/components/dashboard/product/QRCodeDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import useFetchData from "@/hooks/useFetchData";
 import {
   Popover,
@@ -107,6 +115,98 @@ const StatusChip = ({ status }: { status: OrderStatus }) => (
   >
     {status}
   </span>
+);
+
+const CopyIcon = ({ className = "" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    className={className}
+  >
+    <rect
+      x="7"
+      y="7"
+      width="10"
+      height="10"
+      rx="2"
+      stroke="#637381"
+      strokeWidth="1.5"
+    />
+    <path
+      d="M13 7V5C13 3.89543 12.1046 3 11 3H5C3.89543 3 3 3.89543 3 5V11C3 12.1046 3.89543 13 5 13H7"
+      stroke="#637381"
+      strokeWidth="1.5"
+    />
+  </svg>
+);
+
+const QRIcon = ({ className = "" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 22 22"
+    fill="none"
+    className={className}
+  >
+    <rect
+      x="2"
+      y="2"
+      width="7"
+      height="7"
+      rx="1"
+      stroke="#637381"
+      strokeWidth="1.5"
+    />
+    <rect
+      x="13"
+      y="2"
+      width="7"
+      height="7"
+      rx="1"
+      stroke="#637381"
+      strokeWidth="1.5"
+    />
+    <rect
+      x="2"
+      y="13"
+      width="7"
+      height="7"
+      rx="1"
+      stroke="#637381"
+      strokeWidth="1.5"
+    />
+    <rect x="4.5" y="4.5" width="2" height="2" rx="0.5" fill="#637381" />
+    <rect x="15.5" y="4.5" width="2" height="2" rx="0.5" fill="#637381" />
+    <rect x="4.5" y="15.5" width="2" height="2" rx="0.5" fill="#637381" />
+    <path
+      d="M13 13H16"
+      stroke="#637381"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M13 16.5H16"
+      stroke="#637381"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M18.5 13V16.5"
+      stroke="#637381"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M13 20H20"
+      stroke="#637381"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
 );
 
 const safeNumber = (value: unknown) => {
@@ -420,204 +520,331 @@ const MyClientsPage = () => {
           </Popover>
         </div>
 
-        {/* Table */}
-        <div className="px-3 overflow-x-auto">
-          {/* Column Headers */}
-          <div className="flex items-center px-1 min-w-300">
-            <div className="w-66 bg-[#F9FAFB] px-3 py-2 rounded-l-lg">
-              <p className="text-sm font-semibold text-[#637381]">Client</p>
-            </div>
-            <div className="w-45 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Date</p>
-            </div>
-            <div className="flex-1 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Product</p>
-            </div>
-            <div className="w-33 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Quantity</p>
-            </div>
-            <div className="w-37 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Click</p>
-            </div>
-            <div className="w-37 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Revenue</p>
-            </div>
-            <div className="w-37 bg-[#F9FAFB] px-3 py-2">
-              <p className="text-sm font-semibold text-[#637381]">Status</p>
-            </div>
-            <div className="w-40 bg-[#F9FAFB] px-3 py-2 rounded-r-lg">
-              <p className="text-sm font-semibold text-[#637381]">
-                Product Link
-              </p>
-            </div>
-          </div>
-
+        {/* Mobile cards (visible below lg) */}
+        <div className="flex flex-col gap-4 lg:hidden px-4">
           {affiliateProductsApiPending ? (
-            <div className="min-w-300">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <div
-                  key={`my-clients-skeleton-${index}`}
-                  className={`flex items-center py-1 ${
-                    index < 7 ? "border-b border-[#F9FAFB]" : ""
-                  }`}
-                >
-                  <div className="w-66 h-16 flex items-center gap-3 px-4 overflow-hidden">
+            Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={`my-clients-card-skeleton-${index}`}
+                className="rounded-2xl border border-[#E6EEF4] bg-white p-4 flex flex-col gap-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
                     <Skeleton className="size-12 rounded-full shrink-0" />
-                    <Skeleton className="h-5 w-30" />
+                    <Skeleton className="h-5 w-28" />
                   </div>
-                  <div className="w-45 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-22" />
-                  </div>
-                  <div className="flex-1 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-32" />
-                  </div>
-                  <div className="w-33 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-10" />
-                  </div>
-                  <div className="w-37 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-12" />
-                  </div>
-                  <div className="w-37 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-16" />
-                  </div>
-                  <div className="w-37 h-16 flex items-center px-4">
-                    <Skeleton className="h-7 w-20 rounded-md" />
-                  </div>
-                  <div className="w-40 h-16 flex items-center gap-2.5 px-4 overflow-hidden">
-                    <Skeleton className="h-5 flex-1" />
-                    <Skeleton className="size-10 rounded-md" />
-                    <Skeleton className="size-10 rounded-md" />
-                  </div>
+                  <Skeleton className="h-6 w-20 rounded-md" />
                 </div>
-              ))}
-            </div>
-          ) : affiliateProductsApiError ? (
-            <div className="min-w-300 px-2 py-4 sm:py-6">
-              <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
-                <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
-                  Failed to load affiliate products.
-                </p>
-                <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
-                  {errorMessage}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => refetchAffiliateProducts()}
-                  className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
-                >
-                  Retry
-                </button>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+
+                <div className="flex items-center justify-end gap-2.5">
+                  <Skeleton className="size-10 rounded-md" />
+                  <Skeleton className="size-10 rounded-md" />
+                </div>
               </div>
+            ))
+          ) : affiliateProductsApiError ? (
+            <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
+              <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
+                Failed to load affiliate products.
+              </p>
+              <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
+                {errorMessage}
+              </p>
+              <button
+                type="button"
+                onClick={() => refetchAffiliateProducts()}
+                className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
+              >
+                Retry
+              </button>
             </div>
           ) : affiliateOrders.length === 0 ? (
-            <div className="min-w-300 px-2 py-8 sm:py-10">
-              <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
-                <p className="text-sm sm:text-base text-[#637381] leading-6">
-                  No affiliate products found for this filter.
-                </p>
-              </div>
+            <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
+              <p className="text-sm sm:text-base text-[#637381] leading-6">
+                No affiliate products found for this filter.
+              </p>
             </div>
           ) : (
-            affiliateOrders.map((order, index) => (
+            affiliateOrders.map((order) => (
               <div
                 key={order.id}
-                className={`flex items-center py-1 min-w-300 ${
-                  index < affiliateOrders.length - 1
-                    ? "border-b border-[#F9FAFB]"
-                    : ""
-                }`}
+                className="rounded-2xl border border-[#E6EEF4] bg-white p-4 sm:p-5 flex flex-col gap-4"
               >
-                {/* Client */}
-                <div className="w-66 h-16 flex items-center gap-3 px-4 overflow-hidden">
-                  <div className="size-12 rounded-full shrink-0 relative overflow-hidden bg-gray-200">
-                    <Image
-                      src={order.clientAvatar}
-                      alt={order.clientName}
-                      fill
-                      className="object-cover"
-                    />
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative shrink-0 size-12 rounded-full overflow-hidden bg-gray-200">
+                      <Image
+                        src={order.clientAvatar}
+                        alt={order.clientName}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                        {order.clientName}
+                      </p>
+                      <p className="text-xs sm:text-sm text-[#919EAB] truncate">
+                        {order.date}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-base font-semibold text-textPrimary leading-6 truncate">
-                    {order.clientName}
-                  </p>
-                </div>
-
-                {/* Date */}
-                <div className="w-45 h-16 flex items-center px-4">
-                  <p className="text-base text-textPrimary leading-6">
-                    {order.date}
-                  </p>
-                </div>
-
-                {/* Product */}
-                <div className="flex-1 h-16 flex items-center px-4">
-                  <p className="text-base font-semibold text-textPrimary leading-6">
-                    {order.product}
-                  </p>
-                </div>
-
-                {/* Quantity */}
-                <div className="w-33 h-16 flex items-center px-4">
-                  <p className="text-base text-textPrimary leading-6">
-                    {order.quantity}
-                  </p>
-                </div>
-
-                {/* Click */}
-                <div className="w-37 h-16 flex items-center px-4">
-                  <p className="text-base text-textPrimary leading-6">
-                    {order.clicks}
-                  </p>
-                </div>
-
-                {/* Revenue */}
-                <div className="w-37 h-16 flex items-center px-4">
-                  <p className="text-base text-textPrimary leading-6">
-                    {order.revenue}
-                  </p>
-                </div>
-
-                {/* Status */}
-                <div className="w-37 h-16 flex items-center px-4">
                   <StatusChip status={order.status} />
                 </div>
 
-                {/* Product Link */}
-                <div className="w-40 h-16 flex items-center gap-2.5 px-4 overflow-hidden">
-                  <button
-                    type="button"
-                    disabled={
-                      copyPendingOrderId === order.id ||
-                      (!order.productLink && order.productId === null)
-                    }
-                    onClick={() => handleCopyLinkClick(order)}
-                    className="size-10 shrink-0 flex items-center justify-center border border-[#F4F6F8] rounded-md cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {copyPendingOrderId === order.id ? (
-                      <Loader2 className="size-5 text-[#637381] animate-spin" />
-                    ) : (
-                      <Copy className="size-5 text-[#637381]" />
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={
-                      qrPendingOrderId === order.id ||
-                      (order.productId === null && !order.qrCode)
-                    }
-                    onClick={() => handleQrCodeClick(order)}
-                    className="size-10 shrink-0 flex items-center justify-center border border-[#F4F6F8] rounded-md cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {qrPendingOrderId === order.id ? (
-                      <Loader2 className="size-5.5 text-[#637381] animate-spin" />
-                    ) : (
-                      <QrCode className="size-5.5 text-[#637381]" />
-                    )}
-                  </button>
+                <div className="grid grid-cols-3 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1 col-span-3 sm:col-span-1">
+                    <span className="text-xs text-[#919EAB]">Product</span>
+                    <span className="text-sm font-semibold text-textPrimary truncate">
+                      {order.product}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-[#919EAB]">Revenue</span>
+                    <span className="text-sm text-textPrimary">{order.revenue}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-[#919EAB]">Quantity</span>
+                    <span className="text-sm text-textPrimary">{order.quantity}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-[#919EAB]">Clicks</span>
+                    <span className="text-sm text-textPrimary">{order.clicks}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs text-[#919EAB]">Product link</span>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      title="Copy link"
+                      disabled={
+                        copyPendingOrderId === order.id ||
+                        (!order.productLink && order.productId === null)
+                      }
+                      onClick={() => handleCopyLinkClick(order)}
+                      className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {copyPendingOrderId === order.id ? (
+                        <Loader2 className="size-5 text-[#637381] animate-spin" />
+                      ) : (
+                        <CopyIcon className="size-5" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      title="QR Code"
+                      disabled={
+                        qrPendingOrderId === order.id ||
+                        (order.productId === null && !order.qrCode)
+                      }
+                      onClick={() => handleQrCodeClick(order)}
+                      className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {qrPendingOrderId === order.id ? (
+                        <Loader2 className="size-5 text-[#637381] animate-spin" />
+                      ) : (
+                        <QRIcon className="size-5.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
           )}
+        </div>
+
+        {/* Desktop table (lg+) */}
+        <div className="hidden lg:block px-3 overflow-x-auto">
+          <Table className="min-w-180 lg:min-w-0">
+            <TableHeader>
+              <TableRow className="bg-[#F9FAFB] hover:bg-[#F9FAFB]">
+                <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-55">
+                  Client
+                </TableHead>
+                <TableHead className="hidden lg:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-35">
+                  Date
+                </TableHead>
+                <TableHead className="hidden sm:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-50">
+                  Product
+                </TableHead>
+                <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-22.5">
+                  Quantity
+                </TableHead>
+                <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-22.5">
+                  Click
+                </TableHead>
+                <TableHead className="hidden md:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-30 text-right">
+                  Revenue
+                </TableHead>
+                <TableHead className="hidden md:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-30">
+                  Status
+                </TableHead>
+                <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-40 text-right">
+                  Product Link
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {affiliateProductsApiPending ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <TableRow key={`my-clients-skeleton-${index}`} className="border-[#F1F5F9] hover:bg-transparent">
+                    <TableCell className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="size-12 rounded-full shrink-0" />
+                        <Skeleton className="h-5 w-28" />
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell px-4 py-3">
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell px-4 py-3">
+                      <Skeleton className="h-5 w-24" />
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <Skeleton className="h-5 w-10" />
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <Skeleton className="h-5 w-10" />
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell px-4 py-3 text-right">
+                      <Skeleton className="h-5 w-14 ml-auto" />
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell px-4 py-3">
+                      <Skeleton className="h-7 w-20 rounded-md" />
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2.5">
+                        <Skeleton className="size-10 rounded-md" />
+                        <Skeleton className="size-10 rounded-md" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : affiliateProductsApiError ? (
+                <TableRow className="border-[#F1F5F9] hover:bg-transparent">
+                  <TableCell colSpan={8} className="px-4 py-6">
+                    <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
+                      <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
+                        Failed to load affiliate products.
+                      </p>
+                      <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
+                        {errorMessage}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => refetchAffiliateProducts()}
+                        className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : affiliateOrders.length === 0 ? (
+                <TableRow className="border-[#F1F5F9] hover:bg-transparent">
+                  <TableCell colSpan={8} className="px-4 py-8">
+                    <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
+                      <p className="text-sm sm:text-base text-[#637381] leading-6">
+                        No affiliate products found for this filter.
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                affiliateOrders.map((order) => (
+                  <TableRow key={order.id} className="border-[#F1F5F9]">
+                    <TableCell className="px-4 py-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative shrink-0 size-12 rounded-full overflow-hidden bg-gray-200">
+                          <Image src={order.clientAvatar} alt={order.clientName} fill className="object-cover" />
+                        </div>
+                        <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                          {order.clientName}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell px-4 py-3">
+                      <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary truncate">
+                        {order.date}
+                      </p>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell px-4 py-3 max-w-55">
+                      <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                        {order.product}
+                      </p>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                        {order.quantity}
+                      </p>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                        {order.clicks}
+                      </p>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell px-4 py-3 text-right">
+                      <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                        {order.revenue}
+                      </p>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell px-4 py-3">
+                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal ${statusStyles[order.status]}`}>
+                        {order.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2.5">
+                        <button
+                          type="button"
+                          title="Copy link"
+                          disabled={
+                            copyPendingOrderId === order.id ||
+                            (!order.productLink && order.productId === null)
+                          }
+                          onClick={() => handleCopyLinkClick(order)}
+                          className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {copyPendingOrderId === order.id ? (
+                            <Loader2 className="size-5 text-[#637381] animate-spin" />
+                          ) : (
+                            <CopyIcon className="size-5" />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          title="QR Code"
+                          disabled={
+                            qrPendingOrderId === order.id ||
+                            (order.productId === null && !order.qrCode)
+                          }
+                          onClick={() => handleQrCodeClick(order)}
+                          className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {qrPendingOrderId === order.id ? (
+                            <Loader2 className="size-5 text-[#637381] animate-spin" />
+                          ) : (
+                            <QRIcon className="size-5.5" />
+                          )}
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
 

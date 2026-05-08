@@ -72,9 +72,9 @@ const DashboardSidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   }));
 
   return (
-    <div className="bg-white space-y-10 xl:space-y-14 flex flex-col overflow-y-auto min-w-60 xl:min-w-65 2xl:min-w-70 h-screen sticky top-0 px-6 py-12 shadow-[0_0_21px_0_rgba(98,101,120,0.04)]">
+    <div className="bg-white space-y-6 sm:space-y-10 xl:space-y-14 flex flex-col overflow-y-auto min-w-60 xl:min-w-65 2xl:min-w-70 h-screen sticky top-0 px-6 py-12 shadow-[0_0_21px_0_rgba(98,101,120,0.04)]">
       <div className="flex items-center justify-center">
-        <Logo className="size-26" path="/dashboard" />
+        <Logo className="size-22 sm:size-26" path="/dashboard" />
       </div>
       <div className="grow flex flex-col gap-2 xl:gap-2.5">
         {navLinks.map((link) => {

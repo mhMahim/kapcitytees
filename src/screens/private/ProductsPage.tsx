@@ -53,8 +53,12 @@ const ProductsPage = () => {
   const [qrDialogOpen, setQrDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedQrCode, setSelectedQrCode] = useState<string | null>(null);
-  const [copyPendingProductId, setCopyPendingProductId] = useState<number | null>(null);
-  const [qrPendingProductId, setQrPendingProductId] = useState<number | null>(null);
+  const [copyPendingProductId, setCopyPendingProductId] = useState<
+    number | null
+  >(null);
+  const [qrPendingProductId, setQrPendingProductId] = useState<number | null>(
+    null,
+  );
 
   const productsUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -243,7 +247,7 @@ const ProductsPage = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 2xl:gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5 2xl:gap-6">
         {isPending ? (
           Array.from({ length: 6 }).map((_, index) => (
             <div

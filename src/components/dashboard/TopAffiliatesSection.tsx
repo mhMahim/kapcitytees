@@ -8,6 +8,14 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import QRCodeDialog from "@/components/dashboard/product/QRCodeDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import useFetchData from "@/hooks/useFetchData";
 import { cn } from "@/lib/utils";
 
@@ -175,17 +183,6 @@ const QRIcon = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-const columns = [
-  { label: "Client", width: "w-65" },
-  { label: "Date", width: "w-[14vw] lg:w-[12vw]" },
-  { label: "Product", width: "w-[14vw] lg:w-[12vw]" },
-  { label: "Quantity", width: "w-[10vw] lg:w-[8vw]" },
-  { label: "Click", width: "w-[10vw] lg:w-[8vw]" },
-  { label: "Revenue", width: "w-[10vw] lg:w-[8vw]" },
-  { label: "Status", width: "w-[12vw] lg:w-[9vw]" },
-  { label: "Product Link", width: "w-40" },
-];
-
 const safeNumber = (value: unknown) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
@@ -333,6 +330,7 @@ const TopAffiliatesSection = () => {
     error instanceof Error
       ? error.message
       : "Unable to load affiliate products.";
+  const isEmpty = !isPending && !isError && affiliates.length === 0;
 
   const fetchReferralData = async (productId: number) => {
     const token = localStorage.getItem("token");
@@ -466,147 +464,64 @@ const TopAffiliatesSection = () => {
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <div className="min-w-225 lg:min-w-0 w-full">
-          {/* Table Header */}
-          <div className="flex items-start px-1">
-            {columns.map((col, i) => (
-              <div
-                key={col.label}
-                className={cn(
-                  "bg-[#F9FAFB] px-3 py-2 overflow-hidden",
-                  col.width,
-                  i === 0 && "rounded-l-lg",
-                  i === columns.length - 1 && "rounded-r-lg",
-                )}
-              >
-                <p className="text-sm font-semibold leading-normal text-[#637381] truncate">
-                  {col.label}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {isPending ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <div
-                key={`top-affiliate-skeleton-${index}`}
-                className={cn(
-                  "flex items-center py-1",
-                  index < 4 && "border-b border-[#F9FAFB]",
-                )}
-              >
-                <div
-                  className={cn(
-                    "flex items-center gap-3 h-16 px-4 py-3 overflow-hidden",
-                    columns[0].width,
-                  )}
-                >
+      <div className="flex flex-col gap-4 lg:hidden">
+        {isPending ? (
+          Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={`top-affiliate-card-skeleton-${index}`}
+              className="rounded-2xl border border-[#E6EEF4] bg-white p-4 flex flex-col gap-4"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
                   <Skeleton className="size-12 rounded-full shrink-0" />
                   <Skeleton className="h-5 w-28" />
                 </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[1].width,
-                  )}
-                >
-                  <Skeleton className="h-5 w-20" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[2].width,
-                  )}
-                >
-                  <Skeleton className="h-5 w-24" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[3].width,
-                  )}
-                >
-                  <Skeleton className="h-5 w-10" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[4].width,
-                  )}
-                >
-                  <Skeleton className="h-5 w-10" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[5].width,
-                  )}
-                >
-                  <Skeleton className="h-5 w-14" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[6].width,
-                  )}
-                >
-                  <Skeleton className="h-7 w-20 rounded-md" />
-                </div>
-                <div
-                  className={cn(
-                    "h-16 flex items-center gap-2.5 px-4 py-3 overflow-hidden",
-                    columns[7].width,
-                  )}
-                >
-                  <Skeleton className="h-5 flex-1" />
-                  <Skeleton className="size-10 rounded-md" />
-                  <Skeleton className="size-10 rounded-md" />
-                </div>
+                <Skeleton className="h-6 w-20 rounded-md" />
               </div>
-            ))
-          ) : isError ? (
-            <div className="px-2 py-4 sm:py-6 min-w-225 lg:min-w-0">
-              <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
-                <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
-                  Failed to load affiliate products.
-                </p>
-                <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
-                  {errorMessage}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => refetch()}
-                  className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
-                >
-                  Retry
-                </button>
+              <div className="grid grid-cols-2 gap-3">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex items-center justify-end gap-2.5">
+                <Skeleton className="size-10 rounded-md" />
+                <Skeleton className="size-10 rounded-md" />
               </div>
             </div>
-          ) : affiliates.length === 0 ? (
-            <div className="px-2 py-8 sm:py-10 min-w-225 lg:min-w-0">
-              <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
-                <p className="text-sm sm:text-base text-[#637381] leading-6">
-                  No affiliate products found.
-                </p>
-              </div>
-            </div>
-          ) : (
-            affiliates.map((affiliate, index) => (
-              <div
-                key={affiliate.id}
-                className={cn(
-                  "flex items-center py-1",
-                  index < affiliates.length - 1 && "border-b border-[#F9FAFB]",
-                )}
-              >
-                {/* Client */}
-                <div
-                  className={cn(
-                    "flex items-center gap-3 h-16 px-4 py-3 overflow-hidden",
-                    columns[0].width,
-                  )}
-                >
+          ))
+        ) : isError ? (
+          <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
+            <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
+              Failed to load affiliate products.
+            </p>
+            <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
+              {errorMessage}
+            </p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        ) : isEmpty ? (
+          <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
+            <p className="text-sm sm:text-base text-[#637381] leading-6">
+              No affiliate products found.
+            </p>
+          </div>
+        ) : (
+          affiliates.map((affiliate) => (
+            <div
+              key={affiliate.id}
+              className="rounded-2xl border border-[#E6EEF4] bg-white p-4 sm:p-5 flex flex-col gap-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="relative shrink-0 size-12 rounded-full overflow-hidden bg-gray-200">
                     <Image
                       src={affiliate.avatar}
@@ -615,132 +530,289 @@ const TopAffiliatesSection = () => {
                       className="object-cover"
                     />
                   </div>
-                  <p className="text-base font-semibold leading-6 text-textPrimary truncate">
-                    {affiliate.name}
-                  </p>
+                  <div className="min-w-0">
+                    <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                      {affiliate.name}
+                    </p>
+                    <p className="text-xs sm:text-sm text-[#919EAB] truncate">
+                      {affiliate.date}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Date */}
-                <div
+                <span
                   className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[1].width,
+                    "inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal capitalize",
+                    statusStyles[affiliate.status],
                   )}
                 >
-                  <p className="text-base font-normal leading-6 text-textPrimary truncate">
-                    {affiliate.date}
-                  </p>
-                </div>
+                  {affiliate.status}
+                </span>
+              </div>
 
-                {/* Product */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[2].width,
-                  )}
-                >
-                  <p className="text-base font-semibold leading-6 text-textPrimary truncate">
+              <div className="grid grid-cols-3 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1 col-span-3 sm:col-span-1">
+                  <span className="text-xs text-[#919EAB]">Product</span>
+                  <span className="text-sm font-semibold text-textPrimary truncate">
                     {affiliate.product}
-                  </p>
-                </div>
-
-                {/* Quantity */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[3].width,
-                  )}
-                >
-                  <p className="text-base font-normal leading-6 text-textPrimary truncate w-full">
-                    {affiliate.quantity}
-                  </p>
-                </div>
-
-                {/* Click */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[4].width,
-                  )}
-                >
-                  <p className="text-base font-normal leading-6 text-textPrimary">
-                    {affiliate.click}
-                  </p>
-                </div>
-
-                {/* Revenue */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[5].width,
-                  )}
-                >
-                  <p className="text-base font-normal leading-6 text-textPrimary">
-                    {affiliate.revenue}
-                  </p>
-                </div>
-
-                {/* Status */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center px-4 py-3 overflow-hidden",
-                    columns[6].width,
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal capitalize",
-                      statusStyles[affiliate.status],
-                    )}
-                  >
-                    {affiliate.status}
                   </span>
                 </div>
-
-                {/* Product Link */}
-                <div
-                  className={cn(
-                    "h-16 flex items-center gap-2.5 px-4 py-3 overflow-hidden",
-                    columns[7].width,
-                  )}
-                >
-                  <button
-                    type="button"
-                    title="Copy link"
-                    disabled={
-                      copyPendingAffiliateId === affiliate.id ||
-                      (!affiliate.productLink && affiliate.productId === null)
-                    }
-                    onClick={() => handleCopyLinkClick(affiliate)}
-                    className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {copyPendingAffiliateId === affiliate.id ? (
-                      <Loader2 className="size-5 text-[#637381] animate-spin" />
-                    ) : (
-                      <CopyIcon />
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    title="QR Code"
-                    disabled={
-                      qrPendingAffiliateId === affiliate.id ||
-                      (affiliate.productId === null && !affiliate.qrCode)
-                    }
-                    onClick={() => handleQrCodeClick(affiliate)}
-                    className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {qrPendingAffiliateId === affiliate.id ? (
-                      <Loader2 className="size-5 text-[#637381] animate-spin" />
-                    ) : (
-                      <QRIcon />
-                    )}
-                  </button>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-[#919EAB]">Revenue</span>
+                  <span className="text-sm text-textPrimary">
+                    {affiliate.revenue}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-[#919EAB]">Quantity</span>
+                  <span className="text-sm text-textPrimary">
+                    {affiliate.quantity}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-[#919EAB]">Clicks</span>
+                  <span className="text-sm text-textPrimary">
+                    {affiliate.click}
+                  </span>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs text-[#919EAB]">Product link</span>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      title="Copy link"
+                      disabled={
+                        copyPendingAffiliateId === affiliate.id ||
+                        (!affiliate.productLink && affiliate.productId === null)
+                      }
+                      onClick={() => handleCopyLinkClick(affiliate)}
+                      className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {copyPendingAffiliateId === affiliate.id ? (
+                        <Loader2 className="size-5 text-[#637381] animate-spin" />
+                      ) : (
+                        <CopyIcon />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      title="QR Code"
+                      disabled={
+                        qrPendingAffiliateId === affiliate.id ||
+                        (affiliate.productId === null && !affiliate.qrCode)
+                      }
+                      onClick={() => handleQrCodeClick(affiliate)}
+                      className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {qrPendingAffiliateId === affiliate.id ? (
+                        <Loader2 className="size-5 text-[#637381] animate-spin" />
+                      ) : (
+                        <QRIcon />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="hidden lg:block">
+        <Table className="min-w-180 lg:min-w-0">
+          <TableHeader>
+            <TableRow className="bg-[#F9FAFB] hover:bg-[#F9FAFB]">
+              <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-55">
+                Client
+              </TableHead>
+              <TableHead className="hidden lg:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-35">
+                Date
+              </TableHead>
+              <TableHead className="hidden sm:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-50">
+                Product
+              </TableHead>
+              <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-22.5">
+                Quantity
+              </TableHead>
+              <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-22.5">
+                Click
+              </TableHead>
+              <TableHead className="hidden md:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-30 text-right">
+                Revenue
+              </TableHead>
+              <TableHead className="hidden md:table-cell px-4 text-xs sm:text-sm font-semibold text-[#637381] w-30">
+                Status
+              </TableHead>
+              <TableHead className="px-4 text-xs sm:text-sm font-semibold text-[#637381] w-40 text-right">
+                Product Link
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isPending ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <TableRow
+                  key={`top-affiliate-skeleton-${index}`}
+                  className="border-[#F1F5F9] hover:bg-transparent"
+                >
+                  <TableCell className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="size-12 rounded-full shrink-0" />
+                      <Skeleton className="h-5 w-28" />
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell px-4 py-3">
+                    <Skeleton className="h-5 w-20" />
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell px-4 py-3">
+                    <Skeleton className="h-5 w-24" />
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <Skeleton className="h-5 w-10" />
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <Skeleton className="h-5 w-10" />
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell px-4 py-3 text-right">
+                    <Skeleton className="h-5 w-14 ml-auto" />
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell px-4 py-3">
+                    <Skeleton className="h-7 w-20 rounded-md" />
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-2.5">
+                      <Skeleton className="size-10 rounded-md" />
+                      <Skeleton className="size-10 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : isError ? (
+              <TableRow className="border-[#F1F5F9] hover:bg-transparent">
+                <TableCell colSpan={8} className="px-4 py-6">
+                  <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
+                    <p className="text-sm sm:text-base font-semibold text-[#B42318] leading-6">
+                      Failed to load affiliate products.
+                    </p>
+                    <p className="text-xs sm:text-sm text-[#7A271A] leading-5">
+                      {errorMessage}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => refetch()}
+                      className="w-fit h-10 px-4 rounded-lg bg-[#DE5D56] text-white text-sm font-semibold hover:bg-[#c14d47] transition-colors"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : isEmpty ? (
+              <TableRow className="border-[#F1F5F9] hover:bg-transparent">
+                <TableCell colSpan={8} className="px-4 py-8">
+                  <div className="rounded-xl border border-[#EAECF0] bg-[#F9FAFB] py-8 text-center px-4">
+                    <p className="text-sm sm:text-base text-[#637381] leading-6">
+                      No affiliate products found.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              affiliates.map((affiliate) => (
+                <TableRow key={affiliate.id} className="border-[#F1F5F9]">
+                  <TableCell className="px-4 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative shrink-0 size-12 rounded-full overflow-hidden bg-gray-200">
+                        <Image
+                          src={affiliate.avatar}
+                          alt={affiliate.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                        {affiliate.name}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell px-4 py-3">
+                    <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary truncate">
+                      {affiliate.date}
+                    </p>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell px-4 py-3 max-w-55">
+                    <p className="text-sm sm:text-base font-semibold leading-6 text-textPrimary truncate">
+                      {affiliate.product}
+                    </p>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                      {affiliate.quantity}
+                    </p>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                      {affiliate.click}
+                    </p>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell px-4 py-3 text-right">
+                    <p className="text-sm sm:text-base font-normal leading-6 text-textPrimary">
+                      {affiliate.revenue}
+                    </p>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell px-4 py-3">
+                    <span
+                      className={cn(
+                        "inline-flex items-center justify-center px-3 py-1 rounded-md border text-xs leading-4.5 font-normal capitalize",
+                        statusStyles[affiliate.status],
+                      )}
+                    >
+                      {affiliate.status}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-2.5">
+                      <button
+                        type="button"
+                        title="Copy link"
+                        disabled={
+                          copyPendingAffiliateId === affiliate.id ||
+                          (!affiliate.productLink && affiliate.productId === null)
+                        }
+                        onClick={() => handleCopyLinkClick(affiliate)}
+                        className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {copyPendingAffiliateId === affiliate.id ? (
+                          <Loader2 className="size-5 text-[#637381] animate-spin" />
+                        ) : (
+                          <CopyIcon />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        title="QR Code"
+                        disabled={
+                          qrPendingAffiliateId === affiliate.id ||
+                          (affiliate.productId === null && !affiliate.qrCode)
+                        }
+                        onClick={() => handleQrCodeClick(affiliate)}
+                        className="shrink-0 size-10 flex items-center justify-center border border-[#F4F6F8] rounded-md bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {qrPendingAffiliateId === affiliate.id ? (
+                          <Loader2 className="size-5 text-[#637381] animate-spin" />
+                        ) : (
+                          <QRIcon />
+                        )}
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       <QRCodeDialog
