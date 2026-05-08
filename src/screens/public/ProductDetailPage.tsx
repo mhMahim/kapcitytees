@@ -3,19 +3,9 @@ import ProductImageGallery from "@/components/shop/ProductImageGallery";
 import ProductInfo from "@/components/shop/ProductInfo";
 import ProductDescriptionTabs from "@/components/shop/ProductDescriptionTabs";
 import RelatedProducts from "@/components/shop/RelatedProducts";
-import { ShopProductCardProps } from "@/components/shop/ShopProductCard";
 
 // Placeholder product image — replace with real product images
 const PRODUCT_IMG = "https://i.ibb.co.com/27rvh0W6/Rectangle-55.png";
-
-// Sample product images for the gallery
-const productImages = [
-  PRODUCT_IMG,
-  PRODUCT_IMG,
-  PRODUCT_IMG,
-  PRODUCT_IMG,
-  PRODUCT_IMG,
-];
 
 // Description tab content
 const descriptionSections = [
@@ -69,50 +59,19 @@ const descriptionSections = [
   },
 ];
 
-// Related products
-const relatedProducts: ShopProductCardProps[] = [
-  {
-    id: 1,
-    name: "Beard Oil",
-    category: "Beard",
-    price: 100,
-    image: PRODUCT_IMG,
-    barberCertified: true,
-  },
-  {
-    id: 2,
-    name: "Beard Oil",
-    category: "Beard",
-    price: 100,
-    image: PRODUCT_IMG,
-    barberCertified: true,
-  },
-  {
-    id: 3,
-    name: "Beard Oil",
-    category: "Beard",
-    price: 100,
-    image: PRODUCT_IMG,
-    barberCertified: true,
-  },
-  {
-    id: 4,
-    name: "Beard Oil",
-    category: "Beard",
-    price: 100,
-    image: PRODUCT_IMG,
-    barberCertified: true,
-  },
-];
-
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductDetailPageProps {
   product?: any;
+  relatedProducts?: any[];
   isPending?: boolean;
 }
 
-const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProps) => {
+const ProductDetailPage = ({
+  product,
+  relatedProducts = [],
+  isPending = false,
+}: ProductDetailPageProps) => {
   console.log(product);
   if (isPending || !product) {
     return (
@@ -152,7 +111,7 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
   const galleryImages = (product?.images || [])
     .map((image: any) => image?.image)
     .filter(Boolean);
-  
+
   // Use regex to strip HTML for plain text fields, if needed. For descriptions you might want to render HTML instead, but for now we follow the existing format.
   const stripHtml = (html: string) => html ? html.replace(/<[^>]+>/g, '') : "";
 
@@ -164,13 +123,17 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
     ...descriptionSections.slice(1) // Keep remaining mock tabs for visual completeness if needed
   ];
 
-  const dynamicRelated = (product?.related_products || []).map((item: any) => ({
+  const relatedProductsFromApi = Array.isArray(relatedProducts)
+    ? relatedProducts
+    : [];
+
+  const dynamicRelated = relatedProductsFromApi.map((item: any) => ({
     id: item.id,
     name: item.title,
-    category: item.category?.name || "Uncategorized",
+    category: product?.category?.name || "Uncategorized",
     price: parseFloat(item.price || "0"),
-    image: item.thumbnail_url || PRODUCT_IMG,
-    slug: item.slug,
+    image: item.thumbnail || PRODUCT_IMG,
+    slug: item.slug || "",
     barberCertified: false,
   }));
 
@@ -205,15 +168,10 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
         />
 
         {/* Related Products */}
-        {dynamicRelated.length > 0 ? (
+        {dynamicRelated.length > 0 && (
           <RelatedProducts
             title="Related Products"
             products={dynamicRelated}
-          />
-        ) : (
-          <RelatedProducts
-            title="Barber Certified Product"
-            products={relatedProducts} // Fallback to mock if API returns empty array for demo purposes
           />
         )}
       </Container>

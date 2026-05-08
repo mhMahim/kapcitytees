@@ -11,7 +11,7 @@ const RelatedProducts = ({ title, products }: RelatedProductsProps) => {
       <h2 className="text-xl sm:text-2xl lg:text-[32px] font-semibold leading-tight sm:leading-9 lg:leading-12 text-[#1E1E1E]">
         {title}
       </h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
         {products.map((product) => (
           <ShopProductCard key={product.id} {...product} />
         ))}

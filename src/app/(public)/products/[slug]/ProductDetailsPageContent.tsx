@@ -18,6 +18,8 @@ const ProductDetailsPageContent = () => {
     useFetchData(`/products/${slug}`);
 
   const productDetailsData = productDetailsApiData?.data?.data?.product ?? null;
+  const relatedProductsData =
+    productDetailsApiData?.data?.data?.related_products ?? [];
 
   useEffect(() => {
     if (!slug || !refCode) return;
@@ -59,6 +61,7 @@ const ProductDetailsPageContent = () => {
   return (
     <ProductDetailPage
       product={productDetailsData}
+      relatedProducts={relatedProductsData}
       isPending={productDetailsApiPending}
     />
   );
