@@ -113,14 +113,15 @@ const ProductDetailPage = ({
     .filter(Boolean);
 
   // Use regex to strip HTML for plain text fields, if needed. For descriptions you might want to render HTML instead, but for now we follow the existing format.
-  const stripHtml = (html: string) => html ? html.replace(/<[^>]+>/g, '') : "";
+  const stripHtml = (html: string) =>
+    html ? html.replace(/<[^>]+>/g, "") : "";
 
   const dynamicSections = [
     {
       title: "Product Description",
       paragraph: stripHtml(product?.description) || "No description provided.",
     },
-    ...descriptionSections.slice(1) // Keep remaining mock tabs for visual completeness if needed
+    ...descriptionSections.slice(1), // Keep remaining mock tabs for visual completeness if needed
   ];
 
   const relatedProductsFromApi = Array.isArray(relatedProducts)
@@ -169,10 +170,7 @@ const ProductDetailPage = ({
 
         {/* Related Products */}
         {dynamicRelated.length > 0 && (
-          <RelatedProducts
-            title="Related Products"
-            products={dynamicRelated}
-          />
+          <RelatedProducts title="Related Products" products={dynamicRelated} />
         )}
       </Container>
     </main>

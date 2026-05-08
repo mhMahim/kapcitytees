@@ -12,17 +12,48 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import OrderSummary from "./OrderSummary";
 import axios from "axios";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CHECKOUT_CONTEXT_STORAGE_KEY,
   getLocalCheckoutDetails,
 } from "@/lib/cart";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { City, State } from "country-state-city";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 const BILLING_DRAFT_SESSION_STORAGE_KEY = "kapcitytees-billing-draft";
+const USA_COUNTRY_CODE = "US";
+const US_POSTAL_CODES = [
+  "00501",
+  "02108",
+  "07030",
+  "10001",
+  "19103",
+  "20001",
+  "30301",
+  "33101",
+  "48201",
+  "60601",
+  "73301",
+  "85001",
+  "90001",
+  "94105",
+  "98101",
+];
 
 const billingSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -31,9 +62,11 @@ const billingSchema = z.object({
   deliveryAddress: z.string().min(5, "Enter a valid delivery address"),
   city: z.string().min(2, "Enter a valid city name"),
   state: z.string().min(2, "Enter a valid state name"),
+  postal_code: z.string().min(3, "Select a valid postal code"),
 });
 
 type BillingFormValues = z.infer<typeof billingSchema>;
+type ComboboxOption = { value: string; label: string };
 
 interface BillingFormCardProps {
   subtotal: number;
@@ -41,6 +74,84 @@ interface BillingFormCardProps {
   shipping: number;
   onSubmit?: (values: BillingFormValues) => void;
 }
+
+interface SearchableComboboxProps {
+  value: string;
+  displayValue?: string;
+  options: ComboboxOption[];
+  placeholder: string;
+  searchPlaceholder: string;
+  emptyLabel: string;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+  className?: string;
+}
+
+const SearchableCombobox = ({
+  value,
+  displayValue,
+  options,
+  placeholder,
+  searchPlaceholder,
+  emptyLabel,
+  disabled = false,
+  onChange,
+  className,
+}: SearchableComboboxProps) => {
+  const [open, setOpen] = useState(false);
+  const selectedOption = options.find((option) => option.value === value);
+  const selectedLabel = displayValue ?? selectedOption?.label ?? placeholder;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          disabled={disabled}
+          className={cn(
+            "h-12 w-full justify-between rounded-lg border-[#DFE3E8] bg-white px-5 text-base font-normal text-[#0F2A3C] hover:bg-white hover:text-[#0F2A3C] focus-visible:border-[#1E6FA8] focus-visible:ring-[#1E6FA8]/20",
+            !selectedOption && "text-[#919EAB]",
+            className,
+          )}
+        >
+          <span className="truncate">{selectedLabel}</span>
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
+        <Command>
+          <CommandInput placeholder={searchPlaceholder} />
+          <CommandList>
+            <CommandEmpty>{emptyLabel}</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  value={option.label}
+                  onSelect={() => {
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "size-4",
+                      value === option.value ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 const BillingFormCard = ({
   subtotal,
@@ -57,11 +168,62 @@ const BillingFormCard = ({
       deliveryAddress: "",
       city: "",
       state: "",
+      postal_code: "",
     },
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const selectedStateCode = form.watch("state");
+  const selectedCity = form.watch("city");
+
+  const usaStates = useMemo(
+    () => State.getStatesOfCountry(USA_COUNTRY_CODE),
+    [],
+  );
+
+  const cityOptions = useMemo(() => {
+    if (!selectedStateCode) {
+      return [];
+    }
+
+    return City.getCitiesOfState(USA_COUNTRY_CODE, selectedStateCode);
+  }, [selectedStateCode]);
+
+  const stateSelectOptions = useMemo<ComboboxOption[]>(
+    () =>
+      usaStates.map((stateItem) => ({
+        value: stateItem.isoCode,
+        label: stateItem.name,
+      })),
+    [usaStates],
+  );
+
+  const selectedStateOption = useMemo(
+    () =>
+      stateSelectOptions.find(
+        (stateOption) => stateOption.value === selectedStateCode,
+      ),
+    [selectedStateCode, stateSelectOptions],
+  );
+
+  const citySelectOptions = useMemo<ComboboxOption[]>(
+    () =>
+      cityOptions.map((cityItem) => ({
+        value: cityItem.name,
+        label: cityItem.name,
+      })),
+    [cityOptions], 
+  );
+
+  const postalCodeOptions = useMemo<ComboboxOption[]>(
+    () =>
+      US_POSTAL_CODES.map((postalCode) => ({
+        value: postalCode,
+        label: postalCode,
+      })),
+    [],
+  );
 
   useEffect(() => {
     const savedDraft = sessionStorage.getItem(
@@ -89,11 +251,24 @@ const BillingFormCard = ({
             : "",
         city: typeof parsedDraft.city === "string" ? parsedDraft.city : "",
         state: typeof parsedDraft.state === "string" ? parsedDraft.state : "",
+        postal_code:
+          typeof parsedDraft.postal_code === "string"
+            ? parsedDraft.postal_code
+            : "",
       });
     } catch {
       sessionStorage.removeItem(BILLING_DRAFT_SESSION_STORAGE_KEY);
     }
   }, [form]);
+
+  useEffect(() => {
+    form.setValue("city", "");
+    form.setValue("postal_code", "");
+  }, [selectedStateCode, form]);
+
+  useEffect(() => {
+    form.setValue("postal_code", "");
+  }, [selectedCity, form]);
 
   const handleSubmit = async (values: BillingFormValues) => {
     onSubmit?.(values);
@@ -121,7 +296,8 @@ const BillingFormCard = ({
       phone: values.phoneNumber,
       email: values.email,
       city: values.city,
-      state: values.state,
+      state: selectedStateCode,
+      postal_code: values.postal_code,
       address: values.deliveryAddress,
       tax,
       shipping_charge: shipping,
@@ -301,19 +477,23 @@ const BillingFormCard = ({
                 )}
               />
 
-              {/* City + State */}
+              {/* State + City */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <FormField
                   control={form.control}
-                  name="city"
+                  name="state"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel className={labelClass}>City</FormLabel>
+                      <FormLabel className={labelClass}>State</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your city name"
-                          className={inputClass}
-                          {...field}
+                        <SearchableCombobox
+                          value={field.value}
+                          displayValue={selectedStateOption?.label}
+                          options={stateSelectOptions}
+                          placeholder="Select state"
+                          searchPlaceholder="Search state..."
+                          emptyLabel="No state found."
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -322,15 +502,50 @@ const BillingFormCard = ({
                 />
                 <FormField
                   control={form.control}
-                  name="state"
+                  name="city"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel className={labelClass}>State</FormLabel>
+                      <FormLabel className={labelClass}>City</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your state name"
-                          className={inputClass}
-                          {...field}
+                        <SearchableCombobox
+                          value={field.value}
+                          options={citySelectOptions}
+                          placeholder={
+                            selectedStateCode ? "Select city" : "Select state first"
+                          }
+                          searchPlaceholder="Search city..."
+                          emptyLabel="No city found."
+                          disabled={!selectedStateCode}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Postal code */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <FormField
+                  control={form.control}
+                  name="postal_code"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel className={labelClass}>Postal Code</FormLabel>
+                      <FormControl>
+                        <SearchableCombobox
+                          value={field.value}
+                          options={postalCodeOptions}
+                          placeholder={
+                            selectedCity
+                              ? "Select postal code"
+                              : "Select city first"
+                          }
+                          searchPlaceholder="Search postal code..."
+                          emptyLabel="No postal code found."
+                          disabled={!selectedCity}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
