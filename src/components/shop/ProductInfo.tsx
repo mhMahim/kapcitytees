@@ -64,7 +64,7 @@ const ProductInfo = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 flex-1">
+    <div className="flex w-full min-w-0 flex-col gap-6">
       {/* Breadcrumb */}
       <p className="text-sm sm:text-base font-normal leading-6 text-[#919EAB]">
         {breadcrumb}
@@ -132,16 +132,16 @@ const ProductInfo = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 sm:gap-4 items-center flex-wrap">
+            <div className="flex w-full gap-2 sm:gap-4 items-center flex-wrap">
               <button
                 onClick={addOnCart}
-                className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors cursor-pointer"
+                className="h-11 sm:h-12 lg:h-13 px-5 sm:px-10 lg:px-15 py-3 bg-[#1E6FA8] rounded-xl text-white text-sm sm:text-base font-semibold leading-6 hover:bg-[#1A5F92] transition-colors cursor-pointer w-full sm:w-auto"
               >
                 Add to Cart
               </button>
               <Link
                 href="/cart"
-                className="h-11 sm:h-12 lg:h-13 lg:w-52.5 px-5 sm:px-8 lg:px-0 flex items-center justify-center py-3 bg-[#E9F1F6] rounded-xl text-[#1E6FA8] text-sm sm:text-base font-semibold leading-6 hover:bg-[#D5E5F0] transition-colors"
+                className="h-11 sm:h-12 lg:h-13 lg:w-52.5 px-5 sm:px-8 lg:px-0 flex items-center justify-center py-3 bg-[#E9F1F6] rounded-xl text-[#1E6FA8] text-sm sm:text-base font-semibold leading-6 hover:bg-[#D5E5F0] transition-colors w-full sm:w-auto"
               >
                 View Cart
               </Link>

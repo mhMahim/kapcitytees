@@ -118,8 +118,8 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
     return (
       <main className="min-h-screen">
         <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
-            <div className="w-full lg:w-105 xl:w-182.5 shrink-0 flex flex-col gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 lg:gap-12 xl:gap-16 items-start">
+            <div className="w-full min-w-0 flex flex-col gap-6">
               <Skeleton className="w-full aspect-730/585 rounded-3xl" />
               <div className="flex gap-3">
                 <Skeleton className="flex-1 aspect-square rounded-xl" />
@@ -128,7 +128,7 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
                 <Skeleton className="flex-1 aspect-square rounded-xl" />
               </div>
             </div>
-            <div className="flex flex-col gap-6 flex-1">
+            <div className="flex flex-col gap-6 w-full min-w-0">
               <Skeleton className="w-1/3 h-5 rounded" />
               <div className="flex flex-col gap-8 sm:gap-14 lg:gap-18">
                 <div className="flex flex-col gap-5 sm:gap-8">
@@ -149,7 +149,9 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
   }
 
   // Dynamic values mapping
-  const galleryImages = product?.thumbnail_url ? [product.thumbnail_url] : productImages;
+  const galleryImages = (product?.images || [])
+    .map((image: any) => image?.image)
+    .filter(Boolean);
   
   // Use regex to strip HTML for plain text fields, if needed. For descriptions you might want to render HTML instead, but for now we follow the existing format.
   const stripHtml = (html: string) => html ? html.replace(/<[^>]+>/g, '') : "";
@@ -176,9 +178,9 @@ const ProductDetailPage = ({ product, isPending = false }: ProductDetailPageProp
     <main className="min-h-screen">
       <Container className="pt-6 pb-16 sm:pb-24 lg:pb-50 flex flex-col gap-10 sm:gap-14 lg:gap-20">
         {/* Product Hero: Image Gallery + Info */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 lg:gap-12 xl:gap-16 items-start">
           <ProductImageGallery
-            images={galleryImages}
+            images={[product?.thumbnail_url, ...galleryImages]}
             productName={product?.title || "Product"}
             barberCertified={false}
           />
