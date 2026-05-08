@@ -121,6 +121,8 @@ const ShopPage = () => {
         {/* Left: Filters — full-width stacked on mobile, fixed-width sidebar on lg+ */}
         <div className="w-full lg:w-88.75 shrink-0">
           <ShopFilterSidebar
+            minPrice={minPrice}
+            maxPrice={maxPrice}
             onCategoryChange={handleCategoryChange}
             onPriceChange={handlePriceChange}
           />

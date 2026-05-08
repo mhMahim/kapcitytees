@@ -1,8 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import useFetchData from "@/hooks/useFetchData";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // ── Checkbox row ──────────────────────────────────────────────────────────────
@@ -83,17 +94,22 @@ const FilterSection = ({
 
 // ── Price range ───────────────────────────────────────────────────────────────
 interface PriceRangeFilterProps {
+  min: number;
+  max: number;
   onPriceChange?: (min: number, max: number) => void;
+  minLimit?: number;
+  maxLimit?: number;
 }
 
-const PriceRangeFilter = ({ onPriceChange }: PriceRangeFilterProps) => {
-  const [min, setMin] = useState(10);
-  const [max, setMax] = useState(500);
-  const MIN = 0;
-  const MAX = 1000;
-
-  const minPercent = ((min - MIN) / (MAX - MIN)) * 100;
-  const maxPercent = ((max - MIN) / (MAX - MIN)) * 100;
+const PriceRangeFilter = ({
+  min,
+  max,
+  onPriceChange,
+  minLimit = 0,
+  maxLimit = 1000,
+}: PriceRangeFilterProps) => {
+  const minPercent = ((min - minLimit) / (maxLimit - minLimit)) * 100;
+  const maxPercent = ((max - minLimit) / (maxLimit - minLimit)) * 100;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -116,12 +132,11 @@ const PriceRangeFilter = ({ onPriceChange }: PriceRangeFilterProps) => {
         {/* Min thumb */}
         <input
           type="range"
-          min={MIN}
-          max={MAX}
+          min={minLimit}
+          max={maxLimit}
           value={min}
           onChange={(e) => {
             const val = Math.min(Number(e.target.value), max - 10);
-            setMin(val);
             onPriceChange?.(val, max);
           }}
           className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#1E6FA8] [&::-webkit-slider-thumb]:shadow-sm"
@@ -129,12 +144,11 @@ const PriceRangeFilter = ({ onPriceChange }: PriceRangeFilterProps) => {
         {/* Max thumb */}
         <input
           type="range"
-          min={MIN}
-          max={MAX}
+          min={minLimit}
+          max={maxLimit}
           value={max}
           onChange={(e) => {
             const val = Math.max(Number(e.target.value), min + 10);
-            setMax(val);
             onPriceChange?.(min, val);
           }}
           className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#1E6FA8] [&::-webkit-slider-thumb]:shadow-sm"
@@ -173,6 +187,8 @@ interface CategoriesApiResponse {
 }
 
 interface ShopFilterSidebarProps {
+  minPrice?: number;
+  maxPrice?: number;
   onCategoryChange?: (categoryIds: number[]) => void;
   onPriceChange?: (min: number, max: number) => void;
 }
@@ -186,6 +202,8 @@ interface ShopFilterSidebarProps {
 // ];
 
 const ShopFilterSidebar = ({
+  minPrice = 10,
+  maxPrice = 500,
   onCategoryChange,
   onPriceChange,
 }: ShopFilterSidebarProps = {}) => {
@@ -219,84 +237,122 @@ const ShopFilterSidebar = ({
   )?.data?.data;
   const safeCategories = Array.isArray(categoriesData) ? categoriesData : [];
 
-  return (
-    <aside className="flex flex-col gap-4 sm:gap-6 w-full">
-      <h2 className="text-xl sm:text-2xl font-semibold text-[#0F2A3C] lg:h-11.5">
-        Filters
-      </h2>
+  const filtersCard = (
+    <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 w-full">
+      {/* Price */}
+      <PriceRangeFilter
+        min={minPrice}
+        max={maxPrice}
+        onPriceChange={onPriceChange}
+      />
 
-      <div className="bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(145,158,171,0.08)] p-4 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 w-full">
-        {/* Price */}
-        <PriceRangeFilter onPriceChange={onPriceChange} />
+      {/* Barber Certified */}
+      {/* <div className="flex flex-col gap-4 w-full">
+        <CheckboxRow
+          label="Barber Certified Product"
+          count={18}
+          checked={barberCertified}
+          onChange={setBarberCertified}
+        />
+        <div className="h-px w-full bg-[#E7EAEC]" />
+      </div> */}
 
-        {/* Barber Certified */}
-        {/* <div className="flex flex-col gap-4 w-full">
-          <CheckboxRow
-            label="Barber Certified Product"
-            count={18}
-            checked={barberCertified}
-            onChange={setBarberCertified}
-          />
-          <div className="h-px w-full bg-[#E7EAEC]" />
-        </div> */}
-
-        {/* Category */}
-        <FilterSection title="Category">
-          {categoriesApiPending ? (
-            <div className="flex flex-col gap-3 py-1">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <div
-                  key={`category-skeleton-${index}`}
-                  className="flex items-center gap-3"
-                >
-                  <Skeleton className="h-5 w-5 rounded-sm" />
-                  <Skeleton className="h-5 w-2/3" />
-                </div>
-              ))}
-            </div>
-          ) : categoriesApiError ? (
-            <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-3 flex flex-col gap-2">
-              <p className="text-sm text-[#B42318] leading-5">
-                Failed to load categories. Please try again.
-              </p>
-              <button
-                type="button"
-                onClick={() => refetchCategories()}
-                className="w-fit text-sm font-medium text-[#B42318] hover:text-[#7A271A] transition-colors"
+      {/* Category */}
+      <FilterSection title="Category">
+        {categoriesApiPending ? (
+          <div className="flex flex-col gap-3 py-1">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={`category-skeleton-${index}`}
+                className="flex items-center gap-3"
               >
-                Retry
-              </button>
-            </div>
-          ) : safeCategories.length > 0 ? (
-            safeCategories.map((cat) => (
-              <CheckboxRow
-                key={cat.id}
-                label={cat.name}
-                checked={activeCats.includes(cat.id)}
-                onChange={() => toggleCat(cat.id)}
-              />
-            ))
-          ) : (
-            <p className="text-sm text-[#919DA5] py-1">
-              No categories available.
+                <Skeleton className="h-5 w-5 rounded-sm" />
+                <Skeleton className="h-5 w-2/3" />
+              </div>
+            ))}
+          </div>
+        ) : categoriesApiError ? (
+          <div className="rounded-xl border border-[#FECACA] bg-[#FFF2F2] p-3 flex flex-col gap-2">
+            <p className="text-sm text-[#B42318] leading-5">
+              Failed to load categories. Please try again.
             </p>
-          )}
-        </FilterSection>
-
-        {/* Rating */}
-        {/* <FilterSection title="Rating">
-          {ratings.map((r) => (
+            <button
+              type="button"
+              onClick={() => refetchCategories()}
+              className="w-fit text-sm font-medium text-[#B42318] hover:text-[#7A271A] transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        ) : safeCategories.length > 0 ? (
+          safeCategories.map((cat) => (
             <CheckboxRow
-              key={r.label}
-              label={r.label}
-              count={r.count}
-              checked={activeRatings.includes(r.label)}
-              onChange={() => toggleRating(r.label)}
+              key={cat.id}
+              label={cat.name}
+              checked={activeCats.includes(cat.id)}
+              onChange={() => toggleCat(cat.id)}
             />
-          ))}
-        </FilterSection> */}
+          ))
+        ) : (
+          <p className="text-sm text-[#919DA5] py-1">
+            No categories available.
+          </p>
+        )}
+      </FilterSection>
+
+      {/* Rating */}
+      {/* <FilterSection title="Rating">
+        {ratings.map((r) => (
+          <CheckboxRow
+            key={r.label}
+            label={r.label}
+            count={r.count}
+            checked={activeRatings.includes(r.label)}
+            onChange={() => toggleRating(r.label)}
+          />
+        ))}
+      </FilterSection> */}
+    </div>
+  );
+
+  return (
+    <div className="w-full">
+      <div className="lg:hidden">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="lg" className="w-full">
+              <SlidersHorizontal data-icon="inline-start" />
+              Filters
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="max-h-[85vh] overflow-hidden">
+            <DrawerHeader>
+              <DrawerTitle>Filters</DrawerTitle>
+              <DrawerDescription>
+                Refine by price and category.
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="flex-1 overflow-y-auto px-4 pb-4">
+              {filtersCard}
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline" size="lg">
+                  Close
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </div>
-    </aside>
+
+      <aside className="hidden lg:flex flex-col gap-4 sm:gap-6 w-full">
+        <h2 className="text-xl sm:text-2xl font-semibold text-[#0F2A3C] lg:h-11.5">
+          Filters
+        </h2>
+        {filtersCard}
+      </aside>
+    </div>
   );
 };
 

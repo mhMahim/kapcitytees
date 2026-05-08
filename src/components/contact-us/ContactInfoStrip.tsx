@@ -62,7 +62,7 @@ const ContactInfoStrip = () => {
                 {item.href ? (
                   <a
                     href={item.href}
-                    className="text-[#0F2A3C] font-semibold text-base sm:text-lg xl:text-2xl leading-tight sm:leading-7 lg:leading-9 break-all sm:break-normal hover:text-[#1E6FA8] transition-colors"
+                    className="text-[#0F2A3C] font-semibold text-base sm:text-lg xl:text-[22px] leading-tight sm:leading-7 lg:leading-9 break-all sm:break-normal hover:text-[#1E6FA8] transition-colors"
                   >
                     {item.title}
                   </a>

@@ -60,7 +60,7 @@ const ShopProductCard = ({
       )}
 
       {/* Product Image */}
-      <div className="block w-full h-44 sm:h-52 lg:h-60 xl:h-73.25 relative rounded-lg overflow-hidden bg-[#F4F6F8]">
+      <div className="block w-full h-30 sm:h-52 lg:h-60 xl:h-73.25 relative rounded-lg overflow-hidden bg-[#F4F6F8]">
         <Image src={image} alt={name} fill className="object-cover" />
       </div>
 
