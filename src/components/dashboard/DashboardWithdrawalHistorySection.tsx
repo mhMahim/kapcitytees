@@ -141,7 +141,7 @@ const DashboardWithdrawalHistorySection = () => {
             <p className="text-sm font-semibold text-[#637381]">Amount</p>
           </div>
           <div className="flex-1 bg-[#F9FAFB] px-3 py-2 rounded-lg">
-            <p className="text-sm font-semibold text-[#637381]">
+            <p className="text-sm font-semibold text-[#637381] text-nowrap">
               Transaction ID
             </p>
           </div>
@@ -151,37 +151,49 @@ const DashboardWithdrawalHistorySection = () => {
         </div>
 
         {isHistoryPending ? (
-          <div className="flex flex-col">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={`withdraw-history-skeleton-${index}`}
-                className="border-b border-[#F9FAFB] last:border-b-0"
-              >
-                <div className="sm:hidden flex items-center justify-between gap-3 py-3 px-2">
-                  <div className="flex flex-col gap-1 min-w-0 w-24">
-                    <Skeleton className="h-3.5 w-10" />
+          <>
+            <div className="sm:hidden flex flex-col gap-3 py-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={`withdraw-history-mobile-skeleton-${index}`}
+                  className="rounded-xl border border-[#E6EEF4] bg-white p-3 flex flex-col gap-3"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-6 w-20 rounded-md" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
                     <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-24" />
                   </div>
-                  <div className="flex flex-col gap-1 w-20">
-                    <Skeleton className="h-3.5 w-12" />
-                    <Skeleton className="h-4 w-16" />
-                  </div>
-                  <Skeleton className="h-6 w-20 rounded-md" />
+                  <Skeleton className="h-4 w-32" />
                 </div>
-                <div className="hidden sm:flex items-center py-1">
-                  <div className="w-64 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-32" />
-                  </div>
-                  <div className="flex-1 h-16 flex items-center px-4">
-                    <Skeleton className="h-5 w-24" />
-                  </div>
-                  <div className="w-54 h-16 flex items-center justify-center px-4">
-                    <Skeleton className="h-6 w-24 rounded-md" />
+              ))}
+            </div>
+            <div className="hidden sm:flex flex-col">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={`withdraw-history-desktop-skeleton-${index}`}
+                  className="border-b border-[#F9FAFB] last:border-b-0"
+                >
+                  <div className="flex items-center py-1">
+                    <div className="w-64 h-16 flex items-center px-4">
+                      <Skeleton className="h-5 w-32" />
+                    </div>
+                    <div className="flex-1 h-16 flex items-center px-4">
+                      <Skeleton className="h-5 w-24" />
+                    </div>
+                    <div className="flex-1 h-16 flex items-center px-4">
+                      <Skeleton className="h-5 w-40" />
+                    </div>
+                    <div className="w-54 h-16 flex items-center justify-center px-4">
+                      <Skeleton className="h-6 w-24 rounded-md" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         ) : isHistoryError ? (
           <div className="py-8 px-3 text-center">
             <p className="text-sm sm:text-base font-semibold text-[#B42318]">
@@ -196,73 +208,96 @@ const DashboardWithdrawalHistorySection = () => {
           </div>
         ) : (
           <>
-            {historyRecords.map((record, index) => {
-              const recordDate =
-                record.withdrawal_date ?? record.date ?? "Unavailable";
-              const transactionId =
-                record.transaction_id !== null &&
-                record.transaction_id !== undefined
-                  ? String(record.transaction_id)
-                  : "-";
+            <div className="sm:hidden flex flex-col gap-3 py-3">
+              {historyRecords.map((record, index) => {
+                const recordDate =
+                  record.withdrawal_date ?? record.date ?? "Unavailable";
+                const transactionId =
+                  record.transaction_id !== null &&
+                  record.transaction_id !== undefined
+                    ? String(record.transaction_id)
+                    : "-";
 
-              return (
-                <div
-                  key={`${record.id}-${index}`}
-                  className={`${
-                    index < historyRecords.length - 1
-                      ? "border-b border-[#F9FAFB]"
-                      : ""
-                  }`}
-                >
-                  {/* Mobile row */}
-                  <div className="sm:hidden flex items-center justify-between gap-3 py-3 px-2">
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                      <p className="text-xs text-[#637381] leading-4">Date</p>
-                      <p className="text-sm font-medium text-textPrimary leading-5 whitespace-nowrap">
-                        {recordDate}
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-xs text-[#637381] leading-4">Amount</p>
-                      <p className="text-sm font-medium text-textPrimary leading-5">
-                        {formatAmount(record.amount)}
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-xs text-[#637381] leading-4">
-                        Transaction ID
-                      </p>
-                      <p className="text-sm font-medium text-textPrimary leading-5">
-                        {transactionId}
-                      </p>
-                    </div>
-                    <StatusChip status={record.status} />
-                  </div>
-
-                  {/* Desktop row */}
-                  <div className="hidden sm:flex items-center py-1">
-                    <div className="w-64 h-16 flex items-center px-4">
-                      <p className="text-base text-textPrimary leading-6">
-                        {recordDate}
-                      </p>
-                    </div>
-                    <div className="flex-1 h-16 flex items-center px-4">
-                      <p className="text-base text-textPrimary leading-6">
-                        {formatAmount(record.amount)}
-                      </p>
-                    </div>
-                    <div className="flex-1 h-16 flex items-center px-4">
-                      <p className="text-base text-textPrimary leading-6">
-                        {transactionId}
-                      </p>
-                    </div>
-                    <div className="w-54 h-16 flex items-center justify-center px-4">
+                return (
+                  <div
+                    key={`${record.id}-mobile-${index}`}
+                    className="rounded-xl border border-[#E6EEF4] bg-white p-3 flex flex-col gap-3"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <p className="text-xs text-[#637381] leading-4">Date</p>
+                        <p className="text-sm font-medium text-textPrimary leading-5 truncate">
+                          {recordDate}
+                        </p>
+                      </div>
                       <StatusChip status={record.status} />
                     </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-0.5">
+                        <p className="text-xs text-[#637381] leading-4">
+                          Amount
+                        </p>
+                        <p className="text-sm font-medium text-textPrimary leading-5">
+                          {formatAmount(record.amount)}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <p className="text-xs text-[#637381] leading-4">
+                          Transaction ID
+                        </p>
+                        <p className="text-sm font-medium text-textPrimary leading-5 break-all">
+                          {transactionId}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+
+            <div className="hidden sm:flex flex-col">
+              {historyRecords.map((record, index) => {
+                const recordDate =
+                  record.withdrawal_date ?? record.date ?? "Unavailable";
+                const transactionId =
+                  record.transaction_id !== null &&
+                  record.transaction_id !== undefined
+                    ? String(record.transaction_id)
+                    : "-";
+
+                return (
+                  <div
+                    key={`${record.id}-desktop-${index}`}
+                    className={
+                      index < historyRecords.length - 1
+                        ? "border-b border-[#F9FAFB]"
+                        : ""
+                    }
+                  >
+                    <div className="flex items-center py-1">
+                      <div className="w-64 h-16 flex items-center px-4">
+                        <p className="text-base text-textPrimary leading-6">
+                          {recordDate}
+                        </p>
+                      </div>
+                      <div className="flex-1 h-16 flex items-center px-4">
+                        <p className="text-base text-textPrimary leading-6">
+                          {formatAmount(record.amount)}
+                        </p>
+                      </div>
+                      <div className="flex-1 h-16 flex items-center px-4">
+                        <p className="text-base text-textPrimary leading-6">
+                          {transactionId}
+                        </p>
+                      </div>
+                      <div className="w-54 h-16 flex items-center justify-center px-4">
+                        <StatusChip status={record.status} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
             {totalPages > 1 ? (
               <div className="pt-4 px-2 sm:px-3">

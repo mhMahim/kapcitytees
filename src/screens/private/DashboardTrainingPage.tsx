@@ -243,7 +243,7 @@ const DashboardTrainingPage = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
+              <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-3 sm:gap-4 2xl:gap-5">
                 {tutorials.map((tutorial) => (
                   <BlogVideoCard
                     key={tutorial.id}

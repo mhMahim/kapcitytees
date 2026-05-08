@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
-import { Wallet } from "lucide-react";
-import useFetchData from "@/hooks/useFetchData";
-import { Skeleton } from "@/components/ui/skeleton";
-import DashboardWithdrawalHistorySection from "@/components/dashboard/DashboardWithdrawalHistorySection";
 import { useState } from "react";
+import Image from "next/image";
 import axios from "axios";
-import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { Wallet } from "lucide-react";
+import { toast } from "sonner";
+import DashboardWithdrawalHistorySection from "@/components/dashboard/DashboardWithdrawalHistorySection";
+import { Skeleton } from "@/components/ui/skeleton";
+import useFetchData from "@/hooks/useFetchData";
 
 interface EarningsData {
   available_for_withdrawal: number;
@@ -68,11 +68,11 @@ const EarningPage = () => {
       {/* Top Cards */}
       {isEarningsPending ? (
         <div className="flex flex-col sm:flex-row gap-6 items-stretch">
-          <div className="flex-1 rounded-2xl shadow-[0px_4px_21px_0px_rgba(75,140,185,0.32)] p-6 pb-5 flex flex-col gap-4 bg-linear-to-r from-[#328AC8] to-[#1E6FA8]">
+          <div className="flex-1 rounded-2xl shadow-[0px_4px_21px_0px_rgba(75,140,185,0.32)] p-5 sm:p-6 pb-5 flex flex-col gap-4 bg-linear-to-r from-[#328AC8] to-[#1E6FA8]">
             <Skeleton className="h-7 w-56 bg-white/30" />
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <Skeleton className="h-12 w-40 bg-white/30" />
-              <Skeleton className="h-11 w-30 rounded-xl bg-white/70" />
+              <Skeleton className="h-11 w-full sm:w-30 rounded-xl bg-white/70" />
             </div>
           </div>
           <div className="w-full sm:w-100.75 bg-white rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] px-5 sm:px-7 pt-4 pb-5 flex flex-col justify-between gap-4">
@@ -90,16 +90,16 @@ const EarningPage = () => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col sm:flex-row gap-6 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:flex flex-col sm:flex-row gap-6 items-stretch">
           {/* Available for Withdrawal Card */}
-          <div className="flex-1 relative overflow-hidden rounded-2xl shadow-[0px_4px_21px_0px_rgba(75,140,185,0.32)] bg-linear-to-r from-[#328AC8] to-[#1E6FA8] p-6 pb-5 flex flex-col gap-2">
+          <div className="flex-1 relative overflow-hidden rounded-2xl shadow-[0px_4px_21px_0px_rgba(75,140,185,0.32)] bg-linear-to-r from-[#328AC8] to-[#1E6FA8] p-5 sm:p-6 pb-5 flex flex-col gap-2">
             {/* Background Wave */}
             <div className="absolute right-0 bottom-0 w-full sm:w-150 h-24 sm:h-32 pointer-events-none">
               <Image
                 src="https://i.ibb.co.com/W48cvZYm/Group-1000004143.png"
                 alt=""
                 fill
-                className=""
+                className="object-cover opacity-80"
               />
             </div>
 
@@ -109,14 +109,14 @@ const EarningPage = () => {
             </p>
 
             {/* Amount + Button */}
-            <div className="flex items-center justify-between px-1 sm:px-2 relative z-10">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-1 sm:px-2 relative z-10">
               <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight sm:leading-16 bg-linear-to-r from-white/80 to-white bg-clip-text text-transparent">
                 ${formatAmount(availableForWithdrawal)}
               </p>
               <button
                 onClick={handleWithdrawal}
                 disabled={availableForWithdrawal === 0 || isWithdrawing}
-                className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 shrink-0 disabled:cursor-auto disabled:bg-gray-200 disabled:text-gray-400 active:scale-97 hover:scale-103 transition-transform"
+                className="bg-white rounded-xl shadow-[0px_4px_12px_0px_rgba(27,101,153,0.2)] px-4 sm:px-5 py-2.5 sm:py-3 w-full sm:w-37.25 flex items-center justify-center cursor-pointer hover:bg-gray-50 disabled:cursor-auto disabled:bg-gray-200 disabled:text-gray-400 active:scale-97 hover:scale-103 transition-transform"
               >
                 <span className="text-sm sm:text-base font-semibold text-[#1E6FA8] leading-5 sm:leading-6">
                   Withdraw
@@ -126,7 +126,7 @@ const EarningPage = () => {
           </div>
 
           {/* Lifetime Income Card */}
-          <div className="w-full sm:w-100.75 bg-white rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] px-5 sm:px-7 pt-4 pb-5 flex flex-col justify-between gap-2 sm:gap-0">
+          <div className="w-full xl:w-100.75 bg-white rounded-2xl shadow-[0px_4px_21px_0px_rgba(98,101,120,0.04)] px-5 sm:px-7 pt-4 pb-5 flex flex-col justify-between gap-2 sm:gap-0">
             <div className="flex items-center justify-between">
               <p className="text-sm sm:text-lg font-medium text-[#637381] leading-5 sm:leading-7">
                 Lifetime income
