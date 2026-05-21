@@ -17,25 +17,29 @@ const OurStorySection = () => {
           {/* Quote & Description */}
           <div className="flex flex-col items-center gap-4 sm:gap-6 text-center">
             <h3 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-8 sm:leading-10 lg:leading-12 xl:leading-16 text-[#0F2A3C]">
-              Empowering barbers with professional grooming products crafted for
-              everyday excellence
+              Barber Certified was built from firsthand experience inside the
+              barber industry - not from the outside looking in.
             </h3>
             <div className="flex flex-col gap-4 text-sm sm:text-base lg:text-lg font-medium leading-6 sm:leading-7 text-[#637381]">
               <p>
-                We are a dedicated barber-focused e-commerce brand committed to
-                supporting the craft of grooming with premium tools and
-                high-quality products. Our mission is simple: to provide barbers
-                with reliable, professional-grade essentials that enhance
-                performance, precision, and confidence behind the chair. Whether
-                you are an experienced professional or just starting your
-                barbering journey, we are here to equip you with tools you can
-                trust.
+                I created this company because I saw a problem most people
+                ignored: talented barbers were building strong personal brands,
+                loyal clientele, and influence in their communities, yet many
+                still had limited ways to create long-term wealth outside of
+                the chair.
               </p>
               <p>
-                At our core, we exist to support your craft. Every cut, every
-                fade, and every detail matters, and the right tools make all the
-                difference. Thank you for choosing us as your trusted partner in
-                professional barbering.
+                The industry had skill, culture, and reach, but very few
+                systems designed to help barbers scale beyond daily
+                appointments. Most brands profited from the culture without
+                creating real opportunities for the professionals driving it.
+              </p>
+              <p>Barber Certified was created to change that.</p>
+              <p>
+                The vision has always been bigger than grooming products. The
+                goal is to build a nationally recognized platform that gives
+                barbers more leverage, more visibility, and more ownership over
+                their future.
               </p>
             </div>
           </div>
@@ -44,10 +48,10 @@ const OurStorySection = () => {
         {/* CEO Signature */}
         <div className="flex flex-col items-center gap-2 text-center">
           <p className="text-3xl sm:text-4xl lg:text-5xl leading-10 sm:leading-12 lg:leading-16 text-[#161C24] font-licorice">
-            Jenny Alexander
+            Andrew Johnson
           </p>
           <p className="text-base sm:text-lg font-medium leading-6 sm:leading-7 text-[#11161C]">
-            Jenny Alexander <span className="text-[#1E6FA8]">•</span> CEO
+            Andrew Johnson <span className="text-[#1E6FA8]">•</span> Founder
           </p>
         </div>
       </Container>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Container from "../shared/Container";
-import { Play } from "lucide-react";
+// import { Play } from "lucide-react";
 import { PlayIcon } from "@/assets/icons";
 
 /* Placeholder images — replace with actual assets */
