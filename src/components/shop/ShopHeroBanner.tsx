@@ -34,7 +34,7 @@ const ShopHeroBanner = ({
         <div className="absolute inset-0 bg-black/15" />
 
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 sm:gap-3">
+        <div className="absolute inset-0 flex flex-col items-center text-center justify-center gap-2 sm:gap-3">
           <h1 className="text-white text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
             {title}
           </h1>

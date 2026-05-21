@@ -91,29 +91,32 @@ const MissionSection = () => {
                   Setting the Standard for Professional Grooming
                 </h2>
                 <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
-                  We curate only the highest-grade tools and formulas used by
-                  elite barbers worldwide. Elevate your daily routine with
-                  products designed for precision, performance, and style.
-                </p>
+                    Everything connected to Barber Certified is built with
+                    intention. We are committed to elevating the standard of
+                    barbering through professionalism, education, product quality,
+                    and brand development. Every product, piece of content, and
+                    initiative is designed to create value for both barbers and
+                    the clients they serve.
+                  </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-8 sm:gap-10 lg:gap-16 max-w-full">
-              <FeatureItem
-                icon={
-                  <ProGradeIcon className="size-10 sm:size-12 lg:size-14 xl:size-16" />
-                }
-                title="Pro-Grade Tools"
-                description="Engineered for maximum precision and durability to give you that shop-fresh look at home."
-              />
-              <FeatureItem
-                icon={
-                  <ElitePerformanceIcon className="size-10 sm:size-12 lg:size-14 xl:size-16" />
-                }
-                title="Elite Performance"
-                description="Designed with comfort in mind for effortless styling and perfect lining every single time."
-              />
-            </div>
+              <div className="flex flex-col gap-4 sm:gap-6">
+                <p className="text-sm sm:text-base font-medium leading-5 sm:leading-6 text-[#0F2A3C]">
+                  Our commitment includes:
+                </p>
+                <ul className="list-disc list-inside text-sm sm:text-base font-normal leading-6 text-[#5E707C] flex flex-col gap-2">
+                  <li>Developing premium grooming products that reflect the quality of the modern barber</li>
+                  <li>Creating educational systems that strengthen both technical and business skills</li>
+                  <li>Building opportunities for barbers to expand beyond service income</li>
+                  <li>Establishing a brand that represents consistency, professionalism, and trust</li>
+                </ul>
+                <p className="text-sm sm:text-base font-normal leading-5 sm:leading-6 text-[#5E707C]">
+                  We are not interested in shortcuts, trends, or artificial hype.
+                  Barber Certified is focused on building long-term credibility
+                  and long-term opportunity.
+                </p>
+              </div>
           </div>
 
           {/* Right Image */}

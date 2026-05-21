@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const companyLinks = [
   { label: "About Us", href: "/about-us" },
   { label: "Become a Partner", href: "/register?type=barber" },
-  { label: "products", href: "/for-clients" },
+  { label: "Products", href: "/for-clients" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
